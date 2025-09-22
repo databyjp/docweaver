@@ -1,9 +1,6 @@
 import docweaver.db
 from docweaver.utils import chunk_text
 from pathlib import Path
-from dotenv import load_dotenv
-
-load_dotenv()
 
 
 def main():

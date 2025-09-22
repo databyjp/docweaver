@@ -61,6 +61,11 @@ def add_chunks(src_chunks: list[dict]):
 def search_chunks(query: str) -> list[str]:
     with connect() as client:
         chunks = client.collections.use(COLLECTION_NAME)
-        response = chunks.query.hybrid(query=query, limit=20, alpha=0.5)
+        response = chunks.query.hybrid(
+            query=query,
+            target_vector=["chunk"],
+            limit=20,
+            alpha=0.5
+        )
         docpaths = [o.properties["path"] for o in response.objects]
         return docpaths
