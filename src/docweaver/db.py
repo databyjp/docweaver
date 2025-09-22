@@ -1,8 +1,9 @@
+from docweaver.config import COLLECTION_NAME
 from weaviate.classes.config import Property, DataType, Configure
 import weaviate
 from weaviate import WeaviateClient
+from weaviate.util import generate_uuid5
 import os
-from docweaver.config import COLLECTION_NAME
 
 
 def connect() -> WeaviateClient:
@@ -10,6 +11,11 @@ def connect() -> WeaviateClient:
         cluster_url=os.getenv("WEAVIATE_URL"),
         auth_credentials=os.getenv("WEAVIATE_API_KEY"),
     )
+
+
+def delete_collection():
+    with connect() as client:
+        client.collections.delete(COLLECTION_NAME)
 
 
 def create_collection():
@@ -24,27 +30,37 @@ def create_collection():
             vector_config=[
                 Configure.Vectors.text2vec_weaviate(
                     name="chunk",
-                    source_properties=["title", "chunk"],
+                    source_properties=["chunk"],
                 ),
                 Configure.Vectors.text2vec_weaviate(
-                    name="topics",
-                    source_properties=["topics"],
+                    name="path",
+                    source_properties=["path"],
                 ),
             ],
             generative_config=Configure.Generative.anthropic(
                 model="claude-3-5-haiku-latest",
             ),
         )
-        print(f"Collection {COLLECTION_NAME} created successfully")
+
+
+def add_chunks(src_chunks: list[dict]):
+    with connect() as client:
+        chunks = client.collections.use(COLLECTION_NAME)
+        with chunks.batch.fixed_size(batch_size=100) as batch:
+            for i, src_chunk in enumerate(src_chunks):
+                batch.add_object(
+                    properties={
+                        "path": src_chunk["path"],
+                        "chunk": src_chunk["chunk"],
+                        "chunk_no": i + 1,
+                    },
+                    uuid=generate_uuid5(src_chunk["path"]+str(i+1)),
+                )
 
 
 def search_chunks(query: str) -> list[str]:
     with connect() as client:
         chunks = client.collections.use(COLLECTION_NAME)
-        response = chunks.query.hybrid(
-            query=query,
-            limit=20,
-            alpha=0.5
-        )
+        response = chunks.query.hybrid(query=query, limit=20, alpha=0.5)
         docpaths = [o.properties["path"] for o in response.objects]
         return docpaths
