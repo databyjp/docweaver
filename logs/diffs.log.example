@@ -1,0 +1,545 @@
+--- a/docs/docs/weaviate/concepts/cluster.md
++++ b/docs/docs/weaviate/concepts/cluster.md
+@@ -103,10 +103,45 @@
+ 
+ 2. **Scaling**: If you need to scale your cluster (e.g., adding more nodes to handle increased load), shard replicas can be moved to the new nodes to ensure that the data is evenly distributed across the cluster.
+ 
+ 3. **Node Maintenance or Replacement**: If a node requires maintenance (e.g., hardware upgrades) or replacement, shard replicas can be moved to temporary or replacement nodes to ensure continuous availability during the maintenance window.
+ 
++## Cluster Resharding
++
++Weaviate supports dynamic cluster resharding, which allows administrators to redistribute data across nodes in a multi-node cluster without downtime. This feature enables you to adjust the number of shards in an existing cluster to improve performance and scalability.
++
++The resharding process works by creating new shard mappings, migrating vector embeddings and metadata in batches, and updating the distributed hash ring to reflect the new topology.
++
++### Key capabilities
++
++* **Automatic load balancing**: The migration process includes automatic load balancing to prevent node overload during data redistribution.
++* **Configurable performance**: You can configure batch sizes and migration speed throttling to control the impact on cluster performance.
++* **Data integrity**: Real-time consistency checks ensure data integrity throughout the migration process.
++* **Rollback support**: The system supports rollback capabilities in case of migration failures.
++* **Progress monitoring**: Dedicated monitoring endpoints allow you to track resharding progress in real-time.
++
++### Resharding operation
++
++Resharding is triggered via the `/v1/cluster/resharding` API endpoint with parameters for:
++- Target shard count
++- Migration speed settings
++- Validation configuration
++
++During the resharding process:
++- **Read operations** continue normally without interruption
++- **Write operations** are temporarily queued and replayed after shard migration completes
++
++### Typical use cases
++
++Cluster resharding is particularly useful for:
++
++1. **Scaling under load**: Redistributing shards when scaling up clusters experiencing heavy load
++2. **Rebalancing after node changes**: Optimizing shard distribution after adding or removing nodes from the cluster
++3. **Performance optimization**: Adjusting shard distribution to match query performance patterns and workload characteristics
++
++For detailed API usage and configuration options, see the [multi-node setup documentation](/docs/weaviate/manage-collections/multi-node-setup.mdx).
++
+ ## Node Discovery
+ 
+ By default, Weaviate nodes in a cluster use a gossip-like protocol through [Hashicorp's Memberlist](https://github.com/hashicorp/memberlist) to communicate node state and failure scenarios.
+ 
+ Weaviate - especially when running as a cluster - is optimized to run on Kubernetes. The [Weaviate Helm chart](/deploy/installation-guides/k8s-installation.md#weaviate-helm-chart) makes use of a `StatefulSet` and a headless `Service` that automatically configures node discovery. All you have to do is specify the desired node count.
+@@ -161,11 +196,11 @@
+ 
+ ## Consistency and current limitations
+ 
+ * Starting with `v1.25.0`, Weaviate adopts the [Raft consensus algorithm](https://raft.github.io/) which is a log-based algorithm coordinated by an elected leader. This brings an additional benefit in that concurrent schema changes are now supported.<br/>If you are a Kubernetes user, see the [`1.25 migration guide`](/deploy/migration/weaviate-1-25.md) before you upgrade. To upgrade, you have to delete your existing StatefulSet.
+ * As of `v1.8.0`, the process of broadcasting schema changes across the cluster uses a form of two-phase transaction that as of now cannot tolerate node failures during the lifetime of the transaction.
+-* As of `v1.8.0`, dynamically scaling a cluster is not fully supported yet. New nodes can be added to an existing cluster, however it does not affect the ownership of shards. Existing nodes can not yet be removed if data is present, as shards are not yet being moved to other nodes prior to a removal of a node.
++* Weaviate now supports dynamic cluster scaling through the resharding feature, which allows you to redistribute data across nodes without downtime. This enables adding new nodes and rebalancing existing shards, as well as optimizing shard distribution for improved performance.
+ 
+ ## Questions and feedback
+ 
+ import DocsFeedback from '/_includes/docs-feedback.mdx';
+ 
+--- a/docs/docs/weaviate/manage-collections/multi-node-setup.mdx
++++ b/docs/docs/weaviate/manage-collections/multi-node-setup.mdx
+@@ -200,10 +200,110 @@
+ 
+ import CodeSchemaShardsUpdate from "/_includes/code/howto/manage-data.shards.update.mdx";
+ 
+ <CodeSchemaShardsUpdate />
+ 
++## Cluster resharding
++
++A multi-node Weaviate cluster can be dynamically resharded to redistribute data across nodes for improved performance and scalability. This allows administrators to adjust the number of shards in an existing cluster without downtime.
++
++The resharding feature includes:
++
++- **Automatic load balancing**: Prevents node overload during migration
++- **Configurable migration settings**: Control batch sizes and migration speed throttling
++- **Data integrity checks**: Real-time consistency validation during migration
++- **Rollback support**: Safe recovery in case of migration failures
++- **Progress monitoring**: Track resharding status through monitoring endpoints
++
++### API endpoint
++
++Resharding is triggered via the `/v1/cluster/resharding` API endpoint with parameters for:
++
++- `targetShardCount`: The desired number of shards after resharding
++- `migrationSpeed`: Controls the rate of data migration (e.g., "slow", "medium", "fast")
++- `validationSettings`: Configuration for consistency checks during migration
++
++### Client library support
++
++Native client library functions will be available for Python, JavaScript/TypeScript, Go, and Java. The exact syntax is being finalized.
++
++<Tabs groupId="languages">
++  <TabItem value="py" label="Python Client v4">
++    <FilteredTextBlock
++      text={PyCode}
++      startMarker="# START ClusterResharding"
++      endMarker="# END ClusterResharding"
++      language="py"
++    />
++  </TabItem>
++
++  <TabItem value="js" label="JS/TS Client v3">
++    <FilteredTextBlock
++      text={TSCode}
++      startMarker="// START ClusterResharding"
++      endMarker="// END ClusterResharding"
++      language="ts"
++    />
++  </TabItem>
++
++  <TabItem value="java" label="Java">
++    <FilteredTextBlock
++      text={JavaReplicationCode}
++      startMarker="// START ClusterResharding"
++      endMarker="// END ClusterResharding"
++      language="java"
++    />
++  </TabItem>
++
++  <TabItem value="go" label="Go">
++    <FilteredTextBlock
++      text={GoCode}
++      startMarker="// START ClusterResharding"
++      endMarker="// END ClusterResharding"
++      language="gonew"
++    />
++  </TabItem>
++
++  <TabItem value="curl" label="cURL">
++
++```bash
++curl \
++-X POST \
++-H "Content-Type: application/json" \
++-d '{
++    "targetShardCount": 6,
++    "migrationSpeed": "medium",
++    "validationSettings": {
++        "enableConsistencyChecks": true,
++        "batchSize": 1000
++    }
++}' \
++http://localhost:8080/v1/cluster/resharding
++```
++
++</TabItem>
++</Tabs>
++
++### Operational behavior
++
++During resharding:
++
++- **Read operations**: Continue normally with no interruption
++- **Write operations**: Temporarily queued and replayed after shard migration completes
++- **Migration process**: Data is moved in configurable batches with automatic load balancing
++- **Consistency**: Real-time checks ensure data integrity throughout the process
++
++### Use cases
++
++Typical scenarios for cluster resharding include:
++
++- **Scaling under load**: Increase shard count when experiencing heavy traffic
++- **Rebalancing**: Redistribute data after adding or removing nodes
++- **Performance optimization**: Adjust shard distribution based on query patterns
++
++For more details on cluster architecture and distributed operations, see [Multi-node concepts](../concepts/cluster.md).
++
+ ## Further resources
+ 
+ - <SkipLink href="/weaviate/api/rest#tag/schema/post/schema">API References: REST: Schema</SkipLink>
+ - [References: Configuration: Schema](/weaviate/config-refs/collections.mdx)
+ - [Concepts: Data structure](../concepts/data.md)
+--- a/docs/_includes/code/howto/manage-data.collections.py
++++ b/docs/_includes/code/howto/manage-data.collections.py
+@@ -652,10 +652,37 @@
+ # Test
+ collection = client.collections.use("Article")
+ config = collection.config.get()
+ assert config.vector_config["default"].vector_index_config.distance_metric.value == "cosine"
+ 
++# ====================================================
++# ===== CLUSTER RESHARDING
++# ====================================================
++
++# START ClusterResharding
++# Doc writer / engineer TODO: New code example to go here
++# Trigger cluster resharding with target shard count and migration settings
++# cluster_resharding_result = client.cluster.reshard(
++#     target_shard_count=6,
++#     migration_speed="medium",  # "slow", "medium", "fast"
++#     validation_settings={
++#         "enable_consistency_checks": True,
++#         "batch_size": 1000
++#     }
++# )
++
++# Monitor resharding progress
++# resharding_status = client.cluster.resharding_status()
++# print(f"Resharding progress: {resharding_status['progress']}%")
++# print(f"Status: {resharding_status['status']}")
++
++# Handle potential rollback
++# if resharding_status['status'] == 'failed':
++#     rollback_result = client.cluster.rollback_resharding()
++#     print(f"Rollback successful: {rollback_result['success']}")
++# END ClusterResharding
++
+ client.close()
+ 
+ # =======================
+ # ===== REPLICATION =====
+ # =======================
+@@ -679,10 +706,37 @@
+ 
+ # Test
+ collection = client.collections.use("Article")
+ config = collection.config.get()
+ assert config.replication_config.factor == 3
++
++# ====================================================
++# ===== CLUSTER RESHARDING
++# ====================================================
++
++# START ClusterResharding
++# Doc writer / engineer TODO: New code example to go here
++# Trigger cluster resharding with target shard count and migration settings
++# cluster_resharding_result = client.cluster.reshard(
++#     target_shard_count=6,
++#     migration_speed="medium",  # "slow", "medium", "fast"
++#     validation_settings={
++#         "enable_consistency_checks": True,
++#         "batch_size": 1000
++#     }
++# )
++
++# Monitor resharding progress
++# resharding_status = client.cluster.resharding_status()
++# print(f"Resharding progress: {resharding_status['progress']}%")
++# print(f"Status: {resharding_status['status']}")
++
++# Handle potential rollback
++# if resharding_status['status'] == 'failed':
++#     rollback_result = client.cluster.rollback_resharding()
++#     print(f"Rollback successful: {rollback_result['success']}")
++# END ClusterResharding
+ 
+ client.close()
+ 
+ # =======================
+ # ===== REPLICATION WITH ASYNC REPAIR ====
+@@ -710,10 +764,37 @@
+ 
+ # Test
+ collection = client.collections.use("Article")
+ config = collection.config.get()
+ # assert config.replication_config.factor == 3   #ASYNC NEEDS TEST
++
++# ====================================================
++# ===== CLUSTER RESHARDING
++# ====================================================
++
++# START ClusterResharding
++# Doc writer / engineer TODO: New code example to go here
++# Trigger cluster resharding with target shard count and migration settings
++# cluster_resharding_result = client.cluster.reshard(
++#     target_shard_count=6,
++#     migration_speed="medium",  # "slow", "medium", "fast"
++#     validation_settings={
++#         "enable_consistency_checks": True,
++#         "batch_size": 1000
++#     }
++# )
++
++# Monitor resharding progress
++# resharding_status = client.cluster.resharding_status()
++# print(f"Resharding progress: {resharding_status['progress']}%")
++# print(f"Status: {resharding_status['status']}")
++
++# Handle potential rollback
++# if resharding_status['status'] == 'failed':
++#     rollback_result = client.cluster.rollback_resharding()
++#     print(f"Rollback successful: {rollback_result['success']}")
++# END ClusterResharding
+ 
+ client.close()
+ 
+ # ==============================================
+ # ===== ALL REPLICATION SETTINGS
+@@ -746,10 +827,37 @@
+ assert config.replication_config.async_enabled == True
+ assert (
+     config.replication_config.deletion_strategy
+     == ReplicationDeletionStrategy.TIME_BASED_RESOLUTION
+ )
++
++# ====================================================
++# ===== CLUSTER RESHARDING
++# ====================================================
++
++# START ClusterResharding
++# Doc writer / engineer TODO: New code example to go here
++# Trigger cluster resharding with target shard count and migration settings
++# cluster_resharding_result = client.cluster.reshard(
++#     target_shard_count=6,
++#     migration_speed="medium",  # "slow", "medium", "fast"
++#     validation_settings={
++#         "enable_consistency_checks": True,
++#         "batch_size": 1000
++#     }
++# )
++
++# Monitor resharding progress
++# resharding_status = client.cluster.resharding_status()
++# print(f"Resharding progress: {resharding_status['progress']}%")
++# print(f"Status: {resharding_status['status']}")
++
++# Handle potential rollback
++# if resharding_status['status'] == 'failed':
++#     rollback_result = client.cluster.rollback_resharding()
++#     print(f"Rollback successful: {rollback_result['success']}")
++# END ClusterResharding
+ 
+ client.close()
+ 
+ # ====================
+ # ===== SHARDING =====
+@@ -995,6 +1103,33 @@
+ 
+ print(article_shards)
+ # END UpdateCollectionShards
+ 
+ 
++# ====================================================
++# ===== CLUSTER RESHARDING
++# ====================================================
++
++# START ClusterResharding
++# Doc writer / engineer TODO: New code example to go here
++# Trigger cluster resharding with target shard count and migration settings
++# cluster_resharding_result = client.cluster.reshard(
++#     target_shard_count=6,
++#     migration_speed="medium",  # "slow", "medium", "fast"
++#     validation_settings={
++#         "enable_consistency_checks": True,
++#         "batch_size": 1000
++#     }
++# )
++
++# Monitor resharding progress
++# resharding_status = client.cluster.resharding_status()
++# print(f"Resharding progress: {resharding_status['progress']}%")
++# print(f"Status: {resharding_status['status']}")
++
++# Handle potential rollback
++# if resharding_status['status'] == 'failed':
++#     rollback_result = client.cluster.rollback_resharding()
++#     print(f"Rollback successful: {rollback_result['success']}")
++# END ClusterResharding
++
+ client.close()
+--- a/docs/_includes/code/howto/manage-data.collections.ts
++++ b/docs/_includes/code/howto/manage-data.collections.ts
+@@ -891,5 +891,33 @@
+     ],
+     properties: [{ name: "text", dataType: dataType.TEXT }],
+     // Additional parameters not shown
+ })
+ // END MultiValueVectorCollection
++
++// ====================================================
++// ===== CLUSTER RESHARDING
++// ====================================================
++
++// START ClusterResharding
++// Doc writer / engineer TODO: New code example to go here
++// Trigger cluster resharding with target shard count and migration settings
++// const clusterReshardingResult = await client.cluster.reshard({
++//     targetShardCount: 6,
++//     migrationSpeed: 'medium', // 'slow', 'medium', 'fast'
++//     validationSettings: {
++//         enableConsistencyChecks: true,
++//         batchSize: 1000
++//     }
++// });
++
++// Monitor resharding progress
++// const reshardingStatus = await client.cluster.reshardingStatus();
++// console.log(`Resharding progress: ${reshardingStatus.progress}%`);
++// console.log(`Status: ${reshardingStatus.status}`);
++
++// Handle potential rollback
++// if (reshardingStatus.status === 'failed') {
++//     const rollbackResult = await client.cluster.rollbackResharding();
++//     console.log(`Rollback successful: ${rollbackResult.success}`);
++// }
++// END ClusterResharding
+--- a/docs/_includes/code/howto/java/src/test/java/io/weaviate/docs/manage-data.replication.java
++++ b/docs/_includes/code/howto/java/src/test/java/io/weaviate/docs/manage-data.replication.java
+@@ -241,7 +241,40 @@
+ 
+     assertThat(verifyClass.getInvertedIndexConfig().getBm25().getK1()).isEqualTo(1.5f);
+     assertThat(verifyClass.getVectorIndexConfig().getFilterStrategy()).isEqualTo(VectorIndexConfig.FilterStrategy.ACORN);
+     assertThat(verifyClass.getReplicationConfig().getDeletionStrategy()).isEqualTo(ReplicationConfig.DeletionStrategy.NO_AUTOMATED_RESOLUTION);
+   }
++
++  private void performClusterResharding() {
++    // START ClusterResharding
++    // Doc writer / engineer TODO: New code example to go here
++    // Configure resharding parameters
++    // Map<String, Object> reshardingConfig = new HashMap<>();
++    // reshardingConfig.put("targetShardCount", 6);
++    // reshardingConfig.put("migrationSpeed", "medium"); // "slow", "medium", "fast"
++    // reshardingConfig.put("validationSettings", Map.of(
++    //     "enableConsistencyChecks", true,
++    //     "batchSize", 1000
++    // ));
++
++    // Trigger cluster resharding
++    // Result<Boolean> reshardingResult = client.cluster().reshard()
++    //     .withConfig(reshardingConfig)
++    //     .run();
++    
++    // Monitor resharding progress
++    // Result<Map<String, Object>> statusResult = client.cluster().reshardingStatus().run();
++    // if (!statusResult.hasErrors()) {
++    //     Map<String, Object> status = statusResult.getResult();
++    //     System.out.println("Resharding progress: " + status.get("progress") + "%");
++    //     System.out.println("Status: " + status.get("status"));
++    // }
++
++    // Handle potential rollback
++    // if ("failed".equals(statusResult.getResult().get("status"))) {
++    //     Result<Boolean> rollbackResult = client.cluster().rollbackResharding().run();
++    //     System.out.println("Rollback successful: " + rollbackResult.getResult());
++    // }
++    // END ClusterResharding
++  }
+ }
+  --- a/docs/_includes/code/howto/go/docs/manage-data.classes_test.go
++++ b/docs/_includes/code/howto/go/docs/manage-data.classes_test.go
+@@ -632,6 +632,47 @@
+ 			WithClass(updatedArticleClassConfig).
+ 			Do(ctx)
+ 
+ 		require.NoError(t, err)
+ 	})
++
++	t.Run("cluster resharding", func(t *testing.T) {
++		// START ClusterResharding
++		// Doc writer / engineer TODO: New code example to go here
++		// Configure resharding parameters
++		// reshardingConfig := map[string]interface{}{
++		//     "targetShardCount": 6,
++		//     "migrationSpeed":   "medium", // "slow", "medium", "fast"
++		//     "validationSettings": map[string]interface{}{
++		//         "enableConsistencyChecks": true,
++		//         "batchSize":              1000,
++		//     },
++		// }
++
++		// Trigger cluster resharding
++		// reshardingResult, err := client.Cluster().Reshard().WithConfig(reshardingConfig).Do(ctx)
++		// if err != nil {
++		//     // handle error
++		//     panic(err)
++		// }
++		// fmt.Printf("Resharding initiated: %v\n", reshardingResult)
++
++		// Monitor resharding progress
++		// status, err := client.Cluster().ReshardingStatus().Do(ctx)
++		// if err != nil {
++		//     // handle error
++		//     panic(err)
++		// }
++		// fmt.Printf("Resharding progress: %v%%\n", status["progress"])
++		// fmt.Printf("Status: %v\n", status["status"])
++
++		// Handle potential rollback
++		// if status["status"] == "failed" {
++		//     rollbackResult, err := client.Cluster().RollbackResharding().Do(ctx)
++		//     if err != nil {
++		//         panic(err)
++		//     }
++		//     fmt.Printf("Rollback successful: %v\n", rollbackResult)
++		// }
++		// END ClusterResharding
++	})
+ }
+--- a/docs/docs/weaviate/concepts/replication-architecture/cluster-architecture.md
++++ b/docs/docs/weaviate/concepts/replication-architecture/cluster-architecture.md
+@@ -75,10 +75,52 @@
+ 
+ The main advantage of a leaderless replication design is improved fault tolerance. Without a leader that handles all requests, a leaderless design offers better availability. In a single-leader design, all writes need to be processed by this leader. If this node cannot be reached or goes down, no writes can be processed. With a leaderless design, all nodes can receive write operations, so there is no risk of one master node failing.
+ 
+ On the flipside of high availability, a leaderless database tends to be less consistent. Because there is no leader node, data on different nodes may temporarily be out of date. Leaderless databases tend to be eventually consistent. Consistency in Weaviate is [tunable](./consistency.md), but this occurs at the expense of availability.
+ 
++## Dynamic Resharding
++
++Weaviate's cluster architecture supports dynamic resharding, which allows administrators to redistribute data across nodes in a multi-node cluster without downtime. This capability enhances the leaderless replication design by providing operational flexibility to optimize performance and scalability as cluster requirements evolve.
++
++### Resharding Architecture
++
++The resharding mechanism integrates seamlessly with Weaviate's existing cluster architecture:
++
++1. **Shard Mapping Creation**: The system creates new shard mappings to define how data will be redistributed across the cluster nodes
++2. **Batch Migration**: Vector embeddings and metadata are migrated in configurable batches to prevent overwhelming individual nodes
++3. **Distributed Hash Ring Update**: The cluster's distributed hash ring is updated to reflect the new shard topology
++4. **Coordination Integration**: The resharding process works within the existing coordinator node pattern, ensuring the leaderless architecture remains intact
++
++### Operational Benefits
++
++Dynamic resharding provides several architectural advantages:
++
++- **Automatic Load Balancing**: During migration, the system automatically balances the load to prevent any single node from becoming overwhelmed
++- **Configurable Migration Speed**: Batch sizes and migration speed can be throttled to control the impact on cluster performance
++- **Real-time Consistency Checks**: The system performs continuous data integrity validation during the resharding process
++- **Rollback Support**: Built-in rollback capabilities provide operational safety in case of migration failures
++- **Monitoring Integration**: Dedicated monitoring endpoints track resharding progress and system health
++
++### Impact on Read/Write Operations
++
++Resharding is designed to minimize disruption to the cluster's normal operations:
++
++- **Read Operations**: Continue normally during the resharding process, maintaining query availability
++- **Write Operations**: Are temporarily queued during shard migration and replayed after the migration completes for the affected shards
++- **Coordinator Pattern**: The existing coordinator node pattern remains unchanged, ensuring seamless client interaction
++
++### Use Cases
++
++Dynamic resharding supports several operational scenarios:
++
++- **Scaling Under Load**: Redistribute shards when clusters experience heavy load to improve performance
++- **Node Management**: Rebalance data after adding or removing nodes from the cluster
++- **Performance Optimization**: Adjust shard distribution based on query performance patterns and access frequencies
++
++:::info Implementation Details
++For specific implementation guidance on triggering resharding operations, see the [cluster management documentation](/deploy/configuration/cluster-management.md). Client library support for resharding operations is available across all Weaviate SDKs.
++:::
+ 
+ ## Replication Factor
+ 
+ import RaftRFChangeWarning from '/_includes/1-25-replication-factor.mdx';
+ 

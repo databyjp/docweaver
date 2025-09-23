@@ -5,6 +5,13 @@ import asyncio
 from helpers import TECH_DESCRIPTION_RESHARDING
 import logging
 import time
+from tenacity import retry, stop_after_attempt, wait_exponential
+
+
+@retry(stop=stop_after_attempt(3), wait=wait_exponential(multiplier=1, min=4, max=10))
+async def run_doc_writer_agent_with_retry(prompt: str):
+    """Runs the doc writer agent with retry logic."""
+    return await doc_writer_agent.run(prompt)
 
 
 async def process_instruction(instruction_bundle: dict, semaphore: asyncio.Semaphore):
@@ -75,7 +82,13 @@ async def process_instruction(instruction_bundle: dict, semaphore: asyncio.Semap
 
         Please provide the revised content as a series of edits, from which we can build a file diff.
         """
-        response = await doc_writer_agent.run(prompt)
+        try:
+            response = await run_doc_writer_agent_with_retry(prompt)
+        except Exception as e:
+            logging.error(
+                f"Agent failed for primary file {primary_path} after multiple retries: {e}"
+            )
+            return []
         end_time = time.time()
         logging.info(
             f"Finished processing instructions for primary file: {primary_path} in {end_time - start_time:.2f} seconds."

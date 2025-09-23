@@ -10,6 +10,7 @@ dependencies = [
     "pydantic-ai>=1.0.10",
     "python-dotenv>=1.1.1",
     "rich>=14.1.0",
+    "tenacity>=9.1.2",
     "weaviate-client>=4.16.10",
 ]
 

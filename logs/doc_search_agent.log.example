@@ -1,0 +1,14 @@
+[
+    {
+        "path": "docs/docs/weaviate/concepts/cluster.md",
+        "reason": "The documentation mentions cluster scaling limitations, including that dynamically scaling a cluster is not fully supported yet. This new resharding feature should be added to update this section about cluster scalability."
+    },
+    {
+        "path": "docs/docs/weaviate/manage-collections/multi-node-setup.mdx",
+        "reason": "The multi-node setup documentation should be updated to include information about the new `/v1/cluster/resharding` API endpoint and how to use the resharding functionality."
+    },
+    {
+        "path": "docs/docs/weaviate/concepts/replication-architecture/cluster-architecture.md",
+        "reason": "This document should be updated to describe the new resharding mechanism, its capabilities for redistributing data across nodes, and how it enhances cluster performance and scalability."
+    }
+]

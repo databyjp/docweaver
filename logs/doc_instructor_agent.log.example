@@ -1,0 +1,45 @@
+[
+    {
+        "primary_path": "docs/docs/weaviate/concepts/cluster.md",
+        "file_instructions": [
+            {
+                "path": "docs/docs/weaviate/concepts/cluster.md",
+                "instructions": "\u2022 Update the 'Consistency and current limitations' section to remove the statement about dynamic scaling not being fully supported - replace with information about the new resharding feature\n\u2022 Add a new section titled 'Cluster Resharding' after the 'Shard replica movement' section\n\u2022 In the new resharding section, explain the resharding capability: automatic data redistribution, configurable batch sizes, real-time consistency checks, rollback support, and monitoring endpoints\n\u2022 Mention that resharding is triggered via the `/v1/cluster/resharding` API endpoint\n\u2022 Explain that read operations continue normally during resharding while writes are temporarily queued\n\u2022 Include typical use cases: scaling clusters under heavy load, rebalancing after node changes, and optimizing shard distribution\n\u2022 Cross-reference the multi-node setup documentation for API usage details"
+            }
+        ]
+    },
+    {
+        "primary_path": "docs/docs/weaviate/manage-collections/multi-node-setup.mdx",
+        "file_instructions": [
+            {
+                "path": "docs/docs/weaviate/manage-collections/multi-node-setup.mdx",
+                "instructions": "\u2022 Add a new section titled 'Cluster Resharding' after the existing 'Update shard status' section\n\u2022 Explain the resharding feature capabilities: redistributing data across nodes for improved performance and scalability\n\u2022 Document the `/v1/cluster/resharding` API endpoint with parameters for target shard count, migration speed, and validation settings\n\u2022 Mention that native client library functions will be available (exact syntax TBD) for Python, JS/TS, Go, and Java\n\u2022 Explain the operational behavior: automatic load balancing, configurable batch sizes, real-time consistency checks, rollback support\n\u2022 Note that reads continue normally while writes are queued during resharding\n\u2022 Include use cases and link to the cluster concepts documentation for architectural details"
+            },
+            {
+                "path": "docs/_includes/code/howto/manage-data.collections.py",
+                "instructions": "\u2022 Add a new code section for cluster resharding operations\n\u2022 Include example functions for triggering resharding with parameters like target_shard_count, migration_speed, and validation_settings\n\u2022 Add examples for monitoring resharding progress\n\u2022 Include error handling and rollback examples\n\u2022 Use placeholder syntax since exact client library methods are not yet finalized"
+            },
+            {
+                "path": "docs/_includes/code/howto/manage-data.collections.ts",
+                "instructions": "\u2022 Add TypeScript/JavaScript examples for cluster resharding\n\u2022 Include client methods for initiating resharding operations with configuration parameters\n\u2022 Add examples for monitoring resharding status and handling responses\n\u2022 Include error handling patterns\n\u2022 Use placeholder syntax pending final client library implementation"
+            },
+            {
+                "path": "docs/_includes/code/howto/java/src/test/java/io/weaviate/docs/manage-data.replication.java",
+                "instructions": "\u2022 Add Java examples for cluster resharding functionality\n\u2022 Include methods for configuring and triggering resharding operations\n\u2022 Add examples for progress monitoring and status checking\n\u2022 Include error handling and rollback scenarios\n\u2022 Use placeholder method names pending final Java client implementation"
+            },
+            {
+                "path": "docs/_includes/code/howto/go/docs/manage-data.classes_test.go",
+                "instructions": "\u2022 Add Go examples for cluster resharding operations\n\u2022 Include test functions demonstrating resharding configuration and execution\n\u2022 Add examples for monitoring resharding progress\n\u2022 Include error handling and validation examples\n\u2022 Use placeholder syntax as final Go client methods are not yet available"
+            }
+        ]
+    },
+    {
+        "primary_path": "docs/docs/weaviate/concepts/replication-architecture/cluster-architecture.md",
+        "file_instructions": [
+            {
+                "path": "docs/docs/weaviate/concepts/replication-architecture/cluster-architecture.md",
+                "instructions": "\u2022 Add a new section titled 'Dynamic Resharding' after the 'Data replication: Leaderless' section\n\u2022 Explain how resharding enhances the cluster architecture by enabling dynamic shard redistribution\n\u2022 Describe the resharding mechanism: creating new shard mappings, migrating vector embeddings and metadata in batches, updating the distributed hash ring\n\u2022 Explain the architectural benefits: automatic load balancing, configurable migration speed, real-time consistency checks\n\u2022 Detail how resharding works within the leaderless architecture without disrupting the coordination pattern\n\u2022 Mention rollback capabilities and monitoring endpoints for operational safety\n\u2022 Explain the impact on read/write operations during resharding (reads continue, writes are queued)\n\u2022 Cross-reference other documentation sections for implementation details"
+            }
+        ]
+    }
+]
