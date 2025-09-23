@@ -31,14 +31,24 @@ def main():
         file_path_str = change["path"]
         file_path = Path(file_path_str)
 
-        original_content = ""
-        if file_path.exists():
-            original_content = file_path.read_text()
+        if "original_doc" in change:
+            original_content = change["original_doc"]
+        else:
+            console.print(
+                f"⚠️ [bold yellow]Warning:[/bold yellow] 'original_doc' not found for {file_path_str}. "
+                "Creating diff against the current file on disk. This may be inaccurate."
+            )
+            original_content = ""
+            if file_path.exists():
+                original_content = file_path.read_text()
 
         diff = create_diff(original_content, change["revised_doc"], file_path_str)
 
         if diff:
             all_diffs += diff
+            # Ensure each diff is separated by a newline for git apply
+            if not diff.endswith("\n"):
+                all_diffs += "\n"
             console.print(f"Diff for {file_path_str}:")
             syntax = Syntax(
                 diff, "diff", theme="monokai", line_numbers=False, word_wrap=True

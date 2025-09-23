@@ -133,6 +133,7 @@ async def process_instruction(instruction_bundle: dict, semaphore: asyncio.Semap
         return [
             {
                 "path": path,
+                "original_doc": original_contents.get(path, ""),
                 "revised_doc": content,
                 "edits": all_edits,  # Keep original agent output for logging
             }
@@ -180,7 +181,11 @@ async def main():
 
     # Log the revised documents
     revised_docs_to_log = [
-        {"path": r.get("path"), "revised_doc": r.get("revised_doc")}
+        {
+            "path": r.get("path"),
+            "original_doc": r.get("original_doc"),
+            "revised_doc": r.get("revised_doc"),
+        }
         for r in all_responses_with_edits
     ]
     logpath = Path("logs/doc_writer_agent.log")
