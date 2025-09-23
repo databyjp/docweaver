@@ -20,7 +20,9 @@ async def process_instruction(instruction_bundle: dict, semaphore: asyncio.Semap
     file_instructions = instruction_bundle.get("file_instructions", [])
 
     if not primary_path or not file_instructions:
-        logging.warning(f"Skipping bundle due to missing primary_path or file_instructions: {instruction_bundle}")
+        logging.warning(
+            f"Skipping bundle due to missing primary_path or file_instructions: {instruction_bundle}"
+        )
         return []
 
     # The document bundle includes the primary path and all referenced files
@@ -35,7 +37,7 @@ async def process_instruction(instruction_bundle: dict, semaphore: asyncio.Semap
 
     def collect_docs_recursive(doc: WeaviateDoc, is_main: bool):
         if doc.path in original_contents:
-            return # Avoid cycles
+            return  # Avoid cycles
         original_contents[doc.path] = doc.doc_body
 
         doc_type = "MAIN FILE" if is_main else "REFERENCED FILE"
@@ -54,8 +56,7 @@ async def process_instruction(instruction_bundle: dict, semaphore: asyncio.Semap
     formatted_instructions = []
     for instr in file_instructions:
         formatted_instructions.append(
-            f"File: {instr['path']}\n"
-            f"Instructions:\n{instr['instructions']}\n"
+            f"File: {instr['path']}\nInstructions:\n{instr['instructions']}\n"
         )
     instructions_prompt = "\n---\n".join(formatted_instructions)
 
@@ -102,26 +103,41 @@ async def process_instruction(instruction_bundle: dict, semaphore: asyncio.Semap
             # Edits for the main file
             for edit in doc_output.get("edits", []):
                 path = doc_output["path"]
-                if path in revised_contents and edit["replace_section"] in revised_contents[path]:
-                    revised_contents[path] = revised_contents[path].replace(edit["replace_section"], edit["replacement_txt"])
+                if (
+                    path in revised_contents
+                    and edit["replace_section"] in revised_contents[path]
+                ):
+                    revised_contents[path] = revised_contents[path].replace(
+                        edit["replace_section"], edit["replacement_txt"]
+                    )
                 else:
-                    logging.warning(f"Could not find section to replace in {path}:\n{edit['replace_section']}")
+                    logging.warning(
+                        f"Could not find section to replace in {path}:\n{edit['replace_section']}"
+                    )
 
             # Edits for referenced files
             for path, ref_edits in doc_output.get("referenced_file_edits", {}).items():
                 for edit in ref_edits:
-                    if path in revised_contents and edit["replace_section"] in revised_contents[path]:
-                        revised_contents[path] = revised_contents[path].replace(edit["replace_section"], edit["replacement_txt"])
+                    if (
+                        path in revised_contents
+                        and edit["replace_section"] in revised_contents[path]
+                    ):
+                        revised_contents[path] = revised_contents[path].replace(
+                            edit["replace_section"], edit["replacement_txt"]
+                        )
                     else:
-                        logging.warning(f"Could not find section to replace in {path}:\n{edit['replace_section']}")
+                        logging.warning(
+                            f"Could not find section to replace in {path}:\n{edit['replace_section']}"
+                        )
 
         return [
             {
                 "path": path,
                 "revised_doc": content,
-                "edits": all_edits, # Keep original agent output for logging
+                "edits": all_edits,  # Keep original agent output for logging
             }
-            for path, content in revised_contents.items() if original_contents.get(path) != content
+            for path, content in revised_contents.items()
+            if original_contents.get(path) != content
         ]
 
 
@@ -140,9 +156,12 @@ async def main():
 
     logging.info(f"Found {len(doc_instructions)} instruction bundles to process.")
 
-    semaphore = asyncio.Semaphore(1)  # Conservative concurrency; seems to fail often when concurrent :/
+    semaphore = asyncio.Semaphore(
+        1
+    )  # Conservative concurrency; seems to fail often when concurrent :/
     tasks = [
-        process_instruction(instruction_bundle, semaphore) for instruction_bundle in doc_instructions
+        process_instruction(instruction_bundle, semaphore)
+        for instruction_bundle in doc_instructions
     ]
     results = await asyncio.gather(*tasks)
 
@@ -150,7 +169,8 @@ async def main():
 
     # Log the edits - Note: this might log the same agent output multiple times if one instruction edits multiple files
     edits_to_log = [
-        {"path": r.get("path"), "edits": r.get("edits")} for r in all_responses_with_edits
+        {"path": r.get("path"), "edits": r.get("edits")}
+        for r in all_responses_with_edits
     ]
     edit_logpath = Path("logs/doc_writer_agent_edits.log")
     edit_logpath.parent.mkdir(parents=True, exist_ok=True)

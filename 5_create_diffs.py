@@ -40,7 +40,9 @@ def main():
         if diff:
             all_diffs += diff
             console.print(f"Diff for {file_path_str}:")
-            syntax = Syntax(diff, "diff", theme="monokai", line_numbers=False, word_wrap=True)
+            syntax = Syntax(
+                diff, "diff", theme="monokai", line_numbers=False, word_wrap=True
+            )
             console.print(syntax)
             console.print("-" * 80)
 

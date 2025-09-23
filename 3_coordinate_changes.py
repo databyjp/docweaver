@@ -20,7 +20,7 @@ async def main():
 
     # Collect and format all docs and their references
     prompt_docs_list = []
-    all_docs_content = {} # Use a dict to avoid processing the same file twice
+    all_docs_content = {}  # Use a dict to avoid processing the same file twice
 
     def collect_docs_recursive(doc: WeaviateDoc, is_main: bool):
         if doc.path in all_docs_content:
@@ -28,7 +28,7 @@ async def main():
 
         all_docs_content[doc.path] = doc.doc_body
         if not doc.doc_body:
-            return # Don't add empty files to prompt
+            return  # Don't add empty files to prompt
 
         doc_type = "MAIN FILE" if is_main else "REFERENCED FILE"
         prompt_docs_list.append(

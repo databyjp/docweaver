@@ -14,7 +14,7 @@ def connect() -> WeaviateClient:
 
 
 def delete_collection():
-    user_input = f'You are about to delete {COLLECTION_NAME} on {os.getenv("WEAVIATE_URL")}! Are you sure? (Y to continue): '
+    user_input = f"You are about to delete {COLLECTION_NAME} on {os.getenv('WEAVIATE_URL')}! Are you sure? (Y to continue): "
     if user_input == "y":
         print("Deleting the collection!")
         with connect() as client:
@@ -60,7 +60,7 @@ def add_chunks(src_chunks: list[dict]):
                         "chunk": src_chunk["chunk"],
                         "chunk_no": i + 1,
                     },
-                    uuid=generate_uuid5(src_chunk["path"]+str(i+1)),
+                    uuid=generate_uuid5(src_chunk["path"] + str(i + 1)),
                 )
 
 
@@ -68,10 +68,7 @@ def search_chunks(client: WeaviateClient, query: str) -> list[dict[str, str]]:
     with client:
         chunks = client.collections.use(COLLECTION_NAME)
         response = chunks.query.hybrid(
-            query=query,
-            target_vector=["chunk"],
-            limit=20,
-            alpha=0.5
+            query=query, target_vector=["chunk"], limit=20, alpha=0.5
         )
         chunk_objs = [o.properties for o in response.objects]
         return chunk_objs

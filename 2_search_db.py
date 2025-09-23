@@ -9,7 +9,7 @@ from helpers import TECH_DESCRIPTION_RESHARDING
 async def main():
     response = await docs_search_agent.run(
         f"Find documents that may need editing, for a this feature: {TECH_DESCRIPTION_RESHARDING}",
-        deps=DocSearchDeps(client=connect())
+        deps=DocSearchDeps(client=connect()),
     )
     for o in response.output:
         print(o)

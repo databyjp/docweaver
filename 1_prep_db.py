@@ -13,7 +13,9 @@ def main():
             print(f"Importing {file}")
             text = f.read()
             chunks = chunk_text(text)
-            chunk_texts = [{"path": file.as_posix(), "chunk": chunk.text} for chunk in chunks]
+            chunk_texts = [
+                {"path": file.as_posix(), "chunk": chunk.text} for chunk in chunks
+            ]
             docweaver.db.add_chunks(chunk_texts)
 
 

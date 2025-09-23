@@ -31,7 +31,7 @@ docs_search_agent = Agent(
     Review the returned data, and return the documents that may require updating.
 
     Return a list of file paths, and why each path may need to be updated.
-    """
+    """,
 )
 
 
@@ -42,11 +42,14 @@ def search_docs(ctx: RunContext[DocSearchDeps], query=str) -> list[dict[str, str
 
 class PerFileInstructions(BaseModel):
     """A set of instructions for a single file."""
+
     path: str
     instructions: str
 
+
 class CoordinatedEditInstructions(BaseModel):
     """A coordinated set of edit instructions for a primary document and its referenced files."""
+
     primary_path: str
     file_instructions: list[PerFileInstructions]
 
@@ -90,7 +93,7 @@ doc_instructor_agent = Agent(
     - `file_instructions` should be a list containing instructions for the primary file AND for each referenced file (like code files) that also needs to be changed.
     - Each item in `file_instructions` must contain the `path` and the specific `instructions` for that single file.
     - If a primary document and its two referenced code files need changes, you will create one `CoordinatedEditInstructions` object with three items in its `file_instructions` list.
-    """
+    """,
 )
 
 
@@ -113,7 +116,9 @@ class WeaviateDoc(BaseModel):
     referenced_docs: list["WeaviateDoc"]
 
 
-def parse_doc_refs(file_path: Path, max_depth: int = 2, current_depth: int = 0) -> WeaviateDoc:
+def parse_doc_refs(
+    file_path: Path, max_depth: int = 2, current_depth: int = 0
+) -> WeaviateDoc:
     if not file_path.exists():
         return WeaviateDoc(path=str(file_path), doc_body="", referenced_docs=[])
 
@@ -129,8 +134,8 @@ def parse_doc_refs(file_path: Path, max_depth: int = 2, current_depth: int = 0) 
     referenced_docs = []
     for match in matches:
         # Simple path resolution - adjust as needed
-        if match.startswith('/'):
-            import_path = Path("docs") / match.lstrip('/')
+        if match.startswith("/"):
+            import_path = Path("docs") / match.lstrip("/")
         else:
             import_path = Path("docs") / match
 
@@ -138,9 +143,7 @@ def parse_doc_refs(file_path: Path, max_depth: int = 2, current_depth: int = 0) 
         referenced_docs.append(ref_doc)
 
     return WeaviateDoc(
-        path=str(file_path),
-        doc_body=content,
-        referenced_docs=referenced_docs
+        path=str(file_path), doc_body=content, referenced_docs=referenced_docs
     )
 
 
@@ -205,7 +208,7 @@ doc_writer_agent = Agent(
     2.  Include this exact marker comment where the code needs to be completed:
         {NEW_CODE_EXAMPLE_MARKER}
     3.  In the parent `.mdx` file, add a `<FilteredTextBlock>` component that points to the new markers in the source file.
-    """
+    """,
 )
 
 
