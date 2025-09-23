@@ -17,7 +17,7 @@ class DocSearchReturn(BaseModel):
 
 docs_search_agent = Agent(
     model="anthropic:claude-3-5-haiku-latest",
-    output_type=DocSearchReturn,
+    output_type=list[DocSearchReturn],
     system_prompt="""
     You are a research assistant.
 
