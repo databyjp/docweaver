@@ -14,7 +14,7 @@ async def main():
     for o in response.output:
         print(o)
 
-    logpath = Path("logs/search_agent.log")
+    logpath = Path("logs/doc_search_agent.log")
     logpath.parent.mkdir(parents=True, exist_ok=True)
     responses = [o.model_dump() for o in response.output]
     with logpath.open(mode="w") as f:
