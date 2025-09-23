@@ -71,6 +71,7 @@ class DocOutput(BaseModel):
 
 doc_writer_agent = Agent(
     model="anthropic:claude-3-5-haiku-latest",
+    # model="anthropic:claude-4-sonnet-20250514",
     output_type=list[DocOutput],
     system_prompt="""
     You are an expert technical writer and a good developer.
@@ -80,6 +81,10 @@ doc_writer_agent = Agent(
 
     Pay attention to the current style of the documentation,
     and prepare an edited page, following the provided instructions.
+
+    The output will be used to produce a git-style diff.
+    So, if you are truncating any existing parts of the documentation,
+    please make sure to include existing lines so that the diff will clearly pick those up.
     """
 )
 

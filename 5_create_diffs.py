@@ -1,0 +1,52 @@
+import difflib
+import json
+from pathlib import Path
+from rich.console import Console
+from rich.syntax import Syntax
+
+
+def create_diff(old_content: str, new_content: str, file_path: str) -> str:
+    """Creates a unified diff between old and new content."""
+    return "".join(
+        difflib.unified_diff(
+            old_content.splitlines(keepends=True),
+            new_content.splitlines(keepends=True),
+            fromfile=f"a/{file_path}",
+            tofile=f"b/{file_path}",
+        )
+    )
+
+
+def main():
+    writer_log_path = Path("logs/doc_writer_agent.log")
+    with writer_log_path.open(mode="r") as f:
+        proposed_changes: list[dict[str, str]] = json.load(f)
+
+    all_diffs = ""
+    console = Console()
+    for change in proposed_changes:
+        file_path_str = change["path"]
+        file_path = Path(file_path_str)
+        if file_path.exists():
+            original_content = file_path.read_text()
+            diff = create_diff(original_content, change["revised_doc"], file_path_str)
+            all_diffs += diff
+        else:
+            # Handle case where the agent proposes a new file
+            diff = create_diff("", change["revised_doc"], file_path_str)
+            all_diffs += diff
+
+        if diff:
+            console.print(f"Diff for {file_path_str}:")
+            syntax = Syntax(diff, "diff", theme="monokai", line_numbers=True, word_wrap=True)
+            console.print(syntax)
+            console.print("-" * 80)
+
+    diff_log_path = Path("logs/diffs.log")
+    diff_log_path.parent.mkdir(parents=True, exist_ok=True)
+    with diff_log_path.open(mode="w") as f:
+        f.write(all_diffs)
+
+
+if __name__ == "__main__":
+    main()
