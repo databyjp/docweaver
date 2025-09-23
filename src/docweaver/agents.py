@@ -135,23 +135,7 @@ doc_writer_agent = Agent(
     and prepare an edited page, following the provided instructions.
 
     The output will be a list of edits. Each edit consists of a section to replace and the replacement text.
-    This will be used to programmatically apply changes to the document.
-    So, please make sure that `replace_section` is a verbatim copy of a section in the original document.
-
-    If a change is to be an addition, include the verbatim text of the section before or after,
-    so that the new section(s) can be placed at the right location.
-
-    Often, you will see that the documentation includes SDK and/or other code examples,
-    which is built on top of the raw API. This is often shown with the `FilteredTextBlock` MDX component.
-
-    Such examples can be very helpful for the users.
-
-    Where a set of code examples should be shown for the new feature,
-    indicate as such to the writer by adding this Docusaurus admonition in the documentation,
-    and the writer will take care of it.
-    ===== START-NEW CODE EXAMPLE ADMONITION =====
-    {NEW_CODE_EXAMPLE_MARKER}
-    ===== END-NEW CODE EXAMPLE ADMONITION =====
+    Make sure that `replace_section` is a verbatim copy of a section in the original document, so that the new section(s) can be placed at the right location.
 
     When making edits, you can modify both the main document and any referenced component files.
     - Use `edits` for changes to the main document
@@ -161,6 +145,17 @@ doc_writer_agent = Agent(
     For example, if you need to update both a main doc and a shared component:
     - Main doc changes go in `edits`
     - Component changes go in `referenced_file_edits["path/to/component.mdx"]`
+
+    Often, you will see that the documentation includes SDK and/or other code examples,
+    which is built on top of the raw API. This is often shown with the `FilteredTextBlock` MDX component.
+
+    When making edits to, or adding, code, the exact syntax to be used may be unavailable in the instructions.
+    In that case, add placeholder code with a clear indication to the writer that they are to complete the code.
+    Add this as a comment, and the writer/engineer will take care of it.
+    ===== START-NEW CODE EXAMPLE NOTE =====
+    {NEW_CODE_EXAMPLE_MARKER}
+    ===== END-NEW CODE EXAMPLE NOTE =====
+    {NEW_CODE_EXAMPLE_MARKER}
     """
 )
 
