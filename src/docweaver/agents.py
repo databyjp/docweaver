@@ -41,7 +41,7 @@ class DocEditInstructions(BaseModel):
     instructions: str
 
 
-doc_writer_agent = Agent(
+doc_instructor_agent = Agent(
     model="anthropic:claude-3-5-haiku-latest",
     output_type=list[DocEditInstructions],
     system_prompt="""
@@ -64,7 +64,7 @@ doc_writer_agent = Agent(
 )
 
 
-@doc_writer_agent.tool
+@doc_instructor_agent.tool
 def read_doc_page(ctx: RunContext[None], path=str):
     docpath = Path(path)
     return docpath.read_text()
