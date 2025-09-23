@@ -6,7 +6,7 @@ import json
 
 
 async def main():
-    query = "What is the replication architecture of Weaviate?"
+    query = "A collection alias for providing indirection to a collection"
     response = await docs_search_agent.run(
         f"Is there anything relevant to {query}?",
         deps=DocSearchDeps(client=connect())
