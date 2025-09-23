@@ -24,9 +24,9 @@ docs_search_agent = Agent(
     You are given a user query, and you are to search the available Weaviate documentation.
     Perform multiple searches with different query strings, if necessary.
 
-    Review the returned data, and return the documents that sound most relevant to the query.
+    Review the returned data, and return the documents that may require updating.
 
-    Return the file path, and the reason why the file is relevant.
+    Return a list of file paths, and why each path may need to be updated.
     """
 )
 
@@ -64,7 +64,28 @@ doc_instructor_agent = Agent(
 )
 
 
+class DocOutput(BaseModel):
+    path: str
+    revised_doc: str
+
+
+doc_writer_agent = Agent(
+    model="anthropic:claude-3-5-haiku-latest",
+    output_type=list[DocOutput],
+    system_prompt="""
+    You are an expert technical writer and a good developer.
+
+    You will be given a set of instructions on
+    how to update a documentation page.
+
+    Pay attention to the current style of the documentation,
+    and prepare an edited page, following the provided instructions.
+    """
+)
+
+
 @doc_instructor_agent.tool
+@doc_writer_agent.tool
 def read_doc_page(ctx: RunContext[None], path=str):
     docpath = Path(path)
     return docpath.read_text()

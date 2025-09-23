@@ -2,18 +2,18 @@ from pathlib import Path
 import json
 from docweaver.agents import DocSearchReturn, doc_instructor_agent
 import asyncio
-from helpers import TECH_DESCRIPTION_COLLECTION_ALIASES
+from helpers import TECH_DESCRIPTION_RESHARDING
 
 
 
 async def main():
-    logpath = Path("logs/doc_search_agent.log")
-    with logpath.open(mode="r") as f:
+    doc_search_results_path = Path("logs/doc_search_agent.log")
+    with doc_search_results_path.open(mode="r") as f:
         doc_search_results: list[dict[str, str]] = json.load(f)
 
     response = await doc_instructor_agent.run(
         f"""
-        Propose doc changes for {TECH_DESCRIPTION_COLLECTION_ALIASES}.
+        Propose doc changes for {TECH_DESCRIPTION_RESHARDING}.
 
         Here is the set of search results:
         {doc_search_results}
