@@ -120,7 +120,8 @@ async def main():
     )
     logging.info("Starting to make changes to the documentation.")
     start_time = time.time()
-    logpath = Path("logs/doc_instructor_agent_shorter.log")
+    # logpath = Path("logs/doc_instructor_agent_shorter.log")
+    logpath = Path("logs/doc_instructor_agent.log")
     with logpath.open(mode="r") as f:
         doc_instructions: list[dict] = json.load(f)
 

@@ -52,8 +52,8 @@ class CoordinatedEditInstructions(BaseModel):
 
 
 doc_instructor_agent = Agent(
-    # model="anthropic:claude-3-5-haiku-latest",
-    model="anthropic:claude-4-sonnet-20250514",
+    model="anthropic:claude-3-5-haiku-latest",
+    # model="anthropic:claude-4-sonnet-20250514",
     output_type=list[CoordinatedEditInstructions],
     system_prompt=f"""
     You are an expert writer, who is now managing a team of writers.
@@ -145,8 +145,8 @@ def parse_doc_refs(file_path: Path, max_depth: int = 2, current_depth: int = 0) 
 
 
 doc_writer_agent = Agent(
-    # model="anthropic:claude-3-5-haiku-latest",
-    model="anthropic:claude-4-sonnet-20250514",
+    model="anthropic:claude-3-5-haiku-latest",
+    # model="anthropic:claude-4-sonnet-20250514",
     output_type=list[DocOutput],
     system_prompt=f"""
     You are an expert technical writer and a good developer.
