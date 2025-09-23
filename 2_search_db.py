@@ -1,14 +1,16 @@
-from docweaver.agents import docs_search_agent, Query
+from docweaver.agents import docs_search_agent, DocSearchDeps
+from docweaver.db import connect
 import asyncio
 
 
 async def main():
     query = "What is the replication architecture of Weaviate?"
-    docs = await docs_search_agent.run(
-        "Find the documentation that is most relevant to the query",
-        deps=Query(query=query)
+    response = await docs_search_agent.run(
+        f"Is there anything relevant to {query}?",
+        deps=DocSearchDeps(client=connect())
     )
-    print(docs)
+    for o in response.output:
+        print(o)
 
 
 if __name__ == "__main__":

@@ -58,8 +58,8 @@ def add_chunks(src_chunks: list[dict]):
                 )
 
 
-def search_chunks(query: str) -> list[str]:
-    with connect() as client:
+def search_chunks(client: WeaviateClient, query: str) -> list[dict[str, str]]:
+    with client:
         chunks = client.collections.use(COLLECTION_NAME)
         response = chunks.query.hybrid(
             query=query,
@@ -67,5 +67,5 @@ def search_chunks(query: str) -> list[str]:
             limit=20,
             alpha=0.5
         )
-        docpaths = [o.properties["path"] for o in response.objects]
-        return docpaths
+        chunk_objs = [o.properties for o in response.objects]
+        return chunk_objs

@@ -1,1 +1,1 @@
-COLLECTION_NAME = "DocChunk"
+COLLECTION_NAME = "DocChunks"
