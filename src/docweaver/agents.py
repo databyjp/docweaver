@@ -40,15 +40,21 @@ def search_docs(ctx: RunContext[DocSearchDeps], query=str) -> list[dict[str, str
     return search_chunks(ctx.deps.client, query)
 
 
-class DocEditInstructions(BaseModel):
+class PerFileInstructions(BaseModel):
+    """A set of instructions for a single file."""
     path: str
     instructions: str
+
+class CoordinatedEditInstructions(BaseModel):
+    """A coordinated set of edit instructions for a primary document and its referenced files."""
+    primary_path: str
+    file_instructions: list[PerFileInstructions]
 
 
 doc_instructor_agent = Agent(
     # model="anthropic:claude-3-5-haiku-latest",
     model="anthropic:claude-4-sonnet-20250514",
-    output_type=list[DocEditInstructions],
+    output_type=list[CoordinatedEditInstructions],
     system_prompt=f"""
     You are an expert writer, who is now managing a team of writers.
 
@@ -77,6 +83,13 @@ doc_instructor_agent = Agent(
     so that they are easy to review and understand.
 
     Leave the implementation to the writers.
+
+    **Output Structure:**
+    For each primary document that needs changes, you MUST generate one `CoordinatedEditInstructions` object.
+    - `primary_path` should be the path to the main document file (e.g., an `.mdx` file).
+    - `file_instructions` should be a list containing instructions for the primary file AND for each referenced file (like code files) that also needs to be changed.
+    - Each item in `file_instructions` must contain the `path` and the specific `instructions` for that single file.
+    - If a primary document and its two referenced code files need changes, you will create one `CoordinatedEditInstructions` object with three items in its `file_instructions` list.
     """
 )
 
@@ -132,8 +145,8 @@ def parse_doc_refs(file_path: Path, max_depth: int = 2, current_depth: int = 0) 
 
 
 doc_writer_agent = Agent(
-    model="anthropic:claude-3-5-haiku-latest",
-    # model="anthropic:claude-4-sonnet-20250514",
+    # model="anthropic:claude-3-5-haiku-latest",
+    model="anthropic:claude-4-sonnet-20250514",
     output_type=list[DocOutput],
     system_prompt=f"""
     You are an expert technical writer and a good developer.
