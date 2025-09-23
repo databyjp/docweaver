@@ -66,7 +66,11 @@ async def process_instruction(doc_instruction: dict[str, str], semaphore: asynci
                 else:
                     logging.warning(f"Could not find section to replace in {filepath}:\n{section_to_replace}")
 
-        return [{"path": filepath, "revised_doc": revised_content}]
+        return [{
+            "path": filepath,
+            "revised_doc": revised_content,
+            "edits": all_edits,
+        }]
 
 
 async def main():
@@ -89,14 +93,29 @@ async def main():
     ]
     results = await asyncio.gather(*tasks)
 
-    all_responses = []
+    all_responses_with_edits = []
     for instruction_responses in results:
-        all_responses.extend(instruction_responses)
+        all_responses_with_edits.extend(instruction_responses)
 
+    # Log the edits
+    edits_to_log = [
+        {"path": r.get("path"), "edits": r.get("edits")} for r in all_responses_with_edits
+    ]
+    edit_logpath = Path("logs/doc_writer_agent_edits.log")
+    edit_logpath.parent.mkdir(parents=True, exist_ok=True)
+    with edit_logpath.open(mode="w") as f:
+        json.dump(edits_to_log, f, indent=4)
+    logging.info(f"Raw edits from agent logged to {edit_logpath}")
+
+    # Log the revised documents
+    revised_docs_to_log = [
+        {"path": r.get("path"), "revised_doc": r.get("revised_doc")}
+        for r in all_responses_with_edits
+    ]
     logpath = Path("logs/doc_writer_agent.log")
     logpath.parent.mkdir(parents=True, exist_ok=True)
     with logpath.open(mode="w") as f:
-        json.dump(all_responses, f, indent=4)
+        json.dump(revised_docs_to_log, f, indent=4)
 
     end_time = time.time()
     logging.info(

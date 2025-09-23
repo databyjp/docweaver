@@ -92,6 +92,9 @@ doc_writer_agent = Agent(
     The output will be a list of edits. Each edit consists of a section to replace and the replacement text.
     This will be used to programmatically apply changes to the document.
     So, please make sure that `section_to_replace` is a verbatim copy of a section in the original document.
+
+    If a change is to be an addition, include the verbatim text of the section before or after,
+    so that the new section(s) can be placed at the right location.
     """
 )
 
