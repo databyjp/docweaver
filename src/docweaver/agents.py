@@ -1,3 +1,4 @@
+from ast import mod
 from pydantic_ai import Agent, RunContext
 from pydantic import BaseModel, ConfigDict
 from docweaver.db import search_chunks
@@ -16,7 +17,7 @@ class DocSearchReturn(BaseModel):
 
 docs_search_agent = Agent(
     model="anthropic:claude-3-5-haiku-latest",
-    output_type=list[str],
+    output_type=DocSearchReturn,
     system_prompt="""
     You are a research assistant.
 
