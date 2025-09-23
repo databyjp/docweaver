@@ -64,14 +64,21 @@ doc_instructor_agent = Agent(
 )
 
 
+class DocEdit(BaseModel):
+    """Represents a single edit in a document."""
+
+    section_to_replace: str  # A verbatim section of the original document to be replaced.
+    replacement_text: str  # The new text that will replace the section_to_replace.
+
+
 class DocOutput(BaseModel):
     path: str
-    revised_doc: str
+    edits: list[DocEdit]
 
 
 doc_writer_agent = Agent(
-    # model="anthropic:claude-3-5-haiku-latest",
-    model="anthropic:claude-4-sonnet-20250514",
+    model="anthropic:claude-3-5-haiku-latest",
+    # model="anthropic:claude-4-sonnet-20250514",
     output_type=list[DocOutput],
     system_prompt="""
     You are an expert technical writer and a good developer.
@@ -82,9 +89,9 @@ doc_writer_agent = Agent(
     Pay attention to the current style of the documentation,
     and prepare an edited page, following the provided instructions.
 
-    The output will be used to produce a git-style diff.
-    So, if you are truncating any existing parts of the documentation,
-    please make sure to include existing lines so that the diff will clearly pick those up.
+    The output will be a list of edits. Each edit consists of a section to replace and the replacement text.
+    This will be used to programmatically apply changes to the document.
+    So, please make sure that `section_to_replace` is a verbatim copy of a section in the original document.
     """
 )
 

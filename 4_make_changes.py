@@ -22,32 +22,51 @@ async def process_instruction(doc_instruction: dict[str, str], semaphore: asynci
     async with semaphore:
         start_time = time.time()
         logging.info(f"Processing instruction for file: {filepath}")
-        response = await doc_writer_agent.run(
-            f"""
+        prompt = f"""
         The documentation page at `{filepath}` needs to be updated.
         Here is the original content of the page:
-        ---
+        ====== START-ORIGINAL CONTENT =====
         {original_content}
-        ---
+        ====== END-ORIGINAL CONTENT =====
 
         The update is for this new feature:
-        ---
+        ====== START-FEATURE DESCRIPTION =====
         {TECH_DESCRIPTION_RESHARDING}
-        ---
+        ====== END-FEATURE DESCRIPTION =====
 
         Here are the instructions on how to update the page:
-        ---
+        ====== START-UPDATE INSTRUCTIONS =====
         {doc_instruction.get('instructions')}
-        ---
+        ====== END-UPDATE INSTRUCTIONS =====
 
-        Please provide the full, revised content of the documentation page.
+        Please provide a revised content, from which we can build a file diff.
+
+        If truncating sections of the original for brevity,
+        ENSURE THAT THE POSITION OF INSERTION IS CLEAR,
+        BY PROVIDING VERBATIM THE EXISTING TEXTS TO USE AS MARKERS.
         """
-        )
+        logging.info(f"Prompt for {filepath}:\n{prompt[:500]}...")
+        response = await doc_writer_agent.run(prompt)
         end_time = time.time()
         logging.info(
             f"Finished processing instruction for file: {filepath} in {end_time - start_time:.2f} seconds."
         )
-        return [o.model_dump() for o in response.output]
+
+        all_edits = [o.model_dump() for o in response.output]
+
+        # Apply the edits
+
+        revised_content = original_content
+        for edit_response in all_edits:
+            for edit in edit_response["edits"]:
+                section_to_replace = edit["section_to_replace"]
+                replacement_text = edit["replacement_text"]
+                if section_to_replace in revised_content:
+                    revised_content = revised_content.replace(section_to_replace, replacement_text)
+                else:
+                    logging.warning(f"Could not find section to replace in {filepath}:\n{section_to_replace}")
+
+        return [{"path": filepath, "revised_doc": revised_content}]
 
 
 async def main():
