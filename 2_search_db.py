@@ -3,12 +3,12 @@ from docweaver.db import connect
 from pathlib import Path
 import asyncio
 import json
+from helpers import TECH_DESCRIPTION_RESHARDING
 
 
 async def main():
-    query = "An ability to re-shard the Weaviate cluster in a multi-node setup"
     response = await docs_search_agent.run(
-        f"Is there anything relevant to {query}?",
+        f"Find documents that may need editing, for a this feature: {TECH_DESCRIPTION_RESHARDING}",
         deps=DocSearchDeps(client=connect())
     )
     for o in response.output:

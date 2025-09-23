@@ -1,6 +1,6 @@
 from pathlib import Path
 import json
-from docweaver.agents import DocSearchReturn, doc_instructor_agent
+from docweaver.agents import doc_instructor_agent
 import asyncio
 from helpers import TECH_DESCRIPTION_RESHARDING
 

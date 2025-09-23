@@ -59,12 +59,12 @@ async def process_instruction(doc_instruction: dict[str, str], semaphore: asynci
         revised_content = original_content
         for edit_response in all_edits:
             for edit in edit_response["edits"]:
-                section_to_replace = edit["section_to_replace"]
-                replacement_text = edit["replacement_text"]
-                if section_to_replace in revised_content:
-                    revised_content = revised_content.replace(section_to_replace, replacement_text)
+                replace_section = edit["replace_section"]
+                replacement_txt = edit["replacement_txt"]
+                if replace_section in revised_content:
+                    revised_content = revised_content.replace(replace_section, replacement_txt)
                 else:
-                    logging.warning(f"Could not find section to replace in {filepath}:\n{section_to_replace}")
+                    logging.warning(f"Could not find section to replace in {filepath}:\n{replace_section}")
 
         return [{
             "path": filepath,
@@ -87,7 +87,7 @@ async def main():
 
     logging.info(f"Found {len(doc_instructions)} instructions to process.")
 
-    semaphore = asyncio.Semaphore(2)  # Conservative concurrency
+    semaphore = asyncio.Semaphore(1)  # Conservative concurrency; seems to fail often when concurrent :/
     tasks = [
         process_instruction(doc_instruction, semaphore) for doc_instruction in doc_instructions
     ]

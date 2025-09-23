@@ -67,8 +67,8 @@ doc_instructor_agent = Agent(
 class DocEdit(BaseModel):
     """Represents a single edit in a document."""
 
-    section_to_replace: str  # A verbatim section of the original document to be replaced.
-    replacement_text: str  # The new text that will replace the section_to_replace.
+    replace_section: str  # A verbatim section of the original document to be replaced.
+    replacement_txt: str  # The new text that will replace the replace_section.
 
 
 class DocOutput(BaseModel):
@@ -91,7 +91,7 @@ doc_writer_agent = Agent(
 
     The output will be a list of edits. Each edit consists of a section to replace and the replacement text.
     This will be used to programmatically apply changes to the document.
-    So, please make sure that `section_to_replace` is a verbatim copy of a section in the original document.
+    So, please make sure that `replace_section` is a verbatim copy of a section in the original document.
 
     If a change is to be an addition, include the verbatim text of the section before or after,
     so that the new section(s) can be placed at the right location.
