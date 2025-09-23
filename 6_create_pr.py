@@ -2,7 +2,7 @@ import os
 import json
 from pathlib import Path
 from rich.console import Console
-from github import Github
+from github import Github, Auth
 import git
 from dotenv import load_dotenv
 
@@ -77,7 +77,8 @@ def create_pr(title: str, body: str, branch_name: str = "docweaver-updates"):
 
     # Initialize Git and GitHub clients for the docs repo
     repo = git.Repo(docs_path)
-    g = Github(github_token)
+    auth = Auth.Token(github_token)
+    g = Github(auth=auth)
 
     # Get remote URLs to determine fork and upstream
     origin_url = repo.remotes.origin.url
