@@ -9,18 +9,38 @@ import time
 
 async def process_instruction(doc_instruction: dict[str, str], semaphore: asyncio.Semaphore):
     """Runs the doc writer agent for a single instruction."""
-    filepath = doc_instruction.get("path", "N/A")
+    filepath = doc_instruction.get("path")
+    if not filepath:
+        logging.warning(f"Skipping instruction due to missing path: {doc_instruction}")
+        return []
+    try:
+        original_content = Path(filepath).read_text()
+    except FileNotFoundError:
+        logging.error(f"File not found, skipping: {filepath}")
+        return []
 
     async with semaphore:
         start_time = time.time()
         logging.info(f"Processing instruction for file: {filepath}")
         response = await doc_writer_agent.run(
             f"""
-        Write an updated version of the Weaviate documentation page
-        for this new feature: {TECH_DESCRIPTION_RESHARDING}
+        The documentation page at `{filepath}` needs to be updated.
+        Here is the original content of the page:
+        ---
+        {original_content}
+        ---
 
-        Here are the instructions by the doc manager:
-        {doc_instruction}
+        The update is for this new feature:
+        ---
+        {TECH_DESCRIPTION_RESHARDING}
+        ---
+
+        Here are the instructions on how to update the page:
+        ---
+        {doc_instruction.get('instructions')}
+        ---
+
+        Please provide the full, revised content of the documentation page.
         """
         )
         end_time = time.time()
@@ -44,7 +64,7 @@ async def main():
 
     logging.info(f"Found {len(doc_instructions)} instructions to process.")
 
-    semaphore = asyncio.Semaphore(1)
+    semaphore = asyncio.Semaphore(2)  # Conservative concurrency
     tasks = [
         process_instruction(doc_instruction, semaphore) for doc_instruction in doc_instructions
     ]

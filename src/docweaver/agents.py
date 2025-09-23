@@ -70,8 +70,8 @@ class DocOutput(BaseModel):
 
 
 doc_writer_agent = Agent(
-    model="anthropic:claude-3-5-haiku-latest",
-    # model="anthropic:claude-4-sonnet-20250514",
+    # model="anthropic:claude-3-5-haiku-latest",
+    model="anthropic:claude-4-sonnet-20250514",
     output_type=list[DocOutput],
     system_prompt="""
     You are an expert technical writer and a good developer.
