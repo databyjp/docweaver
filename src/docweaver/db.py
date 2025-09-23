@@ -14,8 +14,14 @@ def connect() -> WeaviateClient:
 
 
 def delete_collection():
-    with connect() as client:
-        client.collections.delete(COLLECTION_NAME)
+    user_input = f'You are about to delete {COLLECTION_NAME} on {os.getenv("WEAVIATE_URL")}! Are you sure? (Y to continue): '
+    if user_input == "y":
+        print("Deleting the collection!")
+        with connect() as client:
+            client.collections.delete(COLLECTION_NAME)
+    else:
+        print("Not deleting the collection")
+        return False
 
 
 def create_collection():

@@ -23,29 +23,24 @@ async def process_instruction(doc_instruction: dict[str, str], semaphore: asynci
         start_time = time.time()
         logging.info(f"Processing instruction for file: {filepath}")
         prompt = f"""
-        The documentation page at `{filepath}` needs to be updated.
+        Weaviate has introduced this new feature.
+        ====== START-FEATURE DESCRIPTION =====
+        {TECH_DESCRIPTION_RESHARDING}
+        ====== END-FEATURE DESCRIPTION =====
+
+        As a result, the documentation page at `{filepath}` needs to be updated.
         Here is the original content of the page:
         ====== START-ORIGINAL CONTENT =====
         {original_content}
         ====== END-ORIGINAL CONTENT =====
 
-        The update is for this new feature:
-        ====== START-FEATURE DESCRIPTION =====
-        {TECH_DESCRIPTION_RESHARDING}
-        ====== END-FEATURE DESCRIPTION =====
-
-        Here are the instructions on how to update the page:
+        Here is a high-level suggestion on how to update the page.
         ====== START-UPDATE INSTRUCTIONS =====
         {doc_instruction.get('instructions')}
         ====== END-UPDATE INSTRUCTIONS =====
 
-        Please provide a revised content, from which we can build a file diff.
-
-        If truncating sections of the original for brevity,
-        ENSURE THAT THE POSITION OF INSERTION IS CLEAR,
-        BY PROVIDING VERBATIM THE EXISTING TEXTS TO USE AS MARKERS.
+        Please provide the revised content, from which we can build a file diff.
         """
-        logging.info(f"Prompt for {filepath}:\n{prompt[:500]}...")
         response = await doc_writer_agent.run(prompt)
         end_time = time.time()
         logging.info(

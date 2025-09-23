@@ -1,3 +1,13 @@
+DOCUMENTATION_META_INFO = """
+The Weaviate documentation generally follows the Diataxis framework.
+
+Accordingly, each document aims to be primarily one of [concepts, reference, how-to, or tutorial] formats; although, this isn't always possible.
+
+When searching, reviewing, or editing the documentation file, keep this in mind. Each document should stick to one of these purposes closely if possible.
+"""
+
+NEW_CODE_EXAMPLE_MARKER = ":::caution\nTODO: New code example to go here:::"
+
 TECH_DESCRIPTION_COLLECTION_ALIASES = """
 Collection aliases allow you to create alternative names for your collections. This is useful for changing collection definitions without downtime, A/B testing, or providing more convenient names for collections. An alias acts as a reference to a collection - when you query using an alias name, Weaviate automatically routes the request to the target collection.
 

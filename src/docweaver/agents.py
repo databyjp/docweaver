@@ -3,6 +3,7 @@ from pydantic import BaseModel, ConfigDict
 from docweaver.db import search_chunks
 from weaviate import WeaviateClient
 from pathlib import Path
+from helpers import DOCUMENTATION_META_INFO, NEW_CODE_EXAMPLE_MARKER
 
 
 class DocSearchDeps(BaseModel):
@@ -18,10 +19,12 @@ class DocSearchReturn(BaseModel):
 docs_search_agent = Agent(
     model="anthropic:claude-3-5-haiku-latest",
     output_type=list[DocSearchReturn],
-    system_prompt="""
+    system_prompt=f"""
     You are a research assistant.
 
     You are given a user query, and you are to search the available Weaviate documentation.
+    {DOCUMENTATION_META_INFO}
+
     Perform multiple searches with different query strings, if necessary.
 
     Review the returned data, and return the documents that may require updating.
@@ -44,11 +47,12 @@ class DocEditInstructions(BaseModel):
 doc_instructor_agent = Agent(
     model="anthropic:claude-3-5-haiku-latest",
     output_type=list[DocEditInstructions],
-    system_prompt="""
+    system_prompt=f"""
     You are an expert writer, who is now managing a team of writers.
 
     Review a technical summary of a feature,
     and a preliminary research of existing documents.
+    {DOCUMENTATION_META_INFO}
 
     For each file, you can review the full document
     if it would help the decision making.
@@ -80,11 +84,12 @@ doc_writer_agent = Agent(
     model="anthropic:claude-3-5-haiku-latest",
     # model="anthropic:claude-4-sonnet-20250514",
     output_type=list[DocOutput],
-    system_prompt="""
+    system_prompt=f"""
     You are an expert technical writer and a good developer.
 
     You will be given a set of instructions on
     how to update a documentation page.
+    {DOCUMENTATION_META_INFO}
 
     Pay attention to the current style of the documentation,
     and prepare an edited page, following the provided instructions.
@@ -95,6 +100,18 @@ doc_writer_agent = Agent(
 
     If a change is to be an addition, include the verbatim text of the section before or after,
     so that the new section(s) can be placed at the right location.
+
+    Often, you will see that the documentation includes SDK and/or other code examples,
+    which is built on top of the raw API. This is often shown with the `FilteredTextBlock` MDX component.
+
+    Such examples can be very helpful for the users.
+
+    Where a set of code examples should be shown for the new feature,
+    indicate as such to the writer by adding this Docusaurus admonition in the documentation,
+    and the writer will take care of it.
+    ===== START-NEW CODE EXAMPLE ADMONITION =====
+    {NEW_CODE_EXAMPLE_MARKER}
+    ===== END-NEW CODE EXAMPLE ADMONITION =====
     """
 )
 
