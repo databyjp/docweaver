@@ -3,6 +3,7 @@ from pydantic import BaseModel, ConfigDict
 from docweaver.db import search_chunks
 from weaviate import WeaviateClient
 from pathlib import Path
+import re
 from helpers import DOCUMENTATION_META_INFO, NEW_CODE_EXAMPLE_MARKER
 
 
@@ -78,6 +79,45 @@ class DocEdit(BaseModel):
 class DocOutput(BaseModel):
     path: str
     edits: list[DocEdit]
+    referenced_file_edits: dict[str, list[DocEdit]] = {}
+
+
+class WeaviateDoc(BaseModel):
+    path: str
+    doc_body: str
+    referenced_docs: list["WeaviateDoc"]
+
+
+def parse_doc_refs(file_path: Path, max_depth: int = 2, current_depth: int = 0) -> WeaviateDoc:
+    if not file_path.exists():
+        return WeaviateDoc(path=str(file_path), doc_body="", referenced_docs=[])
+
+    content = file_path.read_text()
+
+    if current_depth >= max_depth:
+        return WeaviateDoc(path=str(file_path), doc_body=content, referenced_docs=[])
+
+    # Find only code files and .mdx/.md includes
+    import_pattern = r'import\s+\w+\s+from\s+["\'](?:!!raw-loader!)?([^"\']+\.(?:mdx?|py|ts|js|java|go|cpp|c|rb|php|rs))["\']'
+    matches = re.findall(import_pattern, content)
+
+    referenced_docs = []
+    for match in matches:
+        # Simple path resolution - adjust as needed
+        if match.startswith('/'):
+            import_path = Path("docs") / match.lstrip('/')
+        else:
+            import_path = Path("docs") / match
+
+        ref_doc = parse_doc_refs(import_path, max_depth, current_depth + 1)
+        referenced_docs.append(ref_doc)
+    print(referenced_docs)
+
+    return WeaviateDoc(
+        path=str(file_path),
+        doc_body=content,
+        referenced_docs=referenced_docs
+    )
 
 
 doc_writer_agent = Agent(
@@ -112,6 +152,15 @@ doc_writer_agent = Agent(
     ===== START-NEW CODE EXAMPLE ADMONITION =====
     {NEW_CODE_EXAMPLE_MARKER}
     ===== END-NEW CODE EXAMPLE ADMONITION =====
+
+    When making edits, you can modify both the main document and any referenced component files.
+    - Use `edits` for changes to the main document
+    - Use `referenced_file_edits` for changes to component files
+    - Make sure each edit's `replace_section` exactly matches content in the target file
+
+    For example, if you need to update both a main doc and a shared component:
+    - Main doc changes go in `edits`
+    - Component changes go in `referenced_file_edits["path/to/component.mdx"]`
     """
 )
 
@@ -120,4 +169,5 @@ doc_writer_agent = Agent(
 @doc_writer_agent.tool
 def read_doc_page(ctx: RunContext[None], path=str):
     docpath = Path(path)
-    return docpath.read_text()
+    weaviate_doc = parse_doc_refs(docpath)
+    return weaviate_doc
