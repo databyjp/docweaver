@@ -19,7 +19,10 @@ docs_search_agent = Agent(
     output_type=list[str],
     system_prompt="""
     You are a research assistant.
+
     You are given a user query, and you are to search the available Weaviate documentation.
+    Perform multiple searches with different query strings, if necessary.
+
     Review the returned data, and return the documents that sound most relevant to the query.
 
     Return the file path, and the reason why the file is relevant.

@@ -1,6 +1,7 @@
 # Project-specific
 docs
 temp
+logs
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

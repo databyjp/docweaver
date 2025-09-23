@@ -1,5 +1,6 @@
 from docweaver.agents import docs_search_agent, DocSearchDeps
 from docweaver.db import connect
+from pathlib import Path
 import asyncio
 
 
@@ -11,6 +12,9 @@ async def main():
     )
     for o in response.output:
         print(o)
+    logpath = Path("logs/search_agent.log")
+    logpath.parent.mkdir(parents=True, exist_ok=True)
+    logpath.write_text(o)
 
 
 if __name__ == "__main__":

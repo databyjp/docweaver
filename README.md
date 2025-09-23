@@ -8,6 +8,5 @@ WEAVIATE_API_KEY=b0llbXFYUEY...
 ```
 
 - Clone the `docs` repo locally
-
 - Set up your Anthropic API key
 
