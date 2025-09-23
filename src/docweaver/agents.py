@@ -46,7 +46,8 @@ class DocEditInstructions(BaseModel):
 
 
 doc_instructor_agent = Agent(
-    model="anthropic:claude-3-5-haiku-latest",
+    # model="anthropic:claude-3-5-haiku-latest",
+    model="anthropic:claude-4-sonnet-20250514",
     output_type=list[DocEditInstructions],
     system_prompt=f"""
     You are an expert writer, who is now managing a team of writers.
@@ -55,11 +56,22 @@ doc_instructor_agent = Agent(
     and a preliminary research of existing documents.
     {DOCUMENTATION_META_INFO}
 
-    For each file, you can review the full document
-    if it would help the decision making.
+    The full content for each relevant document and
+    its referenced files (e.g., code snippets) has been provided to you.
+    Review all of the provided context.
 
     Then, provide a set of suggestions to your writers regarding
     how to edit the documentation to reflect the feature.
+
+    At Weaviate, we prefer to write code in source files
+    so that they can be reviewed, automated for testing, and maintained.
+
+    So, when adding any code examples,
+    you should instruct the writer to add them to
+    the markdown's associated source files (like `.py`, `.ts`, etc.).
+
+    In other words, be sure to include instructions to edit the source files directly,
+    rather than the markdown files.
 
     The instructions are to be succinct, and in bullet points,
     so that they are easy to review and understand.
@@ -111,7 +123,6 @@ def parse_doc_refs(file_path: Path, max_depth: int = 2, current_depth: int = 0) 
 
         ref_doc = parse_doc_refs(import_path, max_depth, current_depth + 1)
         referenced_docs.append(ref_doc)
-    print(referenced_docs)
 
     return WeaviateDoc(
         path=str(file_path),
@@ -128,7 +139,7 @@ doc_writer_agent = Agent(
     You are an expert technical writer and a good developer.
 
     You will be given a set of instructions on
-    how to update a documentation page.
+    how to update a documentation page, and/or any referenced pages.
     {DOCUMENTATION_META_INFO}
 
     Pay attention to the current style of the documentation,
@@ -142,20 +153,45 @@ doc_writer_agent = Agent(
     - Use `referenced_file_edits` for changes to component files
     - Make sure each edit's `replace_section` exactly matches content in the target file
 
-    For example, if you need to update both a main doc and a shared component:
-    - Main doc changes go in `edits`
-    - Component changes go in `referenced_file_edits["path/to/component.mdx"]`
+    **CRITICAL INSTRUCTIONS FOR EDITING CODE EXAMPLES:**
 
-    Often, you will see that the documentation includes SDK and/or other code examples,
-    which is built on top of the raw API. This is often shown with the `FilteredTextBlock` MDX component.
+    You will often find code examples embedded in Markdown files (`.mdx`) using a component called `<FilteredTextBlock>`.
+    This component imports code from external source files (like `.py`, `.ts`, etc.).
 
-    When making edits to, or adding, code, the exact syntax to be used may be unavailable in the instructions.
-    In that case, add placeholder code with a clear indication to the writer that they are to complete the code.
-    Add this as a comment, and the writer/engineer will take care of it.
-    ===== START-NEW CODE EXAMPLE NOTE =====
-    {NEW_CODE_EXAMPLE_MARKER}
-    ===== END-NEW CODE EXAMPLE NOTE =====
-    {NEW_CODE_EXAMPLE_MARKER}
+    You MUST adhere to the following rules:
+    1.  **NEVER edit code examples directly within the Markdown files.**
+    2.  **ALWAYS find the original source code file** (it will be provided to you) and apply edits there.
+    3.  Place edits for source code files in the `referenced_file_edits` field.
+
+    For example, if `docs/main.mdx` contains:
+    ```mdx
+    <FilteredTextBlock
+      code={{'/path/to/example.py'}}
+      startMarker="START: SomeExample"
+      endMarker="END: SomeExample"
+    />
+    ```
+    And you need to change the code, you will find `/path/to/example.py` in the context and create an edit for it. Your output for this change would be:
+    ```json
+    {{
+      "path": "docs/main.mdx",
+      "edits": [],
+      "referenced_file_edits": {{
+        "/path/to/example.py": [
+          {{
+            "replace_section": "...", // old code
+            "replacement_txt": "..." // new code
+          }}
+        ]
+      }}
+    }}
+    ```
+
+    When adding **NEW** code examples:
+    1.  Add placeholder code to the appropriate source file.
+    2.  Include this exact marker comment where the code needs to be completed:
+        {NEW_CODE_EXAMPLE_MARKER}
+    3.  In the parent `.mdx` file, add a `<FilteredTextBlock>` component that points to the new markers in the source file.
     """
 )
 

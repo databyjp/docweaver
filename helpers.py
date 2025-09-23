@@ -38,7 +38,11 @@ Key capabilities include:
 - Rollback support in case of migration failures
 - Monitoring endpoints to track resharding progress
 
-The resharding operation is triggered via the `/v1/cluster/resharding` API endpoint with parameters for target shard count, migration speed, and validation settings. During resharding, read operations continue normally while writes are temporarily queued and replayed after shard migration completes.
+The resharding operation is triggered via the `/v1/cluster/resharding` API endpoint with parameters for target shard count, migration speed, and validation settings.
+
+Each Weaviate client library (Python, JS/TS, Go, Java) will get its own native functions to do this. The exact syntax is not yet known.
+
+During resharding, read operations continue normally while writes are temporarily queued and replayed after shard migration completes.
 
 Typical use cases include scaling up clusters under heavy load, rebalancing after node additions/removals, and optimizing shard distribution for query performance patterns.
 """
