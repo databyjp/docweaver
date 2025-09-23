@@ -6,7 +6,8 @@ from pathlib import Path
 def main():
     docweaver.db.delete_collection()
     docweaver.db.create_collection()
-    md_files = Path("docs/docs/weaviate/concepts").rglob("*.md*")
+    md_files = Path("docs/docs/weaviate/").rglob("*.md*")
+    md_files = [f for f in md_files if f.name[0] != "_"]
     for file in md_files:
         with open(file, "r") as f:
             print(f"Importing {file}")

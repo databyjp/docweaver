@@ -30,7 +30,7 @@ def create_collection():
             vector_config=[
                 Configure.Vectors.text2vec_weaviate(
                     name="chunk",
-                    source_properties=["chunk"],
+                    source_properties=["path", "chunk"],
                 ),
                 Configure.Vectors.text2vec_weaviate(
                     name="path",
