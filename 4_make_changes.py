@@ -149,9 +149,8 @@ async def main():
     )
     logging.info("Starting to make changes to the documentation.")
     start_time = time.time()
-    # logpath = Path("logs/doc_instructor_agent_shorter.log")
-    logpath = Path("logs/doc_instructor_agent.log")
-    with logpath.open(mode="r") as f:
+    outpath = Path("outputs/doc_instructor_agent.log")
+    with outpath.open(mode="r") as f:
         doc_instructions: list[dict] = json.load(f)
 
     logging.info(f"Found {len(doc_instructions)} instruction bundles to process.")
@@ -172,20 +171,20 @@ async def main():
         {"path": r.get("path"), "edits": r.get("edits")}
         for r in all_responses_with_edits
     ]
-    edit_logpath = Path("logs/doc_writer_agent_edits.log")
-    edit_logpath.parent.mkdir(parents=True, exist_ok=True)
-    with edit_logpath.open(mode="w") as f:
+    edit_outpath = Path("outputs/doc_writer_agent_edits.log")
+    edit_outpath.parent.mkdir(parents=True, exist_ok=True)
+    with edit_outpath.open(mode="w") as f:
         json.dump(edits_to_log, f, indent=4)
-    logging.info(f"Raw edits from agent logged to {edit_logpath}")
+    logging.info(f"Raw edits from agent logged to {edit_outpath}")
 
     # Log the revised documents
     revised_docs_to_log = [
         {"path": r.get("path"), "revised_doc": r.get("revised_doc")}
         for r in all_responses_with_edits
     ]
-    logpath = Path("logs/doc_writer_agent.log")
-    logpath.parent.mkdir(parents=True, exist_ok=True)
-    with logpath.open(mode="w") as f:
+    outpath = Path("outputs/doc_writer_agent.log")
+    outpath.parent.mkdir(parents=True, exist_ok=True)
+    with outpath.open(mode="w") as f:
         json.dump(revised_docs_to_log, f, indent=4)
 
     end_time = time.time()

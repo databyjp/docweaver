@@ -12,7 +12,7 @@ async def main():
         format="%(asctime)s - %(levelname)s - %(message)s",
         handlers=[logging.StreamHandler()],
     )
-    doc_search_results_path = Path("logs/doc_search_agent.log")
+    doc_search_results_path = Path("outputs/doc_search_agent.log")
     with doc_search_results_path.open(mode="r") as f:
         doc_search_results: list[dict[str, str]] = json.load(f)
 
@@ -72,13 +72,13 @@ async def main():
     logging.info("Running doc_instructor_agent to generate edit instructions...")
     response = await doc_instructor_agent.run(prompt)
 
-    logpath = Path("logs/doc_instructor_agent.log")
-    logpath.parent.mkdir(parents=True, exist_ok=True)
+    outpath = Path("outputs/doc_instructor_agent.log")
+    outpath.parent.mkdir(parents=True, exist_ok=True)
     responses = [o.model_dump() for o in response.output]
-    with logpath.open(mode="w") as f:
+    with outpath.open(mode="w") as f:
         json.dump(responses, f, indent=4)
 
-    logging.info(f"Instructions saved to {logpath}")
+    logging.info(f"Instructions saved to {outpath}")
 
 
 if __name__ == "__main__":

@@ -19,9 +19,9 @@ def create_diff(old_content: str, new_content: str, file_path: str) -> str:
 
 
 def main():
-    writer_log_path = Path("logs/doc_writer_agent.log")
+    writer_outpath = Path("outputs/doc_writer_agent.log")
 
-    with writer_log_path.open(mode="r") as f:
+    with writer_outpath.open(mode="r") as f:
         proposed_changes: list[dict[str, str]] = json.load(f)
 
     all_diffs = ""
@@ -46,9 +46,9 @@ def main():
             console.print(syntax)
             console.print("-" * 80)
 
-    diff_log_path = Path("logs/diffs.log")
-    diff_log_path.parent.mkdir(parents=True, exist_ok=True)
-    with diff_log_path.open(mode="w") as f:
+    diff_outpath = Path("outputs/diffs.log")
+    diff_outpath.parent.mkdir(parents=True, exist_ok=True)
+    with diff_outpath.open(mode="w") as f:
         f.write(all_diffs)
 
 

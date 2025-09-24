@@ -11,17 +11,17 @@ load_dotenv()
 
 def apply_diffs():
     """Apply the generated diffs to the actual files using GitPython."""
-    diff_log_path = Path("logs/diffs.log")
+    diff_outpath = Path("outputs/diffs.log")
 
-    if not diff_log_path.exists():
+    if not diff_outpath.exists():
         raise FileNotFoundError("No diffs.log found. Run 5_create_diffs.py first.")
     else:
-        with open(diff_log_path, 'r') as f:
+        with open(diff_outpath, 'r') as f:
             diff_content = f.read()
     console = Console()
 
     # Check if there are any diffs to apply
-    if diff_log_path.stat().st_size == 0:
+    if diff_outpath.stat().st_size == 0:
         console.print("✅ No diffs to apply, skipping.")
         return
 
