@@ -2,16 +2,12 @@ from pathlib import Path
 import json
 from docweaver.agents import doc_instructor_agent, parse_doc_refs, WeaviateDoc
 import asyncio
-from helpers import TECH_DESCRIPTION_RESHARDING
+from helpers import TECH_DESCRIPTION_RESHARDING, setup_logging
 import logging
 
 
 async def main():
-    logging.basicConfig(
-        level=logging.INFO,
-        format="%(asctime)s - %(levelname)s - %(message)s",
-        handlers=[logging.StreamHandler()],
-    )
+    setup_logging(__file__)
     doc_search_results_path = Path("outputs/doc_search_agent.log")
     with doc_search_results_path.open(mode="r") as f:
         doc_search_results: list[dict[str, str]] = json.load(f)
@@ -71,6 +67,7 @@ async def main():
 
     logging.info("Running doc_instructor_agent to generate edit instructions...")
     response = await doc_instructor_agent.run(prompt)
+    logging.info(f"Token usage for doc_instructor_agent: {response.usage}")
 
     outpath = Path("outputs/doc_instructor_agent.log")
     outpath.parent.mkdir(parents=True, exist_ok=True)

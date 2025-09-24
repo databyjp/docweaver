@@ -2,7 +2,7 @@ from pathlib import Path
 import json
 from docweaver.agents import doc_writer_agent, parse_doc_refs, WeaviateDoc
 import asyncio
-from helpers import TECH_DESCRIPTION_RESHARDING
+from helpers import TECH_DESCRIPTION_RESHARDING, setup_logging
 import logging
 import time
 from tenacity import retry, stop_after_attempt, wait_exponential
@@ -85,6 +85,9 @@ async def process_instruction(instruction_bundle: dict, semaphore: asyncio.Semap
         """
         try:
             response = await run_doc_writer_agent_with_retry(prompt)
+            logging.info(
+                f"Token usage for doc_writer_agent (primary_path: {primary_path}): {response.usage}"
+            )
         except Exception as e:
             logging.error(
                 f"Agent failed for primary file {primary_path} after multiple retries: {e}"
@@ -142,11 +145,7 @@ async def process_instruction(instruction_bundle: dict, semaphore: asyncio.Semap
 
 
 async def main():
-    logging.basicConfig(
-        level=logging.INFO,
-        format="%(asctime)s - %(levelname)s - %(message)s",
-        handlers=[logging.StreamHandler()],
-    )
+    setup_logging(__file__)
     logging.info("Starting to make changes to the documentation.")
     start_time = time.time()
     outpath = Path("outputs/doc_instructor_agent.log")

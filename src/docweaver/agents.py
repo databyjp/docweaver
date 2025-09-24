@@ -4,6 +4,7 @@ from docweaver.db import search_chunks
 from weaviate import WeaviateClient
 from pathlib import Path
 import re
+import logging
 from helpers import DOCUMENTATION_META_INFO, NEW_CODE_EXAMPLE_MARKER
 
 
@@ -37,6 +38,7 @@ docs_search_agent = Agent(
 
 @docs_search_agent.tool
 def search_docs(ctx: RunContext[DocSearchDeps], query=str) -> list[dict[str, str]]:
+    logging.info(f"Executing tool 'search_docs' with query: {query}")
     return search_chunks(ctx.deps.client, query)
 
 
@@ -55,8 +57,8 @@ class CoordinatedEditInstructions(BaseModel):
 
 
 doc_instructor_agent = Agent(
-    # model="anthropic:claude-3-5-haiku-latest",
-    model="anthropic:claude-4-sonnet-20250514",
+    model="anthropic:claude-3-5-haiku-latest",
+    # model="anthropic:claude-4-sonnet-20250514",
     output_type=list[CoordinatedEditInstructions],
     system_prompt=f"""
     You are an expert writer, who is now managing a team of writers.
@@ -148,8 +150,8 @@ def parse_doc_refs(
 
 
 doc_writer_agent = Agent(
-    # model="anthropic:claude-3-5-haiku-latest",
-    model="anthropic:claude-4-sonnet-20250514",
+    model="anthropic:claude-3-5-haiku-latest",
+    # model="anthropic:claude-4-sonnet-20250514",
     output_type=list[DocOutput],
     system_prompt=f"""
     You are an expert technical writer and a good developer.
@@ -215,6 +217,7 @@ doc_writer_agent = Agent(
 @doc_instructor_agent.tool
 @doc_writer_agent.tool
 def read_doc_page(ctx: RunContext[None], path=str):
+    logging.info(f"Executing tool 'read_doc_page' for path: {path}")
     docpath = Path(path)
     weaviate_doc = parse_doc_refs(docpath)
     return weaviate_doc
