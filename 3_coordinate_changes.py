@@ -62,7 +62,7 @@ async def main():
     {document_bundle_prompt}
     ====== END-DOCUMENT BUNDLE =====
 
-    Based on all of this context, please provide a set of high-level instructions for a writer to update the documentation.
+    Based on all of this context, instruct the writers on how to update the documentation.
     Focus on what needs to change and where, including any code examples in referenced files.
     """
 

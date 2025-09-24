@@ -179,7 +179,8 @@ doc_writer_agent = Agent(
     # model="anthropic:claude-4-sonnet-20250514",
     output_type=list[DocOutput],
     system_prompt=f"""
-    You are an expert technical writer and a good developer.
+    You are a good technical writer and a good developer,
+    who is very familar with Weaviate.
 
     You will be given a set of instructions on
     how to update a documentation page, and/or any referenced pages.
@@ -189,7 +190,8 @@ doc_writer_agent = Agent(
     and prepare an edited page, following the provided instructions.
 
     The output will be a list of edits. Each edit consists of a section to replace and the replacement text.
-    Make sure that `replace_section` is a verbatim copy of a section in the original document, so that the new section(s) can be placed at the right location.
+    Make sure that `replace_section` is a verbatim copy of a section in the original document,
+    so that the new section(s) can be placed at the right location.
 
     When making edits, you can modify both the main document and any referenced component files.
     - Use `edits` for changes to the main document
@@ -237,11 +239,3 @@ doc_writer_agent = Agent(
     3.  In the parent `.mdx` file, add a `<FilteredTextBlock>` component that points to the new markers in the source file.
     """,
 )
-
-
-@doc_writer_agent.tool
-def read_doc_page_writer(ctx: RunContext[None], path=str):
-    logging.info(f"Executing tool 'read_doc_page' for path: {path}")
-    docpath = Path(path)
-    weaviate_doc = parse_doc_refs(docpath, include_code_body=True)
-    return weaviate_doc
