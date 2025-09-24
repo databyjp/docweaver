@@ -37,6 +37,7 @@ def setup_logging(script_name: str):
     console_handler.setFormatter(formatter)
     logging.getLogger().addHandler(console_handler)
 
+
 TECH_DESCRIPTION_COLLECTION_ALIASES = """
 Collection aliases allow you to create alternative names for your collections. This is useful for changing collection definitions without downtime, A/B testing, or providing more convenient names for collections. An alias acts as a reference to a collection - when you query using an alias name, Weaviate automatically routes the request to the target collection.
 

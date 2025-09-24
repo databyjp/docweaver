@@ -16,7 +16,7 @@ def apply_diffs():
     if not diff_outpath.exists():
         raise FileNotFoundError("No diffs.log found. Run 5_create_diffs.py first.")
     else:
-        with open(diff_outpath, 'r') as f:
+        with open(diff_outpath, "r") as f:
             diff_content = f.read()
     console = Console()
 
@@ -36,11 +36,13 @@ def apply_diffs():
     try:
         # Replace 'docs/' prefix in file paths since we're now working from docs directory
         # Handle Git's a/ and b/ prefixes properly
-        modified_diff = diff_content.replace('--- a/docs/', '--- a/').replace('+++ b/docs/', '+++ b/')
+        modified_diff = diff_content.replace("--- a/docs/", "--- a/").replace(
+            "+++ b/docs/", "+++ b/"
+        )
 
         # Write modified diff to a temporary file in docs directory
         temp_diff_path = docs_path / "temp_diffs.patch"
-        with open(temp_diff_path, 'w') as f:
+        with open(temp_diff_path, "w") as f:
             f.write(modified_diff)
 
         # Apply the modified diff (use just the filename since we're in docs directory)
@@ -156,12 +158,7 @@ def create_pr(title: str = None, body: str = None, branch_name: str = None):
     # Create PR against the main branch of your fork
     # If you want to create a PR to the upstream weaviate repo,
     # you'd need to specify the upstream repo here instead
-    pr = github_repo.create_pull(
-        title=title,
-        body=body,
-        head=branch_name,
-        base="main"
-    )
+    pr = github_repo.create_pull(title=title, body=body, head=branch_name, base="main")
 
     console.print(f"✅ PR created: {pr.html_url}")
     return pr

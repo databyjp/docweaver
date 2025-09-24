@@ -14,7 +14,6 @@ async def run_doc_writer_agent(prompt: str):
     return response
 
 
-
 async def process_instruction(instruction_bundle: dict):
     """Runs the doc writer agent for a single coordinated instruction bundle."""
     primary_path = instruction_bundle["primary_path"]

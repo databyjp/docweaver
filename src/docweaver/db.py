@@ -74,7 +74,6 @@ def search_chunks(client: WeaviateClient, queries: list[str]) -> list[dict[str, 
             )
             chunk_objs.extend([o.properties for o in response.objects])
 
-        return list({
-            (chunk["path"], chunk["chunk_no"]): chunk
-            for chunk in chunk_objs
-        }.values())
+        return list(
+            {(chunk["path"], chunk["chunk_no"]): chunk for chunk in chunk_objs}.values()
+        )

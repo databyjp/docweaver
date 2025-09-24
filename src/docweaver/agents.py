@@ -40,7 +40,9 @@ docs_search_agent = Agent(
 
 
 @docs_search_agent.tool
-def search_docs(ctx: RunContext[DocSearchDeps], queries=list[str]) -> list[dict[str, str]]:
+def search_docs(
+    ctx: RunContext[DocSearchDeps], queries=list[str]
+) -> list[dict[str, str]]:
     logging.info(f"Executing tool 'search_docs' with queries: {queries}")
     return search_chunks(ctx.deps.client, queries)
 
@@ -118,9 +120,7 @@ class WeaviateDoc(BaseModel):
     referenced_docs: list["WeaviateDoc"]
 
 
-def parse_doc_refs(
-    file_path: Path, include_code_body: bool = True
-) -> WeaviateDoc:
+def parse_doc_refs(file_path: Path, include_code_body: bool = True) -> WeaviateDoc:
     """Parse document and its direct references (first level only)."""
     if not file_path.exists():
         return WeaviateDoc(path=str(file_path), doc_body="", referenced_docs=[])
