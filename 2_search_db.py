@@ -13,7 +13,7 @@ async def main():
         f"Find documents that may need editing, for a this feature: {TECH_DESCRIPTION_RESHARDING}",
         deps=DocSearchDeps(client=connect()),
     )
-    logging.info(f"Token usage for docs_search_agent: {response.usage}")
+    logging.info(f"Token usage for docs_search_agent: {response.usage()}")
     for o in response.output:
         print(o)
 

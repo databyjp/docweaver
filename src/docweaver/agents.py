@@ -6,6 +6,7 @@ from pathlib import Path
 import re
 import logging
 from helpers import DOCUMENTATION_META_INFO, NEW_CODE_EXAMPLE_MARKER
+import os
 
 
 class DocSearchDeps(BaseModel):
@@ -22,24 +23,26 @@ docs_search_agent = Agent(
     model="anthropic:claude-3-5-haiku-latest",
     output_type=list[DocSearchReturn],
     system_prompt=f"""
-    You are a research assistant.
+    You are an expert researcher and knowledgeable in vector databases, especially Weavaite.
+    You are to search the available Weaviate documentation to
+    find relevant pages for tech writer to potentially edit.
 
-    You are given a user query, and you are to search the available Weaviate documentation.
     {DOCUMENTATION_META_INFO}
 
-    Perform multiple searches with different query strings, if necessary.
+    Review the returned data, and return
+    the documents that might require updating.
 
-    Review the returned data, and return the documents that may require updating.
+    You are encouraged to return more than what may be actually edited.
 
-    Return a list of file paths, and why each path may need to be updated.
+    The subsequent reviewer will view them in detail and decide what to edit.
     """,
 )
 
 
 @docs_search_agent.tool
-def search_docs(ctx: RunContext[DocSearchDeps], query=str) -> list[dict[str, str]]:
-    logging.info(f"Executing tool 'search_docs' with query: {query}")
-    return search_chunks(ctx.deps.client, query)
+def search_docs(ctx: RunContext[DocSearchDeps], queries=list[str]) -> list[dict[str, str]]:
+    logging.info(f"Executing tool 'search_docs' with queries: {queries}")
+    return search_chunks(ctx.deps.client, queries)
 
 
 class PerFileInstructions(BaseModel):
@@ -57,37 +60,49 @@ class CoordinatedEditInstructions(BaseModel):
 
 
 doc_instructor_agent = Agent(
-    model="anthropic:claude-3-5-haiku-latest",
-    # model="anthropic:claude-4-sonnet-20250514",
+    # model="anthropic:claude-3-5-haiku-latest",
+    model="anthropic:claude-4-sonnet-20250514",
     output_type=list[CoordinatedEditInstructions],
     system_prompt=f"""
-    You are an expert writer, who is now managing a team of writers.
+    You are an expert writer and developer, who is
+    managing a team of capable, but junior writers.
 
-    Review a technical summary of a feature,
-    and a preliminary research of existing documents.
+    Your job is to review a documentation task,
+    such as a new feature, and to instruct the junior writers.
+
     {DOCUMENTATION_META_INFO}
 
-    The full content for each relevant document and
-    its referenced files (e.g., code snippets) has been provided to you.
-    Review all of the provided context.
+    The full content for each relevant document will be provided to you,
+    and a list of its referenced files (e.g., code snippets or markdown).
+    Sometimes you will get the referenced files in full, but not always.
 
-    Then, provide a set of suggestions to your writers regarding
+    Review all of the provided context, and
+    provide a set of instructions to your writers regarding
     how to edit the documentation to reflect the feature.
 
     At Weaviate, we prefer to write code in source files
     so that they can be reviewed, automated for testing, and maintained.
 
     So, when adding any code examples,
-    you should instruct the writer to add them to
+    instruct the writer to add them to
     the markdown's associated source files (like `.py`, `.ts`, etc.).
 
-    In other words, be sure to include instructions to edit the source files directly,
+    Be sure to include instructions to edit the source files directly,
     rather than the markdown files.
 
-    The instructions are to be succinct, and in bullet points,
-    so that they are easy to review and understand.
+    The writers are capable but relatively junior.
+    So, provide clear, unambiguous instructions for them to follow.
 
-    Leave the implementation to the writers.
+    Where possible, provide placeholder code snippets
+    for them to add to the appropriate source file.
+    """,
+)
+
+unused_prompt = """
+    1.  Add placeholder code to the appropriate source file.
+    2.  Include this exact marker comment where the code needs to be completed:
+        {NEW_CODE_EXAMPLE_MARKER}
+    3.  In the parent `.mdx` file, add a `<FilteredTextBlock>` component that points to the new markers in the source file.
 
     **Output Structure:**
     For each primary document that needs changes, you MUST generate one `CoordinatedEditInstructions` object.
@@ -95,9 +110,7 @@ doc_instructor_agent = Agent(
     - `file_instructions` should be a list containing instructions for the primary file AND for each referenced file (like code files) that also needs to be changed.
     - Each item in `file_instructions` must contain the `path` and the specific `instructions` for that single file.
     - If a primary document and its two referenced code files need changes, you will create one `CoordinatedEditInstructions` object with three items in its `file_instructions` list.
-    """,
-)
-
+"""
 
 class DocEdit(BaseModel):
     """Represents a single edit in a document."""
@@ -119,30 +132,42 @@ class WeaviateDoc(BaseModel):
 
 
 def parse_doc_refs(
-    file_path: Path, max_depth: int = 2, current_depth: int = 0
+    file_path: Path, include_code_body: bool = True
 ) -> WeaviateDoc:
+    """Parse document and its direct references (first level only)."""
     if not file_path.exists():
         return WeaviateDoc(path=str(file_path), doc_body="", referenced_docs=[])
 
     content = file_path.read_text()
 
-    if current_depth >= max_depth:
-        return WeaviateDoc(path=str(file_path), doc_body=content, referenced_docs=[])
+    # Choose pattern based on whether code files should be included
+    code_extensions_list = ["py", "ts", "js", "java", "go"]
+    file_extensions = r"mdx?|" + "|".join(code_extensions_list)
 
-    # Find only code files and .mdx/.md includes
-    import_pattern = r'import\s+\w+\s+from\s+["\'](?:!!raw-loader!)?([^"\']+\.(?:mdx?|py|ts|js|java|go|cpp|c|rb|php|rs))["\']'
+    import_pattern = rf'import\s+\w+\s+from\s+["\'](?:!!raw-loader!)?([^"\']+\.(?:{file_extensions}))["\']'
     matches = re.findall(import_pattern, content)
 
     referenced_docs = []
     for match in matches:
-        # Simple path resolution - adjust as needed
         if match.startswith("/"):
-            import_path = Path("docs") / match.lstrip("/")
+            import_path: Path = Path("docs") / match.lstrip("/")
         else:
-            import_path = Path("docs") / match
+            import_path: Path = Path("docs") / match
 
-        ref_doc = parse_doc_refs(import_path, max_depth, current_depth + 1)
-        referenced_docs.append(ref_doc)
+        _, ext = os.path.splitext(import_path.absolute())
+        if import_path.exists():
+            # Only load the referenced file if markdown or include_code_body
+            if "md" in ext or include_code_body:
+                ref_content = import_path.read_text()
+            elif ext in code_extensions_list:
+                ref_content = "Body of code not included for brevity."
+            else:
+                ref_content = "Body not included for brevity."
+
+            ref_doc = WeaviateDoc(
+                path=str(import_path), doc_body=ref_content, referenced_docs=[]
+            )
+            referenced_docs.append(ref_doc)
 
     return WeaviateDoc(
         path=str(file_path), doc_body=content, referenced_docs=referenced_docs
@@ -214,10 +239,9 @@ doc_writer_agent = Agent(
 )
 
 
-@doc_instructor_agent.tool
 @doc_writer_agent.tool
-def read_doc_page(ctx: RunContext[None], path=str):
+def read_doc_page_writer(ctx: RunContext[None], path=str):
     logging.info(f"Executing tool 'read_doc_page' for path: {path}")
     docpath = Path(path)
-    weaviate_doc = parse_doc_refs(docpath)
+    weaviate_doc = parse_doc_refs(docpath, include_code_body=True)
     return weaviate_doc

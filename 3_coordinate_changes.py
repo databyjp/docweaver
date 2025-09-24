@@ -18,22 +18,17 @@ async def main():
     prompt_docs_list = []
     all_docs_content = {}  # Use a dict to avoid processing the same file twice
 
-    def collect_docs_recursive(doc: WeaviateDoc, is_main: bool):
-        if doc.path in all_docs_content:
-            return  # Avoid cycles and redundant processing
+    def add_doc_to_prompt(doc: WeaviateDoc, is_main: bool):
+        if doc.path in all_docs_content or not doc.doc_body:
+            return  # Skip if already processed or empty
 
         all_docs_content[doc.path] = doc.doc_body
-        if not doc.doc_body:
-            return  # Don't add empty files to prompt
-
         doc_type = "MAIN FILE" if is_main else "REFERENCED FILE"
         prompt_docs_list.append(
             f"[{doc_type}]\n"
             f"Filepath: {doc.path}\n"
             f"====== START-ORIGINAL CONTENT =====\n{doc.doc_body}\n====== END-ORIGINAL CONTENT =====\n"
         )
-        for ref_doc in doc.referenced_docs:
-            collect_docs_recursive(ref_doc, is_main=False)
 
     for result in doc_search_results:
         filepath = result.get("path")
@@ -42,8 +37,14 @@ async def main():
             continue
 
         logging.info(f"Parsing document and its references: {filepath}")
-        doc_bundle = parse_doc_refs(Path(filepath))
-        collect_docs_recursive(doc_bundle, is_main=True)
+        doc_bundle = parse_doc_refs(Path(filepath), include_code_body=False)
+
+        # Add main document
+        add_doc_to_prompt(doc_bundle, is_main=True)
+
+        # Add only first-level references
+        for ref_doc in doc_bundle.referenced_docs:
+            add_doc_to_prompt(ref_doc, is_main=False)
 
     document_bundle_prompt = "\n".join(prompt_docs_list)
 
@@ -67,7 +68,7 @@ async def main():
 
     logging.info("Running doc_instructor_agent to generate edit instructions...")
     response = await doc_instructor_agent.run(prompt)
-    logging.info(f"Token usage for doc_instructor_agent: {response.usage}")
+    logging.info(f"Token usage for doc_instructor_agent: {response.usage()}")
 
     outpath = Path("outputs/doc_instructor_agent.log")
     outpath.parent.mkdir(parents=True, exist_ok=True)
