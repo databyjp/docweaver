@@ -98,19 +98,6 @@ doc_instructor_agent = Agent(
     """,
 )
 
-unused_prompt = """
-    1.  Add placeholder code to the appropriate source file.
-    2.  Include this exact marker comment where the code needs to be completed:
-        {NEW_CODE_EXAMPLE_MARKER}
-    3.  In the parent `.mdx` file, add a `<FilteredTextBlock>` component that points to the new markers in the source file.
-
-    **Output Structure:**
-    For each primary document that needs changes, you MUST generate one `CoordinatedEditInstructions` object.
-    - `primary_path` should be the path to the main document file (e.g., an `.mdx` file).
-    - `file_instructions` should be a list containing instructions for the primary file AND for each referenced file (like code files) that also needs to be changed.
-    - Each item in `file_instructions` must contain the `path` and the specific `instructions` for that single file.
-    - If a primary document and its two referenced code files need changes, you will create one `CoordinatedEditInstructions` object with three items in its `file_instructions` list.
-"""
 
 class DocEdit(BaseModel):
     """Represents a single edit in a document."""
@@ -175,8 +162,8 @@ def parse_doc_refs(
 
 
 doc_writer_agent = Agent(
-    model="anthropic:claude-3-5-haiku-latest",
-    # model="anthropic:claude-4-sonnet-20250514",
+    # model="anthropic:claude-3-5-haiku-latest",
+    model="anthropic:claude-4-sonnet-20250514",
     output_type=list[DocOutput],
     system_prompt=f"""
     You are a good technical writer and a good developer,

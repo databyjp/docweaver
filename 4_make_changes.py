@@ -1,55 +1,42 @@
 from pathlib import Path
 import json
-from docweaver.agents import doc_writer_agent, parse_doc_refs, WeaviateDoc
+from docweaver.agents import doc_writer_agent
 import asyncio
 from helpers import TECH_DESCRIPTION_RESHARDING, setup_logging
 import logging
 import time
-from tenacity import retry, stop_after_attempt, wait_exponential
+from collections import defaultdict
 
 
-@retry(stop=stop_after_attempt(3), wait=wait_exponential(multiplier=1, min=4, max=10))
-async def run_doc_writer_agent_with_retry(prompt: str):
-    """Runs the doc writer agent with retry logic."""
-    return await doc_writer_agent.run(prompt)
+async def run_doc_writer_agent(prompt: str):
+    """Runs the doc writer agent."""
+    response = await doc_writer_agent.run(prompt)
+    return response
 
 
-async def process_instruction(instruction_bundle: dict, semaphore: asyncio.Semaphore):
+
+async def process_instruction(instruction_bundle: dict):
     """Runs the doc writer agent for a single coordinated instruction bundle."""
-    primary_path = instruction_bundle.get("primary_path")
-    file_instructions = instruction_bundle.get("file_instructions", [])
+    primary_path = instruction_bundle["primary_path"]
+    file_instructions = instruction_bundle["file_instructions"]
 
-    if not primary_path or not file_instructions:
-        logging.warning(
-            f"Skipping bundle due to missing primary_path or file_instructions: {instruction_bundle}"
-        )
-        return []
+    all_paths = {primary_path}
+    for instr in file_instructions:
+        if not instr["path"].startswith("docs/"):
+            instr["path"] = "docs/" + instr["path"]
+        all_paths.add(instr["path"])
 
-    # The document bundle includes the primary path and all referenced files
-    doc_bundle = parse_doc_refs(Path(primary_path))
-    if not doc_bundle.doc_body and not doc_bundle.referenced_docs:
-        logging.error(f"File not found or empty, skipping: {primary_path}")
-        return []
-
-    # Collect and format docs from the bundle
     original_contents = {}
     prompt_docs_list = []
 
-    def collect_docs_recursive(doc: WeaviateDoc, is_main: bool):
-        if doc.path in original_contents:
-            return  # Avoid cycles
-        original_contents[doc.path] = doc.doc_body
+    for path_str in all_paths:
+        path = Path(path_str)
+        content = path.read_text()
+        original_contents[path_str] = content
 
-        doc_type = "MAIN FILE" if is_main else "REFERENCED FILE"
-        prompt_docs_list.append(
-            f"[{doc_type}]\n"
-            f"Filepath: {doc.path}\n"
-            f"====== START-ORIGINAL CONTENT =====\n{doc.doc_body}\n====== END-ORIGINAL CONTENT =====\n"
-        )
-        for ref_doc in doc.referenced_docs:
-            collect_docs_recursive(ref_doc, is_main=False)
+        doc_type = "MAIN FILE" if path_str == primary_path else "REFERENCED FILE"
+        prompt_docs_list.append(f"## File: {path_str} ({doc_type})\n{content}\n")
 
-    collect_docs_recursive(doc_bundle, is_main=True)
     prompt_docs = "\n".join(prompt_docs_list)
 
     # Format the structured instructions for the prompt
@@ -60,88 +47,62 @@ async def process_instruction(instruction_bundle: dict, semaphore: asyncio.Semap
         )
     instructions_prompt = "\n---\n".join(formatted_instructions)
 
-    async with semaphore:
-        start_time = time.time()
-        logging.info(f"Processing instructions for primary file: {primary_path}")
-        prompt = f"""
-        Weaviate has introduced this new feature.
-        ====== START-FEATURE DESCRIPTION =====
-        {TECH_DESCRIPTION_RESHARDING}
-        ====== END-FEATURE DESCRIPTION =====
+    start_time = time.time()
+    logging.info(f"Processing instructions for primary file: {primary_path}")
+    prompt = f"""
+Update the documentation for a new Weaviate feature.
 
-        As a result, the documentation page at `{primary_path}` and its dependent files need to be updated.
-        Here is the original content of the page and its dependencies:
-        ====== START-DOCUMENT BUNDLE =====
-        {prompt_docs}
-        ====== END-DOCUMENT BUNDLE =====
+# Feature Description
+{TECH_DESCRIPTION_RESHARDING}
 
-        Here are the high-level suggestions on how to update the page and its related files.
-        Apply these changes across all relevant files as specified.
-        ====== START-UPDATE INSTRUCTIONS =====
-        {instructions_prompt}
-        ====== END-UPDATE INSTRUCTIONS =====
+# Documentation Files
+{prompt_docs}
 
-        Please provide the revised content as a series of edits, from which we can build a file diff.
-        """
-        try:
-            response = await run_doc_writer_agent_with_retry(prompt)
-            logging.info(
-                f"Token usage for doc_writer_agent (primary_path: {primary_path}): {response.usage}"
-            )
-        except Exception as e:
-            logging.error(
-                f"Agent failed for primary file {primary_path} after multiple retries: {e}"
-            )
-            return []
-        end_time = time.time()
-        logging.info(
-            f"Finished processing instructions for primary file: {primary_path} in {end_time - start_time:.2f} seconds."
-        )
+# Update Instructions
+{instructions_prompt}
+"""
+    response = await run_doc_writer_agent(prompt)
+    logging.info(
+        f"Token usage for doc_writer_agent (primary_path: {primary_path}): {response.usage()}"
+    )
 
-        all_edits = [o.model_dump() for o in response.output]
-        revised_contents = original_contents.copy()
+    end_time = time.time()
+    logging.info(
+        f"Finished processing instructions for primary file: {primary_path} in {end_time - start_time:.2f} seconds."
+    )
 
-        # Apply edits to all files (main and referenced)
-        for doc_output in all_edits:
-            # Edits for the main file
-            for edit in doc_output.get("edits", []):
-                path = doc_output["path"]
-                if (
-                    path in revised_contents
-                    and edit["replace_section"] in revised_contents[path]
-                ):
-                    revised_contents[path] = revised_contents[path].replace(
-                        edit["replace_section"], edit["replacement_txt"]
-                    )
-                else:
-                    logging.warning(
-                        f"Could not find section to replace in {path}:\n{edit['replace_section']}"
-                    )
+    all_edits = [o.model_dump() for o in response.output]
+    revised_contents = original_contents.copy()
 
-            # Edits for referenced files
-            for path, ref_edits in doc_output.get("referenced_file_edits", {}).items():
-                for edit in ref_edits:
-                    if (
-                        path in revised_contents
-                        and edit["replace_section"] in revised_contents[path]
-                    ):
-                        revised_contents[path] = revised_contents[path].replace(
-                            edit["replace_section"], edit["replacement_txt"]
-                        )
-                    else:
-                        logging.warning(
-                            f"Could not find section to replace in {path}:\n{edit['replace_section']}"
-                        )
+    # Group all edits by file path
+    edits_by_file = defaultdict(list)
+    for doc_output in all_edits:
+        if doc_output.get("edits"):
+            edits_by_file[doc_output["path"]].extend(doc_output["edits"])
+        for path, ref_edits in doc_output.get("referenced_file_edits", {}).items():
+            edits_by_file[path].extend(ref_edits)
 
-        return [
-            {
-                "path": path,
-                "revised_doc": content,
-                "edits": all_edits,  # Keep original agent output for logging
-            }
-            for path, content in revised_contents.items()
-            if original_contents.get(path) != content
-        ]
+    # Apply edits to all files
+    for path, edits in edits_by_file.items():
+        content = revised_contents.get(path)
+        if content is None:
+            continue
+        for edit in edits:
+            if edit["replace_section"] in content:
+                content = content.replace(
+                    edit["replace_section"], edit["replacement_txt"]
+                )
+        revised_contents[path] = content
+
+    return [
+        {
+            "path": path,
+            "revised_doc": content,
+            "edits": all_edits,  # Keep original agent output for logging
+        }
+        for path, content in revised_contents.items()
+        if original_contents.get(path) != content
+    ]
 
 
 async def main():
@@ -154,16 +115,11 @@ async def main():
 
     logging.info(f"Found {len(doc_instructions)} instruction bundles to process.")
 
-    semaphore = asyncio.Semaphore(
-        1
-    )  # Conservative concurrency; seems to fail often when concurrent :/
-    tasks = [
-        process_instruction(instruction_bundle, semaphore)
-        for instruction_bundle in doc_instructions
-    ]
-    results = await asyncio.gather(*tasks)
-
-    all_responses_with_edits = [item for sublist in results for item in sublist]
+    all_responses_with_edits = []
+    for instruction_bundle in doc_instructions:
+        result = await process_instruction(instruction_bundle)
+        if result:
+            all_responses_with_edits.extend(result)
 
     # Log the edits - Note: this might log the same agent output multiple times if one instruction edits multiple files
     edits_to_log = [
