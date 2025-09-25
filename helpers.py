@@ -47,12 +47,10 @@ def setup_logging(script_name: str):
     logging.getLogger().addHandler(console_handler)
 
 
-# Task configuration
-TASK_TYPE_FEATURE = "feature"
-TASK_TYPE_DOC_TASK = "doc_task"
-
-# Sample task descriptions (can be replaced as needed)
-SAMPLE_FEATURE_DESCRIPTION = """
+# Sample task configurations
+SAMPLE_RESHARDING_TASK = {
+    "objective": "Document the new resharding feature for multi-node Weaviate clusters",
+    "context": """
 A multi-node Weaviate cluster can now be re-sharded to redistribute data across nodes for improved performance and scalability.
 
 This feature allows administrators to dynamically adjust the number of shards in an existing cluster without downtime. The resharding process works by creating new shard mappings, migrating vector embeddings and metadata in batches, and updating the distributed hash ring to reflect the new topology.
@@ -71,9 +69,13 @@ Each Weaviate client library (Python, JS/TS, Go, Java) will get its own native f
 During resharding, read operations continue normally while writes are temporarily queued and replayed after shard migration completes.
 
 Typical use cases include scaling up clusters under heavy load, rebalancing after node additions/removals, and optimizing shard distribution for query performance patterns.
-"""
+""",
+    "focus": "Emphasize operational aspects, migration safety, and provide clear usage examples for administrators"
+}
 
-SAMPLE_DOC_TASK_DESCRIPTION = """
+SAMPLE_SPFRESH_TASK = {
+    "objective": "Create comprehensive documentation for the new SPFresh vector index type",
+    "context": """
 ## SPFresh Index Type - Technical Description
 
 **Overview:**
@@ -183,29 +185,24 @@ client.collections.create(
     )
 )
 ```
-"""
-
-# Current task configuration - change this to switch between tasks
-CURRENT_TASK = {
-    "type": TASK_TYPE_DOC_TASK,
-    "description": SAMPLE_DOC_TASK_DESCRIPTION
+""",
+    "focus": "Emphasize practical implementation, configuration examples, and when to choose SPFresh over HNSW for production use cases"
 }
 
-def get_task_description(task_type: str, description: str) -> str:
-    """Returns formatted task description based on type."""
-    if task_type == TASK_TYPE_FEATURE:
-        return f"""
-Weaviate has introduced this new feature:
-{description}
-"""
-    elif task_type == TASK_TYPE_DOC_TASK:
-        return f"""
-Documentation task to be completed:
-{description}
-"""
-    else:
-        return description
+# Current task configuration - change this to switch between tasks
+CURRENT_TASK = SAMPLE_SPFRESH_TASK
 
 def get_current_task_description() -> str:
-    """Returns the formatted description for the current task."""
-    return get_task_description(CURRENT_TASK["type"], CURRENT_TASK["description"])
+    """Returns formatted task description for agents."""
+    if isinstance(CURRENT_TASK, dict):
+        return f"""
+Objective: {CURRENT_TASK['objective']}
+
+Context:
+{CURRENT_TASK['context']}
+
+Focus: {CURRENT_TASK['focus']}
+"""
+    else:
+        # Fallback for simple string tasks
+        return CURRENT_TASK

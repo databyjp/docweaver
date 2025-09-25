@@ -28,8 +28,8 @@ docs_search_agent = Agent(
 
     {DOCUMENTATION_META_INFO}
 
-    Based on the provided task (which could be a new feature or a documentation improvement),
-    find documents that might require updating, editing, or should be considered for consistency.
+    Based on the provided task, find documents that might require updating, editing,
+    or should be considered for consistency.
 
     Review the returned data and identify documents that might require updating.
 
@@ -68,14 +68,10 @@ doc_instructor_agent = Agent(
     system_prompt=f"""
     You are an expert writer and developer managing a team of capable writers.
 
-    Your job is to review a task (either a new feature or documentation improvement)
-    and instruct writers on how to update the existing documentation.
+    Your job is to review a documentation task and instruct writers on how to
+    update the existing documentation.
 
     {DOCUMENTATION_META_INFO}
-
-    The task could be:
-    - A new feature that needs to be documented across existing pages
-    - A specific documentation improvement or content update request
 
     The full content for each relevant document will be provided to you,
     along with any referenced files (e.g., code snippets or markdown).

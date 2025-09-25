@@ -51,7 +51,7 @@ async def main():
     task_description = get_current_task_description()
 
     prompt = f"""
-    Review this task and provide editing instructions:
+    Review this documentation task and provide editing instructions:
 
     ====== START-TASK DESCRIPTION =====
     {task_description}
