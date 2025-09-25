@@ -161,6 +161,16 @@ def create_pr(title: str = None, body: str = None, branch_name: str = None):
     pr = github_repo.create_pull(title=title, body=body, head=branch_name, base="main")
 
     console.print(f"✅ PR created: {pr.html_url}")
+
+    # Switch back to main branch for clean state
+    try:
+        repo.heads.main.checkout()
+        console.print("🔄 Switched back to main branch")
+    except:
+        # Try master if main doesn't exist
+        repo.heads.master.checkout()
+        console.print("🔄 Switched back to master branch")
+
     return pr
 
 
