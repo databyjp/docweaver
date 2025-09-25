@@ -2,7 +2,7 @@ from pathlib import Path
 import json
 from docweaver.agents import doc_instructor_agent, parse_doc_refs, WeaviateDoc
 import asyncio
-from helpers import TECH_DESCRIPTION_RESHARDING, setup_logging
+from helpers import get_current_task_description, setup_logging
 import logging
 
 
@@ -48,11 +48,14 @@ async def main():
 
     document_bundle_prompt = "\n".join(prompt_docs_list)
 
+    task_description = get_current_task_description()
+
     prompt = f"""
-    Weaviate has introduced this new feature.
-    ====== START-FEATURE DESCRIPTION =====
-    {TECH_DESCRIPTION_RESHARDING}
-    ====== END-FEATURE DESCRIPTION =====
+    Review this task and provide editing instructions:
+
+    ====== START-TASK DESCRIPTION =====
+    {task_description}
+    ====== END-TASK DESCRIPTION =====
 
     A preliminary search has identified the following files as potentially needing updates:
     {json.dumps(doc_search_results, indent=2)}

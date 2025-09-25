@@ -3,14 +3,15 @@ from docweaver.db import connect
 from pathlib import Path
 import asyncio
 import json
-from helpers import TECH_DESCRIPTION_RESHARDING, setup_logging
+from helpers import get_current_task_description, setup_logging
 import logging
 
 
 async def main():
     setup_logging(__file__)
+    task_description = get_current_task_description()
     response = await docs_search_agent.run(
-        f"Find documents that may need editing, for a this feature: {TECH_DESCRIPTION_RESHARDING}",
+        f"Find documents that may need editing for: {task_description}",
         deps=DocSearchDeps(client=connect()),
     )
     logging.info(f"Token usage for docs_search_agent: {response.usage()}")

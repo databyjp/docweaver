@@ -2,7 +2,7 @@ from pathlib import Path
 import json
 from docweaver.agents import doc_writer_agent
 import asyncio
-from helpers import TECH_DESCRIPTION_RESHARDING, setup_logging
+from helpers import get_current_task_description, setup_logging
 import logging
 import time
 from collections import defaultdict
@@ -14,7 +14,7 @@ async def run_doc_writer_agent(prompt: str):
     return response
 
 
-async def process_instruction(instruction_bundle: dict):
+async def process_instruction(instruction_bundle: dict, accumulated_contents: dict):
     """Runs the doc writer agent for a single coordinated instruction bundle."""
     primary_path = instruction_bundle["primary_path"]
     file_instructions = instruction_bundle["file_instructions"]
@@ -26,12 +26,22 @@ async def process_instruction(instruction_bundle: dict):
         all_paths.add(instr["path"])
 
     original_contents = {}
+    current_contents = {}
     prompt_docs_list = []
 
     for path_str in all_paths:
         path = Path(path_str)
-        content = path.read_text()
-        original_contents[path_str] = content
+
+        # Use accumulated content if available, otherwise read from file
+        if path_str in accumulated_contents:
+            content = accumulated_contents[path_str]
+        else:
+            content = path.read_text()
+            # Store original content for first-time files
+            if path_str not in accumulated_contents:
+                original_contents[path_str] = content
+
+        current_contents[path_str] = content
 
         doc_type = "MAIN FILE" if path_str == primary_path else "REFERENCED FILE"
         prompt_docs_list.append(f"## File: {path_str} ({doc_type})\n{content}\n")
@@ -48,11 +58,12 @@ async def process_instruction(instruction_bundle: dict):
 
     start_time = time.time()
     logging.info(f"Processing instructions for primary file: {primary_path}")
+    task_description = get_current_task_description()
     prompt = f"""
-Update the documentation for a new Weaviate feature.
+Update the documentation based on the following task.
 
-# Feature Description
-{TECH_DESCRIPTION_RESHARDING}
+# Task Description
+{task_description}
 
 # Documentation Files
 {prompt_docs}
@@ -71,7 +82,7 @@ Update the documentation for a new Weaviate feature.
     )
 
     all_edits = [o.model_dump() for o in response.output]
-    revised_contents = original_contents.copy()
+    revised_contents = current_contents.copy()
 
     # Group all edits by file path
     edits_by_file = defaultdict(list)
@@ -92,16 +103,20 @@ Update the documentation for a new Weaviate feature.
                     edit["replace_section"], edit["replacement_txt"]
                 )
         revised_contents[path] = content
+        # Update accumulated contents for next instruction bundle
+        accumulated_contents[path] = content
 
-    return [
-        {
-            "path": path,
-            "revised_doc": content,
-            "edits": all_edits,  # Keep original agent output for logging
-        }
-        for path, content in revised_contents.items()
-        if original_contents.get(path) != content
-    ]
+    # Return only files that changed in this instruction bundle
+    results = []
+    for path, content in revised_contents.items():
+        if current_contents.get(path) != content:
+            results.append({
+                "path": path,
+                "revised_doc": content,
+                "edits": all_edits,  # Keep original agent output for logging
+            })
+
+    return results
 
 
 async def main():
@@ -114,9 +129,12 @@ async def main():
 
     logging.info(f"Found {len(doc_instructions)} instruction bundles to process.")
 
+    # Track accumulated file contents across all instruction bundles
+    accumulated_file_contents = {}
     all_responses_with_edits = []
+
     for instruction_bundle in doc_instructions:
-        result = await process_instruction(instruction_bundle)
+        result = await process_instruction(instruction_bundle, accumulated_file_contents)
         if result:
             all_responses_with_edits.extend(result)
 
