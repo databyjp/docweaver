@@ -554,6 +554,8 @@ def create_pr(
         raise FileNotFoundError("docs/ directory not found")
 
     repo = git.Repo(docs_path)
+    original_branch = repo.active_branch
+    temp_diff_path = None
 
     try:
         # Apply diffs
@@ -566,7 +568,6 @@ def create_pr(
             f.write(modified_diff)
 
         repo.git.apply("--verbose", "temp_diffs.patch")
-        temp_diff_path.unlink()
         console.print("✅ Diffs applied successfully")
 
         # Get GitHub token
@@ -579,11 +580,22 @@ def create_pr(
             timestamp = datetime.now().strftime("%Y%m%d-%H%M%S")
             branch_name = f"docweaver-updates-{timestamp}"
 
-        # Ensure we're on main branch
+        # Ensure we're on the default branch
         try:
-            repo.heads.main.checkout()
-        except:
-            repo.heads.master.checkout()
+            # Get default branch from remote 'origin'
+            default_branch_name = (
+                repo.remotes.origin.refs.HEAD.ref.name.split("/")[-1]
+            )
+            repo.heads[default_branch_name].checkout()
+            logging.info(f"Checked out default branch: {default_branch_name}")
+        except Exception as e:
+            logging.warning(
+                f"Could not determine default branch from remote. Falling back to main/master. Error: {e}"
+            )
+            try:
+                repo.heads["main"].checkout()
+            except:
+                repo.heads["master"].checkout()
 
         # Create and checkout new branch
         if branch_name in repo.heads:
@@ -633,8 +645,18 @@ def create_pr(
     except git.exc.GitCommandError as e:
         raise RuntimeError(f"Failed to apply diffs: {e}")
     except Exception as e:
-        # Clean up temp file if it exists
-        temp_diff_path = docs_path / "temp_diffs.patch"
-        if temp_diff_path.exists():
-            temp_diff_path.unlink()
         raise RuntimeError(f"Failed to process changes: {e}")
+    finally:
+        # Clean up temp file if it exists
+        if temp_diff_path and temp_diff_path.exists():
+            temp_diff_path.unlink()
+            console.print("✅ Temporary diff file removed.")
+
+        # Switch back to the original branch and clean up worktree
+        try:
+            original_branch.checkout(force=True)
+            console.print(
+                f"✅ Switched back to original branch: {original_branch.name} and cleaned worktree."
+            )
+        except Exception as e:
+            console.print(f"⚠️ Could not switch back to original branch: {e}")
