@@ -1,0 +1,5 @@
+{
+    "objective": "Update the Authentication concepts page to clarify the difference between API keys and OIDC tokens",
+    "context": "Users frequently confuse when to use API keys versus OIDC tokens for authentication. The current documentation doesn't clearly distinguish between these methods or provide practical guidance on when to use each approach.\n\nAPI keys are simpler and suitable for server-to-server communication, while OIDC tokens provide more sophisticated user-based authentication with better security features for client applications.\n\nNeed to add practical examples showing:\n- How to configure each method\n- When to choose API keys vs OIDC\n- Security considerations for each\n- Code examples for both authentication approaches",
+    "focus": "Provide clear decision criteria and practical implementation examples for both authentication methods"
+}
