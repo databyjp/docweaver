@@ -69,10 +69,11 @@ def search_chunks(client: WeaviateClient, queries: list[str]) -> list[dict[str, 
         chunks = client.collections.use(COLLECTION_NAME)
         chunk_objs = list()
         for query in queries:
-            response = chunks.query.hybrid(
-                query=query, target_vector=["chunk"], limit=20, alpha=0.5
-            )
-            chunk_objs.extend([o.properties for o in response.objects])
+            for target_vector, limit in [("path", 5), ("chunk", 20)]:
+                response = chunks.query.near_text(
+                    query=query, target_vector=target_vector, limit=limit
+                )
+                chunk_objs.extend([o.properties for o in response.objects])
 
         return list(
             {(chunk["path"], chunk["chunk_no"]): chunk for chunk in chunk_objs}.values()

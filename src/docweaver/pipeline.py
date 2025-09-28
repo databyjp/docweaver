@@ -4,6 +4,7 @@ Document processing pipeline operations.
 This module contains high-level operations for the docweaver document processing pipeline.
 Each function corresponds to a stage in the sequential pipeline process.
 """
+
 from pathlib import Path
 from typing import Dict, Any
 import logging
@@ -11,7 +12,14 @@ import json
 
 from . import db
 from .utils import chunk_text
-from .agents import docs_search_agent, DocSearchDeps, doc_instructor_agent, parse_doc_refs, WeaviateDoc, doc_writer_agent
+from .agents import (
+    docs_search_agent,
+    DocSearchDeps,
+    doc_instructor_agent,
+    parse_doc_refs,
+    WeaviateDoc,
+    doc_writer_agent,
+)
 import time
 import difflib
 from collections import defaultdict
@@ -23,8 +31,7 @@ import os
 
 
 def prep_database(
-    docs_path: str = "docs/docs/weaviate/",
-    reset_collection: bool = True
+    docs_path: str = "docs/docs/weaviate/", reset_collection: bool = True
 ) -> Dict[str, Any]:
     """
     Reset and populate the document database.
@@ -48,6 +55,7 @@ def prep_database(
         try:
             with db.connect() as client:
                 from .config import COLLECTION_NAME
+
                 client.collections.delete(COLLECTION_NAME)
                 logging.info("Deleted existing collection")
         except Exception as e:
@@ -74,13 +82,14 @@ def prep_database(
             db.add_chunks(chunk_texts)
             processed_files.append(file.as_posix())
 
-    logging.info(f"Database preparation complete. Processed {len(processed_files)} files.")
+    logging.info(
+        f"Database preparation complete. Processed {len(processed_files)} files."
+    )
     return {"files_processed": len(processed_files), "files": processed_files}
 
 
 async def search_documents(
-    feature_description: str,
-    output_path: str = "outputs/doc_search_agent.log"
+    feature_description: str, output_path: str = "outputs/doc_search_agent.log"
 ) -> Dict[str, Any]:
     """
     Search for documents that may need editing for a given feature.
@@ -115,19 +124,21 @@ async def search_documents(
     with open(output_path, "w") as f:
         json.dump(results, f, indent=4)
 
-    logging.info(f"Document search complete. Found {len(results)} documents. Results saved to {output_path}")
+    logging.info(
+        f"Document search complete. Found {len(results)} documents. Results saved to {output_path}"
+    )
 
     return {
         "documents": results,
         "token_usage": response.usage(),
-        "output_path": output_path
+        "output_path": output_path,
     }
 
 
 async def coordinate_changes(
     feature_description: str,
     search_results_path: str = "outputs/doc_search_agent.log",
-    output_path: str = "outputs/doc_instructor_agent.log"
+    output_path: str = "outputs/doc_instructor_agent.log",
 ) -> Dict[str, Any]:
     """
     Generate editing instructions for documents based on search results.
@@ -217,13 +228,15 @@ async def coordinate_changes(
     with open(output_path, "w") as f:
         json.dump(instructions, f, indent=4)
 
-    logging.info(f"Change coordination complete. Generated {len(instructions)} instructions. Saved to {output_path}")
+    logging.info(
+        f"Change coordination complete. Generated {len(instructions)} instructions. Saved to {output_path}"
+    )
 
     return {
         "instructions": instructions,
         "documents_processed": len(all_docs_content),
         "token_usage": response.usage(),
-        "output_path": output_path
+        "output_path": output_path,
     }
 
 
@@ -231,7 +244,7 @@ async def make_changes(
     feature_description: str,
     instructions_path: str = "outputs/doc_instructor_agent.log",
     output_path: str = "outputs/doc_writer_agent.log",
-    edits_path: str = "outputs/doc_writer_agent_edits.log"
+    edits_path: str = "outputs/doc_writer_agent_edits.log",
 ) -> Dict[str, Any]:
     """
     Apply editing instructions to generate revised documents.
@@ -292,25 +305,29 @@ async def make_changes(
         instructions_prompt = "\n---\n".join(formatted_instructions)
 
         prompt = f"""
-Update the documentation for a new Weaviate feature.
+        Update the documentation for a new Weaviate feature.
 
-# Feature Description
-{feature_description}
+        # Feature Description
+        {feature_description}
 
-# Documentation Files
-{prompt_docs}
+        # Documentation Files
+        {prompt_docs}
 
-# Update Instructions
-{instructions_prompt}
-"""
+        # Update Instructions
+        {instructions_prompt}
+        """
 
         start_time = time.time()
         logging.info(f"Processing instructions for primary file: {primary_path}")
         response = await doc_writer_agent.run(prompt)
-        logging.info(f"Token usage for doc_writer_agent (primary_path: {primary_path}): {response.usage()}")
+        logging.info(
+            f"Token usage for doc_writer_agent (primary_path: {primary_path}): {response.usage()}"
+        )
 
         end_time = time.time()
-        logging.info(f"Finished processing instructions for primary file: {primary_path} in {end_time - start_time:.2f} seconds.")
+        logging.info(
+            f"Finished processing instructions for primary file: {primary_path} in {end_time - start_time:.2f} seconds."
+        )
 
         all_edits = [o.model_dump() for o in response.output]
         revised_contents = original_contents.copy()
@@ -330,7 +347,9 @@ Update the documentation for a new Weaviate feature.
                 continue
             for edit in edits:
                 if edit["replace_section"] in content:
-                    content = content.replace(edit["replace_section"], edit["replacement_txt"])
+                    content = content.replace(
+                        edit["replace_section"], edit["replacement_txt"]
+                    )
             revised_contents[path] = content
 
         return [
@@ -370,20 +389,22 @@ Update the documentation for a new Weaviate feature.
 
     end_time = time.time()
     total_time = end_time - start_time
-    logging.info(f"Finished making changes to the documentation in {total_time:.2f} seconds.")
+    logging.info(
+        f"Finished making changes to the documentation in {total_time:.2f} seconds."
+    )
 
     return {
         "revised_documents": revised_docs_to_log,
         "files_changed": len(all_responses_with_edits),
         "total_processing_time": total_time,
         "output_path": output_path,
-        "edits_path": edits_path
+        "edits_path": edits_path,
     }
 
 
 def create_diffs(
     changes_path: str = "outputs/doc_writer_agent.log",
-    output_path: str = "outputs/diffs.log"
+    output_path: str = "outputs/diffs.log",
 ) -> Dict[str, Any]:
     """
     Create unified diffs from the revised documents.
@@ -432,7 +453,9 @@ def create_diffs(
             all_diffs += diff
             diffs_created += 1
             console.print(f"Diff for {file_path_str}:")
-            syntax = Syntax(diff, "diff", theme="monokai", line_numbers=False, word_wrap=True)
+            syntax = Syntax(
+                diff, "diff", theme="monokai", line_numbers=False, word_wrap=True
+            )
             console.print(syntax)
             console.print("-" * 80)
 
@@ -445,7 +468,7 @@ def create_diffs(
     return {
         "diffs_created": diffs_created,
         "output_path": output_path,
-        "has_changes": diffs_created > 0
+        "has_changes": diffs_created > 0,
     }
 
 
@@ -454,7 +477,7 @@ def create_pr(
     body: str = None,
     branch_name: str = None,
     diffs_path: str = "outputs/diffs.log",
-    docs_path: str = "docs"
+    docs_path: str = "docs",
 ) -> Dict[str, Any]:
     """
     Apply diffs and create a pull request.
@@ -499,7 +522,9 @@ def create_pr(
 
     try:
         # Apply diffs
-        modified_diff = diff_content.replace("--- a/docs/", "--- a/").replace("+++ b/docs/", "+++ b/")
+        modified_diff = diff_content.replace("--- a/docs/", "--- a/").replace(
+            "+++ b/docs/", "+++ b/"
+        )
 
         temp_diff_path = docs_path / "temp_diffs.patch"
         with open(temp_diff_path, "w") as f:
@@ -567,7 +592,7 @@ def create_pr(
             "branch_name": branch_name,
             "title": title,
             "body": body,
-            "message": f"Branch '{branch_name}' created successfully"
+            "message": f"Branch '{branch_name}' created successfully",
         }
 
     except git.exc.GitCommandError as e:

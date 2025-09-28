@@ -1,9 +1,20 @@
+import json
+
 DOCUMENTATION_META_INFO = """
 The Weaviate documentation generally follows the Diataxis framework.
 
-Accordingly, each document aims to be primarily one of [concepts, reference, how-to, or tutorial] formats; although, this isn't always possible.
+Accordingly, each document aims to be primarily one of
+[concepts, reference, how-to, or tutorial] formats; although, this isn't always possible.
 
-When searching, reviewing, or editing the documentation file, keep this in mind. Each document should stick to one of these purposes closely if possible.
+When searching, reviewing, or editing the documentation file, keep this in mind.
+Each document should stick to one of these purposes closely if possible.
+
+Generally, you can tell from the document path, and the first few lines what type of document it is.
+
+It is important to follow this framework to ensure clarity and ease of use for our readers.
+
+You can replicate some information across multiple documents;
+however, it is preferable to separate the information into distinct documents to achieve separation of concerns.
 """
 
 NEW_CODE_EXAMPLE_MARKER = (
@@ -38,41 +49,48 @@ def setup_logging(script_name: str):
     logging.getLogger().addHandler(console_handler)
 
 
-TECH_DESCRIPTION_COLLECTION_ALIASES = """
-Collection aliases allow you to create alternative names for your collections. This is useful for changing collection definitions without downtime, A/B testing, or providing more convenient names for collections. An alias acts as a reference to a collection - when you query using an alias name, Weaviate automatically routes the request to the target collection.
+def load_task(task_file: str) -> dict:
+    """Load task from JSON file in tasks/ directory."""
+    from pathlib import Path
 
-Aliases provide indirection (an intermediate layer) between your application and collections, enabling operational flexibility without downtime.
+    task_path = Path(f"tasks/{task_file}")
+    if not task_path.exists():
+        raise FileNotFoundError(f"Task file not found: {task_path}")
 
-**If** you deploy schema changes → **Use blue-green deployment with aliases**
+    with task_path.open() as f:
+        task_data = json.load(f)
 
-```json
-Products (alias) → ProductsV1 (collection)
-(deploy v2) → switch Products (alias) → ProductsV2 (collection)
+    # Validate required fields
+    required_fields = ["objective", "context", "focus"]
+    for field in required_fields:
+        if field not in task_data:
+            raise ValueError(f"Task file {task_file} missing required field: {field}")
 
-```
+    return task_data
 
-**If** you need version management → **Use aliases for rollback capability**
 
-- Deploy to new collection, switch alias, keep old version for rollback
-"""
+def list_available_tasks() -> list[str]:
+    """List all available task files in the tasks/ directory."""
+    from pathlib import Path
 
-TECH_DESCRIPTION_RESHARDING = """
-A multi-node Weaviate cluster can now be re-sharded to redistribute data across nodes for improved performance and scalability.
+    tasks_dir = Path("tasks")
+    if not tasks_dir.exists():
+        return []
 
-This feature allows administrators to dynamically adjust the number of shards in an existing cluster without downtime. The resharding process works by creating new shard mappings, migrating vector embeddings and metadata in batches, and updating the distributed hash ring to reflect the new topology.
+    return [f.name for f in tasks_dir.glob("*.json")]
 
-Key capabilities include:
-- Automatic load balancing during migration to prevent node overload
-- Configurable batch sizes and migration speed throttling
-- Real-time consistency checks to ensure data integrity
-- Rollback support in case of migration failures
-- Monitoring endpoints to track resharding progress
 
-The resharding operation is triggered via the `/v1/cluster/resharding` API endpoint with parameters for target shard count, migration speed, and validation settings.
+# Current task configuration - change this to switch between tasks
+# Options: resharding-feature.json, spfresh-documentation.json, auth-concepts-update.json
+CURRENT_TASK_FILE = "spfresh-documentation.json"
 
-Each Weaviate client library (Python, JS/TS, Go, Java) will get its own native functions to do this. The exact syntax is not yet known.
 
-During resharding, read operations continue normally while writes are temporarily queued and replayed after shard migration completes.
-
-Typical use cases include scaling up clusters under heavy load, rebalancing after node additions/removals, and optimizing shard distribution for query performance patterns.
+def get_current_task_description() -> str:
+    """Returns formatted task description for agents."""
+    task_data = load_task(CURRENT_TASK_FILE)
+    return f"""
+Objective: {task_data["objective"]}
+Context:
+{task_data["context"]}
+Focus: {task_data["focus"]}
 """

@@ -1,11 +1,12 @@
 from docweaver.pipeline import coordinate_changes
 import asyncio
-from helpers import TECH_DESCRIPTION_RESHARDING, setup_logging
+from helpers import get_current_task_description, setup_logging
 
 
 async def main():
     setup_logging(__file__)
-    result = await coordinate_changes(TECH_DESCRIPTION_RESHARDING)
+    task_description = get_current_task_description()
+    result = await coordinate_changes(task_description)
 
     print(f"Change coordination complete.")
     print(f"Generated {len(result['instructions'])} editing instructions")

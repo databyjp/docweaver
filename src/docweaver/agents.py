@@ -23,18 +23,18 @@ docs_search_agent = Agent(
     model="anthropic:claude-3-5-haiku-latest",
     output_type=list[DocSearchReturn],
     system_prompt=f"""
-    You are an expert researcher and knowledgeable in vector databases, especially Weavaite.
-    You are to search the available Weaviate documentation to
-    find relevant pages for tech writer to potentially edit.
+    You are an expert researcher knowledgeable in vector databases, especially Weaviate.
+    You are to search the available Weaviate documentation to find relevant pages that may need editing.
 
     {DOCUMENTATION_META_INFO}
 
-    Review the returned data, and return
-    the documents that might require updating.
+    Based on the provided task, find documents that might require updating, editing,
+    or should be considered for consistency.
 
-    You are encouraged to return more than what may be actually edited.
+    Review the returned data and identify documents that might require updating.
 
-    The subsequent reviewer will view them in detail and decide what to edit.
+    A subsequent reviewer will examine them in detail and decide what to edit.
+    As a result, your job is to overfetch; that is, return more than what may actually be edited.
     """,
 )
 
@@ -66,36 +66,31 @@ doc_instructor_agent = Agent(
     model="anthropic:claude-4-sonnet-20250514",
     output_type=list[CoordinatedEditInstructions],
     system_prompt=f"""
-    You are an expert writer and developer, who is
-    managing a team of capable, but junior writers.
+    You are an expert writer and developer managing a team of capable writers.
 
-    Your job is to review a documentation task,
-    such as a new feature, and to instruct the junior writers.
+    Your job is to review a documentation task and instruct writers on how to
+    update the existing documentation.
 
     {DOCUMENTATION_META_INFO}
 
     The full content for each relevant document will be provided to you,
-    and a list of its referenced files (e.g., code snippets or markdown).
+    along with any referenced files (e.g., code snippets or markdown).
     Sometimes you will get the referenced files in full, but not always.
 
-    Review all of the provided context, and
-    provide a set of instructions to your writers regarding
-    how to edit the documentation to reflect the feature.
+    Review all provided context and provide clear instructions to your writers.
 
-    At Weaviate, we prefer to write code in source files
-    so that they can be reviewed, automated for testing, and maintained.
+    For example, you can include:
+    - Which files need editing and why
+    - What specific changes should be made
+    - How to maintain consistency with existing documentation style
+    - Any cross-references that need updating
 
-    So, when adding any code examples,
-    instruct the writer to add them to
-    the markdown's associated source files (like `.py`, `.ts`, etc.).
+    At Weaviate, we prefer to write code in source files so they can be reviewed,
+    automated for testing, and maintained. When adding code examples, instruct
+    writers to add them to the markdown's associated source files (like `.py`, `.ts`, etc.).
 
-    Be sure to include instructions to edit the source files directly,
-    rather than the markdown files.
-
-    The writers are capable but relatively junior.
-    So, provide clear, unambiguous instructions for them to follow.
-
-    Where possible, provide placeholder code snippets
+    The writers are capable but relatively junior, so provide clear,
+    unambiguous instructions. Where possible, provide placeholder code snippets
     for them to add to the appropriate source file.
     """,
 )
@@ -128,7 +123,7 @@ def parse_doc_refs(file_path: Path, include_code_body: bool = True) -> WeaviateD
     content = file_path.read_text()
 
     # Choose pattern based on whether code files should be included
-    code_extensions_list = ["py", "ts", "js", "java", "go"]
+    code_extensions_list = ["py"]
     file_extensions = r"mdx?|" + "|".join(code_extensions_list)
 
     import_pattern = rf'import\s+\w+\s+from\s+["\'](?:!!raw-loader!)?([^"\']+\.(?:{file_extensions}))["\']'
@@ -166,8 +161,7 @@ doc_writer_agent = Agent(
     model="anthropic:claude-4-sonnet-20250514",
     output_type=list[DocOutput],
     system_prompt=f"""
-    You are a good technical writer and a good developer,
-    who is very familar with Weaviate.
+    You are a great technical writer and developer, who is very familar with Weaviate.
 
     You will be given a set of instructions on
     how to update a documentation page, and/or any referenced pages.

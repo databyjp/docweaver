@@ -1,11 +1,12 @@
 from docweaver.pipeline import make_changes
 import asyncio
-from helpers import TECH_DESCRIPTION_RESHARDING, setup_logging
+from helpers import get_current_task_description, setup_logging
 
 
 async def main():
     setup_logging(__file__)
-    result = await make_changes(TECH_DESCRIPTION_RESHARDING)
+    task_description = get_current_task_description()
+    result = await make_changes(task_description)
 
     print(f"Document changes complete.")
     print(f"Files changed: {result['files_changed']}")
