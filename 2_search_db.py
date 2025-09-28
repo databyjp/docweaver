@@ -1,27 +1,18 @@
-from docweaver.agents import docs_search_agent, DocSearchDeps
-from docweaver.db import connect
-from pathlib import Path
+from docweaver.pipeline import search_documents
 import asyncio
-import json
 from helpers import TECH_DESCRIPTION_RESHARDING, setup_logging
-import logging
 
 
 async def main():
     setup_logging(__file__)
-    response = await docs_search_agent.run(
-        f"Find documents that may need editing, for a this feature: {TECH_DESCRIPTION_RESHARDING}",
-        deps=DocSearchDeps(client=connect()),
-    )
-    logging.info(f"Token usage for docs_search_agent: {response.usage()}")
-    for o in response.output:
-        print(o)
+    result = await search_documents(TECH_DESCRIPTION_RESHARDING)
 
-    outpath = Path("outputs/doc_search_agent.log")
-    outpath.parent.mkdir(parents=True, exist_ok=True)
-    responses = [o.model_dump() for o in response.output]
-    with outpath.open(mode="w") as f:
-        json.dump(responses, f, indent=4)
+    print(f"Document search complete. Found {len(result['documents'])} documents:")
+    for doc in result['documents']:
+        print(f"- {doc['path']}: {doc['reason']}")
+
+    print(f"Results saved to: {result['output_path']}")
+    print(f"Token usage: {result['token_usage']}")
 
 
 if __name__ == "__main__":

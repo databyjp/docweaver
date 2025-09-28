@@ -7,9 +7,11 @@ Each function corresponds to a stage in the sequential pipeline process.
 from pathlib import Path
 from typing import Dict, Any
 import logging
+import json
 
 from . import db
 from .utils import chunk_text
+from .agents import docs_search_agent, DocSearchDeps
 
 
 def prep_database(
@@ -66,3 +68,49 @@ def prep_database(
 
     logging.info(f"Database preparation complete. Processed {len(processed_files)} files.")
     return {"files_processed": len(processed_files), "files": processed_files}
+
+
+async def search_documents(
+    feature_description: str,
+    output_path: str = "outputs/doc_search_agent.log"
+) -> Dict[str, Any]:
+    """
+    Search for documents that may need editing for a given feature.
+
+    This operation uses the docs search agent to find relevant documents
+    that might require updates based on the feature description.
+
+    Args:
+        feature_description: Description of the feature to search for
+        output_path: Path to save the search results (default: "outputs/doc_search_agent.log")
+
+    Returns:
+        Dict containing search results with keys:
+        - documents: List of document search results
+        - token_usage: Token usage information from the agent
+        - output_path: Path where results were saved
+    """
+    logging.info(f"Starting document search for feature: {feature_description}")
+
+    response = await docs_search_agent.run(
+        f"Find documents that may need editing, for this feature: {feature_description}",
+        deps=DocSearchDeps(client=db.connect()),
+    )
+
+    logging.info(f"Token usage for docs_search_agent: {response.usage()}")
+
+    # Convert results to serializable format
+    results = [doc.model_dump() for doc in response.output]
+
+    # Save output for pipeline continuity
+    Path(output_path).parent.mkdir(parents=True, exist_ok=True)
+    with open(output_path, "w") as f:
+        json.dump(results, f, indent=4)
+
+    logging.info(f"Document search complete. Found {len(results)} documents. Results saved to {output_path}")
+
+    return {
+        "documents": results,
+        "token_usage": response.usage(),
+        "output_path": output_path
+    }
