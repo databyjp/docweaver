@@ -9,6 +9,7 @@ from pathlib import Path
 from typing import Dict, Any
 import logging
 import json
+import re
 
 from . import db
 from .utils import chunk_text
@@ -340,17 +341,51 @@ async def make_changes(
             for path, ref_edits in doc_output.get("referenced_file_edits", {}).items():
                 edits_by_file[path].extend(ref_edits)
 
-        # Apply edits to all files
+        # Apply edits to all files using a more robust method
         for path, edits in edits_by_file.items():
-            content = revised_contents.get(path)
-            if content is None:
+            original_content = original_contents.get(path)
+            if original_content is None:
+                logging.warning(f"No original content found for {path}, skipping edits.")
                 continue
+
+            processed_edits = []
             for edit in edits:
-                if edit["replace_section"] in content:
-                    content = content.replace(
-                        edit["replace_section"], edit["replacement_txt"]
+                replace_section = edit["replace_section"]
+                # Use finditer to locate all occurrences
+                matches = list(re.finditer(re.escape(replace_section), original_content))
+
+                if not matches:
+                    logging.warning(
+                        f"Edit section not found in {path}, skipping edit. "
+                        f"Section: {replace_section[:100]}..."
                     )
-            revised_contents[path] = content
+                    continue
+
+                if len(matches) > 1:
+                    logging.warning(
+                        f"Edit section is not unique in {path} ({len(matches)} occurrences), "
+                        f"applying to first one. Section: {replace_section[:100]}..."
+                    )
+
+                # Process the first match
+                match = matches[0]
+                processed_edits.append(
+                    {
+                        "start": match.start(),
+                        "end": match.end(),
+                        "replacement": edit["replacement_txt"],
+                    }
+                )
+
+            # Sort edits by start position in reverse order to avoid index shifting issues
+            processed_edits.sort(key=lambda e: e["start"], reverse=True)
+
+            # Apply edits to the original content
+            content_list = list(original_content)
+            for edit in processed_edits:
+                content_list[edit["start"] : edit["end"]] = list(edit["replacement"])
+
+            revised_contents[path] = "".join(content_list)
 
         return [
             {

@@ -104,6 +104,8 @@ class DocEdit(BaseModel):
 
 
 class DocOutput(BaseModel):
+    """Represents all the edits for a primary file and its referenced files."""
+
     path: str
     edits: list[DocEdit]
     referenced_file_edits: dict[str, list[DocEdit]] = {}
@@ -179,6 +181,9 @@ doc_writer_agent = Agent(
     - Use `referenced_file_edits` for changes to component files
     - Make sure each edit's `replace_section` exactly matches content in the target file
 
+    Your final output must be ONLY a valid JSON list of objects, conforming to the specified schema.
+    Do not include any other text, markdown formatting, or explanations.
+
     **CRITICAL INSTRUCTIONS FOR EDITING CODE EXAMPLES:**
 
     You will often find code examples embedded in Markdown files (`.mdx`) using a component called `<FilteredTextBlock>`.
@@ -197,20 +202,22 @@ doc_writer_agent = Agent(
       endMarker="END: SomeExample"
     />
     ```
-    And you need to change the code, you will find `/path/to/example.py` in the context and create an edit for it. Your output for this change would be:
+    And you need to change the code, you will find `/path/to/example.py` in the context and create an edit for it. Your output for this change would be a list containing one object like this:
     ```json
-    {{
-      "path": "docs/main.mdx",
-      "edits": [],
-      "referenced_file_edits": {{
-        "/path/to/example.py": [
-          {{
-            "replace_section": "...", // old code
-            "replacement_txt": "..." // new code
-          }}
-        ]
+    [
+      {{
+        "path": "docs/main.mdx",
+        "edits": [],
+        "referenced_file_edits": {{
+          "/path/to/example.py": [
+            {{
+              "replace_section": "# Old code to be replaced...",
+              "replacement_txt": "# New replacement code..."
+            }}
+          ]
+        }}
       }}
-    }}
+    ]
     ```
 
     When adding **NEW** code examples:

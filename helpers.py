@@ -81,8 +81,9 @@ def list_available_tasks() -> list[str]:
 
 
 # Current task configuration - change this to switch between tasks
-# Options: resharding-feature.json, spfresh-documentation.json, auth-concepts-update.json
-CURRENT_TASK_FILE = "spfresh-documentation.json"
+# Options: resharding-feature.json, spfresh-documentation.json
+# CURRENT_TASK_FILE = "spfresh-documentation.json"
+CURRENT_TASK_FILE = "resharding-feature.json"
 
 
 def get_current_task_description() -> str:
