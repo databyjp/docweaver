@@ -29,6 +29,7 @@ from rich.console import Console
 from rich.syntax import Syntax
 import git
 import os
+from github import Github
 
 
 def prep_database(
@@ -634,12 +635,37 @@ def create_pr(
         console.print(f"✅ Branch '{branch_name}' created and pushed")
         logging.info(f"Created branch '{branch_name}' with changes")
 
+        # Create Pull Request
+        remote_url = repo.remotes.origin.url
+        match = re.search(r"github\.com[/:]([\w.-]+)/([\w.-]+?)(?:\.git)?$", remote_url)
+        if not match:
+            raise ValueError(
+                f"Could not parse GitHub owner/repo from remote URL: {remote_url}"
+            )
+        repo_owner, repo_name = match.groups()
+
+        g = Github(github_token)
+        gh_repo = g.get_repo(f"{repo_owner}/{repo_name}")
+
+        # Get default branch from remote 'origin'
+        default_branch_name = repo.remotes.origin.refs.HEAD.ref.name.split("/")[-1]
+
+        pull = gh_repo.create_pull(
+            title=title,
+            body=body,
+            head=branch_name,
+            base=default_branch_name,
+        )
+
+        console.print(f"✅ Pull request created: {pull.html_url}")
+
         return {
             "success": True,
             "branch_name": branch_name,
+            "pr_url": pull.html_url,
             "title": title,
             "body": body,
-            "message": f"Branch '{branch_name}' created successfully",
+            "message": f"Pull request for branch '{branch_name}' created successfully.",
         }
 
     except git.exc.GitCommandError as e:

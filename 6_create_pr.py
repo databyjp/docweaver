@@ -15,6 +15,8 @@ def main():
         if result["success"]:
             console.print(f"✅ {result['message']}")
             console.print(f"Branch: {result['branch_name']}")
+            if "pr_url" in result:
+                console.print(f"PR URL: {result['pr_url']}")
         else:
             console.print(f"ℹ️ {result['message']}")
 
