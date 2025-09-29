@@ -69,14 +69,3 @@ def list_available_tasks() -> list[str]:
     if not tasks_dir.exists():
         return []
     return [f.stem for f in tasks_dir.glob("*.py") if f.stem != "__init__"]
-
-
-# Current task configuration - change this to switch between tasks
-# Options: resharding_feature, spfresh_documentation
-CURRENT_TASK_NAME = "resharding_feature"
-
-
-def get_current_task_description() -> str:
-    """Returns formatted task description for agents."""
-    task = load_task(CURRENT_TASK_NAME)
-    return task.get_description()
