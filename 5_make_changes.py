@@ -1,4 +1,10 @@
-from docweaver.pipeline import search_documents, coordinate_changes, make_changes, create_diffs, create_pr
+from docweaver.pipeline import (
+    search_documents,
+    coordinate_changes,
+    make_changes,
+    create_diffs,
+    create_pr,
+)
 from rich.console import Console
 import asyncio
 from helpers import setup_logging, load_task
