@@ -2,7 +2,7 @@ from docweaver.pipeline import prep_database
 
 
 def main():
-    result = prep_database()
+    result = prep_database(reset_collection=True)
     print(
         f"Database preparation complete. Processed {result['files_processed']} files."
     )

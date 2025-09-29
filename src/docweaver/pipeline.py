@@ -12,7 +12,7 @@ import json
 import re
 
 from . import db
-from .config import DOCS_PATHS
+from .config import DOCS_PATHS, DOCS_BASE_PATH
 from .utils import chunk_text
 from .agents import (
     docs_search_agent,
@@ -79,17 +79,19 @@ def prep_database(
         md_files.extend(Path(docs_path).rglob("*.md*"))
     md_files = [f for f in md_files if f.name[0] != "_"]
 
+    base_path = Path(DOCS_BASE_PATH)
     processed_files = []
     for file in md_files:
         with open(file, "r") as f:
-            logging.info(f"Importing {file}")
+            relative_path = file.relative_to(base_path).as_posix()
+            logging.info(f"Importing {relative_path}")
             text = f.read()
             chunks = chunk_text(text)
             chunk_texts = [
-                {"path": file.as_posix(), "chunk": chunk.text} for chunk in chunks
+                {"path": relative_path, "chunk": chunk.text} for chunk in chunks
             ]
             db.add_chunks(chunk_texts)
-            processed_files.append(file.as_posix())
+            processed_files.append(relative_path)
 
     logging.info(
         f"Database preparation complete. Processed {len(processed_files)} files."
@@ -728,11 +730,13 @@ async def update_catalog(
     logging.info(f"Loaded catalog with {len(catalog.docs)} existing documents")
 
     # Find documents that need updating across all paths
+    # Use common base path for consistent relative paths
+    base_path = Path(DOCS_BASE_PATH)
     all_docs_to_update = []
     for docs_path in docs_paths:
         doc_root = Path(docs_path)
         docs_to_update = get_docs_to_update(doc_root, catalog)
-        all_docs_to_update.extend([(doc, doc_root) for doc in docs_to_update])
+        all_docs_to_update.extend(docs_to_update)
 
     if limit:
         all_docs_to_update = all_docs_to_update[:limit]
@@ -748,27 +752,38 @@ async def update_catalog(
 
     logging.info(f"Found {len(all_docs_to_update)} documents to update")
 
-    # Generate metadata for each document
+    # Generate metadata for each document with incremental saving
     updated_entries = []
-    for doc_path, doc_root in all_docs_to_update:
-        metadata = await generate_metadata(doc_path, doc_root)
-        catalog.docs[metadata.path] = metadata
-        updated_entries.append(metadata.model_dump())
-        logging.info(f"Updated metadata for {metadata.path}")
+    for i, doc_path in enumerate(all_docs_to_update):
+        try:
+            metadata = await generate_metadata(doc_path, base_path)
+            catalog.docs[metadata.path] = metadata
+            updated_entries.append(metadata.model_dump())
+            logging.info(f"Updated metadata for {metadata.path} ({i+1}/{len(all_docs_to_update)})")
 
-    # Save catalog to JSON
+            # Save catalog incrementally every 10 documents
+            if (i + 1) % 10 == 0:
+                catalog.save(Path(catalog_path))
+                logging.info(f"Incremental save: {i+1}/{len(all_docs_to_update)} documents processed")
+
+        except Exception as e:
+            logging.error(f"Failed to process {doc_path}: {e}")
+            # Continue processing remaining documents
+
+    # Final save to ensure all updates are persisted
     catalog.save(Path(catalog_path))
-    logging.info(f"Saved catalog to {catalog_path}")
+    logging.info(f"Final save: catalog saved to {catalog_path}")
 
     # Store in Weaviate for vector search
-    try:
-        db.add_catalog_entries(updated_entries)
-        logging.info(f"Added {len(updated_entries)} entries to Weaviate catalog")
-    except Exception as e:
-        logging.warning(f"Could not update Weaviate catalog: {e}")
+    if updated_entries:
+        try:
+            db.add_catalog_entries(updated_entries)
+            logging.info(f"Added {len(updated_entries)} entries to Weaviate catalog")
+        except Exception as e:
+            logging.warning(f"Could not update Weaviate catalog: {e}")
 
     return {
         "total_docs": len(catalog.docs),
-        "updated_docs": len(all_docs_to_update),
+        "updated_docs": len(updated_entries),
         "catalog_path": catalog_path,
     }
