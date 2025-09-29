@@ -1,4 +1,10 @@
 import json
+import importlib
+from pathlib import Path
+
+import logging
+
+from src.docweaver.models import Task
 
 DOCUMENTATION_META_INFO = """
 The Weaviate documentation generally follows the Diataxis framework.
@@ -23,9 +29,6 @@ NEW_CODE_EXAMPLE_MARKER = (
 
 
 def setup_logging(script_name: str):
-    import logging
-    from pathlib import Path
-
     log_dir = Path("logs")
     log_dir.mkdir(exist_ok=True)
     log_file = log_dir / f"{Path(script_name).stem}.log"
@@ -49,49 +52,31 @@ def setup_logging(script_name: str):
     logging.getLogger().addHandler(console_handler)
 
 
-def load_task(task_file: str) -> dict:
-    """Load task from JSON file in tasks/ directory."""
-    from pathlib import Path
-
-    task_path = Path(f"tasks/{task_file}")
-    if not task_path.exists():
-        raise FileNotFoundError(f"Task file not found: {task_path}")
-
-    with task_path.open() as f:
-        task_data = json.load(f)
-
-    # Validate required fields
-    required_fields = ["objective", "context", "focus"]
-    for field in required_fields:
-        if field not in task_data:
-            raise ValueError(f"Task file {task_file} missing required field: {field}")
-
-    return task_data
+def load_task(task_name: str) -> Task:
+    """Load task from Python file in tasks/ directory."""
+    try:
+        module = importlib.import_module(f"tasks.{task_name}")
+        return module.task
+    except (ModuleNotFoundError, AttributeError) as e:
+        raise FileNotFoundError(
+            f"Task file not found or is invalid: tasks/{task_name}.py"
+        ) from e
 
 
 def list_available_tasks() -> list[str]:
     """List all available task files in the tasks/ directory."""
-    from pathlib import Path
-
     tasks_dir = Path("tasks")
     if not tasks_dir.exists():
         return []
-
-    return [f.name for f in tasks_dir.glob("*.json")]
+    return [f.stem for f in tasks_dir.glob("*.py") if f.stem != "__init__"]
 
 
 # Current task configuration - change this to switch between tasks
-# Options: resharding-feature.json, spfresh-documentation.json
-# CURRENT_TASK_FILE = "spfresh-documentation.json"
-CURRENT_TASK_FILE = "resharding-feature.json"
+# Options: resharding_feature, spfresh_documentation
+CURRENT_TASK_NAME = "resharding_feature"
 
 
 def get_current_task_description() -> str:
     """Returns formatted task description for agents."""
-    task_data = load_task(CURRENT_TASK_FILE)
-    return f"""
-Objective: {task_data["objective"]}
-Context:
-{task_data["context"]}
-Focus: {task_data["focus"]}
-"""
+    task = load_task(CURRENT_TASK_NAME)
+    return task.get_description()

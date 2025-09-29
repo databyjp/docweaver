@@ -33,7 +33,7 @@ from github import Github
 
 
 def prep_database(
-    docs_path: str = "docs/docs/weaviate/", reset_collection: bool = True
+    docs_paths: list[str] = ["docs/docs/weaviate/", "docs/docs/deploy/"], reset_collection: bool = True
 ) -> Dict[str, Any]:
     """
     Reset and populate the document database.
@@ -69,7 +69,9 @@ def prep_database(
     except Exception as e:
         logging.info(f"Collection creation skipped (may already exist): {e}")
 
-    md_files = Path(docs_path).rglob("*.md*")
+    md_files = []
+    for docs_path in docs_paths:
+        md_files.extend(Path(docs_path).rglob("*.md*"))
     md_files = [f for f in md_files if f.name[0] != "_"]
 
     processed_files = []
@@ -346,14 +348,18 @@ async def make_changes(
         for path, edits in edits_by_file.items():
             original_content = original_contents.get(path)
             if original_content is None:
-                logging.warning(f"No original content found for {path}, skipping edits.")
+                logging.warning(
+                    f"No original content found for {path}, skipping edits."
+                )
                 continue
 
             processed_edits = []
             for edit in edits:
                 replace_section = edit["replace_section"]
                 # Use finditer to locate all occurrences
-                matches = list(re.finditer(re.escape(replace_section), original_content))
+                matches = list(
+                    re.finditer(re.escape(replace_section), original_content)
+                )
 
                 if not matches:
                     logging.warning(
@@ -584,9 +590,7 @@ def create_pr(
         # Ensure we're on the default branch
         try:
             # Get default branch from remote 'origin'
-            default_branch_name = (
-                repo.remotes.origin.refs.HEAD.ref.name.split("/")[-1]
-            )
+            default_branch_name = repo.remotes.origin.refs.HEAD.ref.name.split("/")[-1]
             repo.heads[default_branch_name].checkout()
             logging.info(f"Checked out default branch: {default_branch_name}")
         except Exception as e:
