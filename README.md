@@ -26,6 +26,15 @@ python 0_prep_db.py
 
 ## Usage
 
+### Update Catalog (Optional)
+Generate metadata for documentation files:
+```bash
+python 2_update_catalog.py
+```
+
+This creates a searchable catalog with document metadata (topics, type, summary).
+
+### Make Changes
 1. Create a task file in `tasks/` (see `tasks/resharding_feature.py`)
 2. Update `CURRENT_TASK_NAME` in `1_make_changes.py`
 3. Run:
@@ -38,6 +47,7 @@ The pipeline will search documents, generate edit instructions, apply changes, c
 ## Output
 
 Results saved to `outputs/`:
+- `catalog.json` - Document metadata catalog
 - `doc_search_agent.log` - Documents found
 - `doc_instructor_agent.log` - Edit instructions
 - `doc_writer_agent.log` - Revised documents

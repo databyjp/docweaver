@@ -12,6 +12,7 @@ import json
 import re
 
 from . import db
+from .config import DOCS_PATHS
 from .utils import chunk_text
 from .agents import (
     docs_search_agent,
@@ -21,6 +22,7 @@ from .agents import (
     WeaviateDoc,
     doc_writer_agent,
 )
+from .catalog import DocCatalog, get_docs_to_update, generate_metadata
 import time
 import difflib
 from collections import defaultdict
@@ -33,16 +35,16 @@ from github import Github
 
 
 def prep_database(
-    docs_paths: list[str] = ["docs/docs/weaviate/", "docs/docs/deploy/"], reset_collection: bool = True
+    docs_paths: list[str] | None = None, reset_collection: bool = True
 ) -> Dict[str, Any]:
     """
     Reset and populate the document database.
 
     This operation deletes the existing collection, creates a new one,
-    and populates it with chunks from markdown files in the specified path.
+    and populates it with chunks from markdown files in the specified paths.
 
     Args:
-        docs_path: Path to the documentation directory (default: "docs/docs/weaviate/")
+        docs_paths: List of documentation directories (default: from config.DOCS_PATHS)
         reset_collection: Whether to reset the collection (default: True)
 
     Returns:
@@ -51,6 +53,9 @@ def prep_database(
         - files: List of file paths that were processed
     """
     logging.info("Starting database preparation...")
+
+    if docs_paths is None:
+        docs_paths = DOCS_PATHS
 
     if reset_collection:
         # For pipeline use, we want to reset without user prompts
@@ -690,3 +695,80 @@ def create_pr(
             )
         except Exception as e:
             console.print(f"⚠️ Could not switch back to original branch: {e}")
+
+
+async def update_catalog(
+    docs_paths: list[str] | None = None,
+    catalog_path: str = "outputs/catalog.json",
+    limit: int | None = None,
+) -> Dict[str, Any]:
+    """
+    Update the document catalog with metadata for new or modified documents.
+
+    This operation generates metadata (topics, doctype, summary) for documents
+    and stores them both locally (JSON) and in Weaviate for vector search.
+
+    Args:
+        docs_paths: List of documentation directories (default: from config.DOCS_PATHS)
+        catalog_path: Path to save catalog JSON (default: "outputs/catalog.json")
+        limit: Optional limit on number of documents to process
+
+    Returns:
+        Dict containing results with keys:
+        - total_docs: Total documents in catalog
+        - updated_docs: Number of documents updated
+        - catalog_path: Path where catalog was saved
+    """
+    logging.info("Starting catalog update...")
+
+    if docs_paths is None:
+        docs_paths = DOCS_PATHS
+
+    catalog = DocCatalog.load(Path(catalog_path))
+    logging.info(f"Loaded catalog with {len(catalog.docs)} existing documents")
+
+    # Find documents that need updating across all paths
+    all_docs_to_update = []
+    for docs_path in docs_paths:
+        doc_root = Path(docs_path)
+        docs_to_update = get_docs_to_update(doc_root, catalog)
+        all_docs_to_update.extend([(doc, doc_root) for doc in docs_to_update])
+
+    if limit:
+        all_docs_to_update = all_docs_to_update[:limit]
+        logging.info(f"Limited to {limit} documents")
+
+    if not all_docs_to_update:
+        logging.info("No documents to update")
+        return {
+            "total_docs": len(catalog.docs),
+            "updated_docs": 0,
+            "catalog_path": catalog_path,
+        }
+
+    logging.info(f"Found {len(all_docs_to_update)} documents to update")
+
+    # Generate metadata for each document
+    updated_entries = []
+    for doc_path, doc_root in all_docs_to_update:
+        metadata = await generate_metadata(doc_path, doc_root)
+        catalog.docs[metadata.path] = metadata
+        updated_entries.append(metadata.model_dump())
+        logging.info(f"Updated metadata for {metadata.path}")
+
+    # Save catalog to JSON
+    catalog.save(Path(catalog_path))
+    logging.info(f"Saved catalog to {catalog_path}")
+
+    # Store in Weaviate for vector search
+    try:
+        db.add_catalog_entries(updated_entries)
+        logging.info(f"Added {len(updated_entries)} entries to Weaviate catalog")
+    except Exception as e:
+        logging.warning(f"Could not update Weaviate catalog: {e}")
+
+    return {
+        "total_docs": len(catalog.docs),
+        "updated_docs": len(all_docs_to_update),
+        "catalog_path": catalog_path,
+    }

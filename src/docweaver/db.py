@@ -1,4 +1,4 @@
-from docweaver.config import COLLECTION_NAME
+from docweaver.config import COLLECTION_NAME, CATALOG_COLLECTION_NAME
 from weaviate.classes.config import Property, DataType, Configure
 import weaviate
 from weaviate import WeaviateClient
@@ -78,3 +78,49 @@ def search_chunks(client: WeaviateClient, queries: list[str]) -> list[dict[str, 
         return list(
             {(chunk["path"], chunk["chunk_no"]): chunk for chunk in chunk_objs}.values()
         )
+
+
+def create_catalog_collection():
+    """Create Weaviate collection for document catalog (metadata only)."""
+    with connect() as client:
+        client.collections.create(
+            CATALOG_COLLECTION_NAME,
+            properties=[
+                Property(name="path", data_type=DataType.TEXT),
+                Property(name="title", data_type=DataType.TEXT),
+                Property(name="topics", data_type=DataType.TEXT_ARRAY),
+                Property(name="doctype", data_type=DataType.TEXT),
+                Property(name="summary", data_type=DataType.TEXT),
+                Property(name="hash", data_type=DataType.TEXT),
+            ],
+            vectorizer_config=Configure.Vectorizer.text2vec_weaviate(
+                vectorize_collection_name=False
+            ),
+        )
+
+
+def add_catalog_entries(entries: list[dict]):
+    """Add or update document catalog entries in Weaviate."""
+    with connect() as client:
+        catalog = client.collections.use(CATALOG_COLLECTION_NAME)
+        with catalog.batch.fixed_size(batch_size=50) as batch:
+            for entry in entries:
+                batch.add_object(
+                    properties={
+                        "path": entry["path"],
+                        "title": entry.get("title"),
+                        "topics": entry.get("topics", []),
+                        "doctype": entry.get("doctype"),
+                        "summary": entry.get("summary"),
+                        "hash": entry.get("hash"),
+                    },
+                    uuid=generate_uuid5(entry["path"]),
+                )
+
+
+def search_catalog(client: WeaviateClient, query: str, limit: int = 10) -> list[dict]:
+    """Search document catalog by semantic similarity."""
+    with client:
+        catalog = client.collections.use(CATALOG_COLLECTION_NAME)
+        response = catalog.query.near_text(query=query, limit=limit)
+        return [o.properties for o in response.objects]
