@@ -4,7 +4,7 @@ import asyncio
 from helpers import setup_logging, load_task
 
 # Current task configuration - change this to switch between tasks
-# Options: resharding_feature, spfresh_documentation
+# Task name is the name of the Python file in the tasks/ directory
 CURRENT_TASK_NAME = "resharding_feature"
 
 
