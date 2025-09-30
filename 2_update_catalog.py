@@ -15,6 +15,7 @@ async def main():
     print(f"Catalog update complete.")
     print(f"Total documents in catalog: {result['total_docs']}")
     print(f"Documents updated: {result['updated_docs']}")
+    print(f"Documents removed: {result['removed_docs']}")
     print(f"Catalog saved to: {result['catalog_path']}")
 
 

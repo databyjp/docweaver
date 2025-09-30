@@ -11,7 +11,7 @@ from helpers import setup_logging, load_task
 
 # Current task configuration - change this to switch between tasks
 # Task name is the name of the Python file in the tasks/ directory
-CURRENT_TASK_NAME = "resharding_feature"
+CURRENT_TASK_NAME = "prod_readiness"
 
 
 def get_current_task_description() -> str:

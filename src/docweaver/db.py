@@ -1,3 +1,4 @@
+from httpx import head
 from docweaver.config import COLLECTION_NAME, CATALOG_COLLECTION_NAME
 from weaviate.classes.config import Property, DataType, Configure
 import weaviate
@@ -10,6 +11,9 @@ def connect() -> WeaviateClient:
     return weaviate.connect_to_weaviate_cloud(
         cluster_url=os.getenv("WEAVIATE_URL"),
         auth_credentials=os.getenv("WEAVIATE_API_KEY"),
+        headers={
+            "X-Cohere-Api-Key": os.environ["COHERE_API_KEY"]
+        }
     )
 
 
@@ -34,13 +38,15 @@ def create_collection():
                 Property(name="chunk_no", data_type=DataType.INT),
             ],
             vector_config=[
-                Configure.Vectors.text2vec_weaviate(
+                Configure.Vectors.text2vec_cohere(
                     name="chunk",
                     source_properties=["path", "chunk"],
+                    model="embed-v4.0"
                 ),
-                Configure.Vectors.text2vec_weaviate(
+                Configure.Vectors.text2vec_cohere(
                     name="path",
                     source_properties=["path"],
+                    model="embed-v4.0"
                 ),
             ],
             generative_config=Configure.Generative.anthropic(
@@ -93,8 +99,9 @@ def create_catalog_collection():
                 Property(name="summary", data_type=DataType.TEXT),
                 Property(name="hash", data_type=DataType.TEXT),
             ],
-            vectorizer_config=Configure.Vectorizer.text2vec_weaviate(
-                vectorize_collection_name=False
+            vector_config=Configure.Vectors.text2vec_cohere(
+                source_properties=["title", "topics", "summary"],
+                model="embed-v4.0"
             ),
         )
 
@@ -102,7 +109,11 @@ def create_catalog_collection():
 def add_catalog_entries(entries: list[dict]):
     """Add or update document catalog entries in Weaviate."""
     with connect() as client:
+        if not client.collections.exists(CATALOG_COLLECTION_NAME):
+            create_catalog_collection()
+
         catalog = client.collections.use(CATALOG_COLLECTION_NAME)
+
         with catalog.batch.fixed_size(batch_size=50) as batch:
             for entry in entries:
                 batch.add_object(
@@ -118,9 +129,23 @@ def add_catalog_entries(entries: list[dict]):
                 )
 
 
+def remove_catalog_entries(paths: list[str]):
+    from weaviate.classes.query import Filter
+    """Remove document catalog entries from Weaviate by path."""
+    with connect() as client:
+        catalog = client.collections.use(CATALOG_COLLECTION_NAME)
+        # Weaviate batch delete uses a where filter, so we construct one
+        # to match any of the provided paths.
+        where_filter = Filter.by_property("path").contains_any(paths)
+        result = catalog.data.delete_many(where=where_filter)
+        if result.failed > 0:
+            for item in result.objects:
+                print(f"Error deleting item: {item.message}")
+
+
 def search_catalog(client: WeaviateClient, query: str, limit: int = 10) -> list[dict]:
     """Search document catalog by semantic similarity."""
     with client:
         catalog = client.collections.use(CATALOG_COLLECTION_NAME)
-        response = catalog.query.near_text(query=query, limit=limit)
+        response = catalog.query.near_text(query=query, limit=limit, target_vector="default")
         return [o.properties for o in response.objects]

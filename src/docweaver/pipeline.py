@@ -22,7 +22,7 @@ from .agents import (
     WeaviateDoc,
     doc_writer_agent,
 )
-from .catalog import DocCatalog, get_docs_to_update, generate_metadata
+from .catalog import DocCatalog, get_docs_to_update, get_docs_to_remove, generate_metadata
 import time
 import difflib
 from collections import defaultdict
@@ -719,19 +719,18 @@ async def update_catalog(
 ) -> Dict[str, Any]:
     """
     Update the document catalog with metadata for new or modified documents.
-
     This operation generates metadata (topics, doctype, summary) for documents
     and stores them both locally (JSON) and in Weaviate for vector search.
-
+    It also removes documents from the catalog that no longer exist.
     Args:
         docs_paths: List of documentation directories (default: from config.DOCS_PATHS)
         catalog_path: Path to save catalog JSON (default: "outputs/catalog.json")
         limit: Optional limit on number of documents to process
-
     Returns:
         Dict containing results with keys:
         - total_docs: Total documents in catalog
         - updated_docs: Number of documents updated
+        - removed_docs: Number of documents removed
         - catalog_path: Path where catalog was saved
     """
     logging.info("Starting catalog update...")
@@ -742,13 +741,31 @@ async def update_catalog(
     catalog = DocCatalog.load(Path(catalog_path))
     logging.info(f"Loaded catalog with {len(catalog.docs)} existing documents")
 
+    base_path = Path(DOCS_BASE_PATH)
+    docs_to_remove = []
+    for docs_path in docs_paths:
+        doc_root = Path(docs_path)
+        docs_to_remove.extend(get_docs_to_remove(doc_root, catalog, base_path))
+
+    removed_count = 0
+    if docs_to_remove:
+        logging.info(f"Found {len(docs_to_remove)} documents to remove")
+        for path in docs_to_remove:
+            if path in catalog.docs:
+                del catalog.docs[path]
+        try:
+            db.remove_catalog_entries(docs_to_remove)
+            removed_count = len(docs_to_remove)
+            logging.info(f"Removed {removed_count} entries from Weaviate catalog")
+        except Exception as e:
+            logging.warning(f"Could not remove from Weaviate catalog: {e}")
+
     # Find documents that need updating across all paths
     # Use common base path for consistent relative paths
-    base_path = Path(DOCS_BASE_PATH)
     all_docs_to_update = []
     for docs_path in docs_paths:
         doc_root = Path(docs_path)
-        docs_to_update = get_docs_to_update(doc_root, catalog)
+        docs_to_update = get_docs_to_update(doc_root, catalog, base_path)
         all_docs_to_update.extend(docs_to_update)
 
     if limit:
@@ -760,6 +777,7 @@ async def update_catalog(
         return {
             "total_docs": len(catalog.docs),
             "updated_docs": 0,
+            "removed_docs": removed_count,
             "catalog_path": catalog_path,
         }
 
@@ -798,5 +816,6 @@ async def update_catalog(
     return {
         "total_docs": len(catalog.docs),
         "updated_docs": len(updated_entries),
+        "removed_docs": removed_count,
         "catalog_path": catalog_path,
     }

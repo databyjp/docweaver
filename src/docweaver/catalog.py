@@ -67,13 +67,15 @@ doc_metadata_agent = Agent(
 )
 
 
-def get_docs_to_update(doc_root: Path, catalog: DocCatalog) -> list[Path]:
+def get_docs_to_update(
+    doc_root: Path, catalog: DocCatalog, base_path: Path
+) -> list[Path]:
     """Find documents that are new or have changed since last cataloging."""
     all_docs = [p for p in doc_root.rglob("*.md*") if not p.name.startswith("_")]
     docs_to_update = []
 
     for doc_path in all_docs:
-        relative_path = doc_path.relative_to(doc_root).as_posix()
+        relative_path = doc_path.relative_to(base_path).as_posix()
         current_hash = hashlib.sha256(doc_path.read_bytes()).hexdigest()
 
         if relative_path not in catalog.docs:
@@ -84,10 +86,27 @@ def get_docs_to_update(doc_root: Path, catalog: DocCatalog) -> list[Path]:
     return docs_to_update
 
 
-async def generate_metadata(doc_path: Path, doc_root: Path) -> DocMetadata:
+def get_docs_to_remove(doc_root: Path, catalog: DocCatalog, base_path: Path) -> list[str]:
+    """Find documents in the catalog that no longer exist on disk."""
+    # Build a set of all current document paths relative to the base_path
+    all_docs_on_disk = {
+        p.relative_to(base_path).as_posix()
+        for p in doc_root.rglob("*.md*")
+        if not p.name.startswith("_")
+    }
+
+    # Find paths that are in the catalog but not on disk anymore
+    docs_in_catalog = set(catalog.docs.keys())
+    docs_to_remove = [
+        path for path in docs_in_catalog if path not in all_docs_on_disk
+    ]
+    return docs_to_remove
+
+
+async def generate_metadata(doc_path: Path, base_path: Path) -> DocMetadata:
     """Generate metadata for a single document using AI."""
     content = doc_path.read_text()
-    relative_path = doc_path.relative_to(doc_root).as_posix()
+    relative_path = doc_path.relative_to(base_path).as_posix()
 
     prompt = f"Generate metadata for this documentation file at '{relative_path}':\n\n{content}"
 
