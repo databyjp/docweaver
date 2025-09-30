@@ -100,17 +100,21 @@ def prep_database(
 
 
 async def search_documents(
-    feature_description: str, output_path: str = "outputs/doc_search_agent.log"
+    feature_description: str,
+    output_path: str = "outputs/doc_search_agent.log",
+    catalog_path: str = "outputs/catalog.json",
 ) -> Dict[str, Any]:
     """
     Search for documents that may need editing for a given feature.
 
     This operation uses the docs search agent to find relevant documents
-    that might require updates based on the feature description.
+    that might require updates based on the feature description. It uses
+    both chunk-based content search and catalog metadata search.
 
     Args:
         feature_description: Description of the feature to search for
         output_path: Path to save the search results (default: "outputs/doc_search_agent.log")
+        catalog_path: Path to catalog JSON (default: "outputs/catalog.json")
 
     Returns:
         Dict containing search results with keys:
@@ -120,9 +124,18 @@ async def search_documents(
     """
     logging.info(f"Starting document search for feature: {feature_description}")
 
+    # Load catalog if available
+    catalog = None
+    if Path(catalog_path).exists():
+        try:
+            catalog = DocCatalog.load(Path(catalog_path))
+            logging.info(f"Loaded catalog with {len(catalog.docs)} documents")
+        except Exception as e:
+            logging.warning(f"Could not load catalog: {e}")
+
     response = await docs_search_agent.run(
         f"Find documents that may need editing, for this feature: {feature_description}",
-        deps=DocSearchDeps(client=db.connect()),
+        deps=DocSearchDeps(client=db.connect(), catalog=catalog),
     )
 
     logging.info(f"Token usage for docs_search_agent: {response.usage()}")

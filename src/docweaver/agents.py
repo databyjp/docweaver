@@ -1,6 +1,7 @@
 from pydantic_ai import Agent, RunContext
 from pydantic import BaseModel, ConfigDict
-from docweaver.db import search_chunks
+from docweaver.db import search_chunks, search_catalog
+from docweaver.catalog import DocCatalog
 from weaviate import WeaviateClient
 from pathlib import Path
 import re
@@ -12,6 +13,7 @@ import os
 class DocSearchDeps(BaseModel):
     model_config = ConfigDict(arbitrary_types_allowed=True)
     client: WeaviateClient
+    catalog: DocCatalog | None = None
 
 
 class DocSearchReturn(BaseModel):
@@ -33,6 +35,13 @@ docs_search_agent = Agent(
 
     Review the returned data and identify documents that might require updating.
 
+    You have access to two types of search:
+    1. search_docs - searches document chunks (detailed content search)
+    2. search_catalog - searches document metadata (topics, summaries, types)
+
+    Use both search methods to get comprehensive results. The catalog search is useful for
+    understanding document structure and finding related files.
+
     A subsequent reviewer will examine them in detail and decide what to edit.
     As a result, your job is to overfetch; that is, return more than what may actually be edited.
     """,
@@ -41,10 +50,33 @@ docs_search_agent = Agent(
 
 @docs_search_agent.tool
 def search_docs(
-    ctx: RunContext[DocSearchDeps], queries=list[str]
+    ctx: RunContext[DocSearchDeps], queries: list[str]
 ) -> list[dict[str, str]]:
+    """Search document content chunks for relevant passages."""
     logging.info(f"Executing tool 'search_docs' with queries: {queries}")
     return search_chunks(ctx.deps.client, queries)
+
+
+@docs_search_agent.tool
+def search_catalog(
+    ctx: RunContext[DocSearchDeps], query: str
+) -> list[dict]:
+    """Search document catalog for files by metadata (topics, summary, type)."""
+    logging.info(f"Executing tool 'search_catalog' with query: {query}")
+    if ctx.deps.catalog is None:
+        logging.warning("Catalog not available, skipping catalog search")
+        return []
+
+    # Search Weaviate catalog collection
+    results = []
+    try:
+        from docweaver.db import search_catalog as db_search_catalog
+        results = db_search_catalog(ctx.deps.client, query, limit=10)
+        logging.info(f"Catalog search returned {len(results)} results")
+    except Exception as e:
+        logging.warning(f"Catalog search failed: {e}")
+
+    return results
 
 
 class PerFileInstructions(BaseModel):
