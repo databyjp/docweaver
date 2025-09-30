@@ -1,0 +1,4192 @@
+{
+  "docs": {
+    "weaviate/recipes.mdx": {
+      "path": "weaviate/recipes.mdx",
+      "title": "Weaviate Recipes (code examples)",
+      "topics": [
+        "Weaviate",
+        "code examples",
+        "operations",
+        "Jupyter Notebooks"
+      ],
+      "doctype": "how-to",
+      "summary": "A compilation of practical code recipes demonstrating common operations in Weaviate, sourced from Jupyter Notebooks for easy reference and implementation.",
+      "hash": "bf4ed0ce32032e544c66cec5438e371c5033d1e4a73dbf877167fedfd589424d"
+    },
+    "weaviate/index.mdx": {
+      "path": "weaviate/index.mdx",
+      "title": "Weaviate Database",
+      "topics": [
+        "vector database",
+        "AI-native database",
+        "semantic search",
+        "retrieval augmented generation",
+        "vector embeddings"
+      ],
+      "doctype": "concept",
+      "summary": "An overview of Weaviate, an open-source AI-native vector database that enables advanced semantic search and supports retrieval augmented generation through vector embeddings and flexible deployment options.",
+      "hash": "1e3364f7c6105a07cc9b2fbdf4caf2f90ee623760c237722d9881b5dc047a395"
+    },
+    "weaviate/testing.mdx": {
+      "path": "weaviate/testing.mdx",
+      "title": "Testing",
+      "topics": [
+        "documentation",
+        "testing"
+      ],
+      "doctype": "reference",
+      "summary": "A placeholder documentation page with multiple nested headings, used for testing documentation structure and layout.",
+      "hash": "72bd83d541519c9b6d62c9b941be501e2a960a652b7bda02eeab41a23eb7ad17"
+    },
+    "weaviate/guides.mdx": {
+      "path": "weaviate/guides.mdx",
+      "title": "How-to manuals and Guides",
+      "topics": [
+        "weaviate",
+        "documentation",
+        "configuration",
+        "deployment",
+        "tutorials"
+      ],
+      "doctype": "how-to",
+      "summary": "An overview of Weaviate's documentation resources, providing guidance on configuration, management, and querying through various types of guides including how-to manuals, deployment guides, tutorials, and starter guides.",
+      "hash": "406389761b3addc07f9e269d4cfc10514342b59a0edeb34708e758b95850fb4c"
+    },
+    "weaviate/manage-objects/create.mdx": {
+      "path": "weaviate/manage-objects/create.mdx",
+      "title": "Create objects",
+      "topics": [
+        "Weaviate",
+        "Object Creation",
+        "Vector Databases",
+        "Data Management",
+        "Multi-language Clients"
+      ],
+      "doctype": "how-to",
+      "summary": "A comprehensive guide for creating objects in Weaviate, covering various methods like creating objects with specified vectors, IDs, cross-references, and supporting multiple programming language clients.",
+      "hash": "d747912605a553849940932b9e2e92335b1895abaa31f41e92c6fd1c8980dadb"
+    },
+    "weaviate/manage-objects/index.mdx": {
+      "path": "weaviate/manage-objects/index.mdx",
+      "title": "Manage objects",
+      "topics": [
+        "Weaviate",
+        "CRUD operations",
+        "data management",
+        "object manipulation"
+      ],
+      "doctype": "how-to",
+      "summary": "A comprehensive guide to performing fundamental CRUD operations on Weaviate objects, covering creating, importing, reading, updating, and deleting objects across different scenarios.",
+      "hash": "3a970b04ae9995904e99279d4beca1cdfe5005e40488049941283d24a05c9c37"
+    },
+    "weaviate/manage-objects/import.mdx": {
+      "path": "weaviate/manage-objects/import.mdx",
+      "title": "Batch import",
+      "topics": [
+        "batch import",
+        "data import",
+        "Weaviate",
+        "vector database",
+        "client libraries",
+        "gRPC",
+        "data streaming"
+      ],
+      "doctype": "how-to",
+      "summary": "A comprehensive guide to batch importing objects into Weaviate, covering techniques for efficient data insertion across multiple programming languages, including specifying IDs, vectors, references, and handling large datasets.",
+      "hash": "10be25260e9c8ede0905ac2ade8a2d8ec4c2ed1f2952526c9c88130e8235eca4"
+    },
+    "weaviate/manage-objects/update.mdx": {
+      "path": "weaviate/manage-objects/update.mdx",
+      "title": "Update objects",
+      "topics": [
+        "Weaviate",
+        "Object Management",
+        "Data Update",
+        "Vector Updates",
+        "Property Updates"
+      ],
+      "doctype": "how-to",
+      "summary": "A comprehensive guide to updating objects in Weaviate, covering partial updates, complete object replacement, vector updates, and property modifications across multiple programming languages.",
+      "hash": "54a7eef9512ac147e37167c533599b91be86f0dca45a8db9a817d03fde82a4a6"
+    },
+    "weaviate/manage-objects/read-all-objects.mdx": {
+      "path": "weaviate/manage-objects/read-all-objects.mdx",
+      "title": "Read all objects",
+      "topics": [
+        "weaviate",
+        "data retrieval",
+        "cursor API",
+        "object iteration",
+        "multi-tenancy",
+        "vector retrieval"
+      ],
+      "doctype": "how-to",
+      "summary": "A comprehensive guide to reading all objects in Weaviate using different client libraries, covering various scenarios like reading object properties, retrieving vectors, and handling multi-tenant collections.",
+      "hash": "bc332a72560878754ff45784f6dac93fd73d9d4d827e8330e89b8d9fedbdac6a"
+    },
+    "weaviate/manage-objects/delete.mdx": {
+      "path": "weaviate/manage-objects/delete.mdx",
+      "title": "Delete objects",
+      "topics": [
+        "Weaviate",
+        "Object Deletion",
+        "Database Management",
+        "Multi-Language Client Examples"
+      ],
+      "doctype": "how-to",
+      "summary": "A comprehensive guide to deleting objects in Weaviate, covering deletion by ID, batch deletion using filters, and optional parameters like dry run and output modes across multiple programming language clients.",
+      "hash": "6316cec9d946679a2438d78c3c6350bd7df42538030c169e98f6996784a231cd"
+    },
+    "weaviate/manage-objects/read.mdx": {
+      "path": "weaviate/manage-objects/read.mdx",
+      "title": "Read objects",
+      "topics": [
+        "weaviate",
+        "database",
+        "object retrieval",
+        "data management",
+        "vector databases",
+        "client operations"
+      ],
+      "doctype": "how-to",
+      "summary": "A comprehensive guide demonstrating how to read individual objects in Weaviate using different client libraries, including retrieving objects by ID, fetching object vectors, and checking object existence across multiple programming languages.",
+      "hash": "1272ed5fece625a489cdc583e316a7426694487010417675ce655547b1ed83a0"
+    },
+    "weaviate/configuration/hnsw-snapshots.md": {
+      "path": "weaviate/configuration/hnsw-snapshots.md",
+      "title": "HNSW Snapshots",
+      "topics": [
+        "weaviate",
+        "configuration",
+        "database",
+        "vector-index",
+        "hnsw",
+        "snapshots",
+        "performance"
+      ],
+      "doctype": "how-to",
+      "summary": "A guide to enabling and configuring HNSW snapshots in Weaviate, which can reduce startup times for large vector indexes by managing snapshot creation and commit log behaviors.",
+      "hash": "ed9abed79af47449280391c4f3516629d5364b36416c1503e5121b73d3c3585d"
+    },
+    "weaviate/configuration/index.mdx": {
+      "path": "weaviate/configuration/index.mdx",
+      "title": "How to configure Weaviate",
+      "topics": [
+        "weaviate",
+        "configuration",
+        "deployment",
+        "authentication",
+        "authorization",
+        "modules",
+        "scaling",
+        "replication",
+        "cluster management"
+      ],
+      "doctype": "how-to",
+      "summary": "A comprehensive guide covering various configuration aspects of Weaviate, including modules, authentication, scaling, replication, and cluster management, with detailed sections on deployment and operational settings.",
+      "hash": "b6580b27af198b13eac2438ea3c23e18057f49846de3ff7fe49647a755757ee2"
+    },
+    "weaviate/configuration/modules.md": {
+      "path": "weaviate/configuration/modules.md",
+      "title": "Modules",
+      "topics": [
+        "weaviate",
+        "configuration",
+        "modules",
+        "module-management",
+        "environment-variables",
+        "vectorizer-modules",
+        "generative-modules"
+      ],
+      "doctype": "how-to",
+      "summary": "A comprehensive guide to configuring Weaviate modules, including how to enable individual modules, set default vectorizer modules, and configure module-specific environment variables for different types of modules like vectorizer, generative, and API-based integrations.",
+      "hash": "c01aa2460fa2a885d45ea87ac1b7a34ce65083101861b2847217d39a15aba3a7"
+    },
+    "weaviate/configuration/authz-authn.md": {
+      "path": "weaviate/configuration/authz-authn.md",
+      "title": "Authentication and authorization",
+      "topics": [
+        "authentication",
+        "authorization",
+        "security",
+        "access control",
+        "OIDC",
+        "API key",
+        "RBAC"
+      ],
+      "doctype": "concept",
+      "summary": "This document explains Weaviate's authentication and authorization mechanisms, covering different authentication methods like API keys and OpenID Connect, and authorization approaches including Role-Based Access Control (RBAC) and admin list authorization.",
+      "hash": "9a2f71c3f1271ffa59bc8e42a4618c5e8c23482bd336642bf04d03cc44fc6cdc"
+    },
+    "weaviate/configuration/rbac/manage-roles.mdx": {
+      "path": "weaviate/configuration/rbac/manage-roles.mdx",
+      "title": "Manage roles",
+      "topics": [
+        "RBAC",
+        "Role Management",
+        "Weaviate",
+        "Access Control",
+        "Permissions"
+      ],
+      "doctype": "how-to",
+      "summary": "A comprehensive guide to managing roles in Weaviate's Role-Based Access Control (RBAC) system, covering role creation, permission assignment, inspection, and deletion across different resource types.",
+      "hash": "ffff6c3957587f1c0c9449bb4222bcd85aa9c5c68ceba722eea21719aebb5a1c"
+    },
+    "weaviate/configuration/rbac/index.mdx": {
+      "path": "weaviate/configuration/rbac/index.mdx",
+      "title": "RBAC Overview",
+      "topics": [
+        "rbac",
+        "authorization",
+        "access control",
+        "security",
+        "user management",
+        "roles",
+        "permissions"
+      ],
+      "doctype": "concept",
+      "summary": "An in-depth explanation of Role-Based Access Control (RBAC) in Weaviate, covering how roles, users, and permissions interact to provide granular access control for different resources and actions within the system.",
+      "hash": "55672de35411f52aea3afc814141b81dcd105c951f81aab71d4b3f7681a75668"
+    },
+    "weaviate/configuration/rbac/manage-users.mdx": {
+      "path": "weaviate/configuration/rbac/manage-users.mdx",
+      "title": "Manage users",
+      "topics": [
+        "weaviate",
+        "rbac",
+        "user management",
+        "authentication",
+        "authorization",
+        "database users",
+        "oidc users"
+      ],
+      "doctype": "how-to",
+      "summary": "A comprehensive guide to managing users in Weaviate, covering how to create, delete, assign roles, and manage permissions for both database and OIDC users using Weaviate client libraries.",
+      "hash": "572ef2350c66f4ec6e14d4a1928045f8c072fa62117279be526480ea46fdfee6"
+    },
+    "weaviate/configuration/compression/bq-compression.md": {
+      "path": "weaviate/configuration/compression/bq-compression.md",
+      "title": "Binary Quantization (BQ)",
+      "topics": [
+        "vector compression",
+        "binary quantization",
+        "weaviate configuration",
+        "vector indexing"
+      ],
+      "doctype": "how-to",
+      "summary": "A guide for enabling and configuring Binary Quantization (BQ) compression in Weaviate, explaining how to apply BQ to new and existing collections with various client libraries and configuration options.",
+      "hash": "a9e5ffd47e51f4d4934c78829c12f47a4f187f4383da766ac828a27a36e9aaa0"
+    },
+    "weaviate/configuration/compression/pq-compression.md": {
+      "path": "weaviate/configuration/compression/pq-compression.md",
+      "title": "Product Quantization (PQ)",
+      "topics": [
+        "vector compression",
+        "weaviate configuration",
+        "product quantization",
+        "machine learning",
+        "vector indexing"
+      ],
+      "doctype": "how-to",
+      "summary": "A comprehensive guide to configuring Product Quantization (PQ) compression in Weaviate, explaining both AutoPQ and manual configuration methods for reducing vector storage and improving query performance.",
+      "hash": "216fcc4c131a1e28a72dacd9c83ccb416f3d6039e42485a9f5ea493907ca20eb"
+    },
+    "weaviate/configuration/compression/sq-compression.md": {
+      "path": "weaviate/configuration/compression/sq-compression.md",
+      "title": "Scalar Quantization (SQ)",
+      "topics": [
+        "vector compression",
+        "weaviate configuration",
+        "scalar quantization",
+        "vector indexing"
+      ],
+      "doctype": "how-to",
+      "summary": "A guide for enabling and configuring Scalar Quantization (SQ) compression in Weaviate, explaining how to apply SQ to new and existing collections with code examples across multiple programming languages.",
+      "hash": "51db4c70a0cdc549ff654cfae70d15615e8d39f0db2e23668f145843e779d450"
+    },
+    "weaviate/configuration/compression/index.md": {
+      "path": "weaviate/configuration/compression/index.md",
+      "title": "Compression",
+      "topics": [
+        "vector compression",
+        "binary quantization",
+        "product quantization",
+        "rotational quantization",
+        "scalar quantization",
+        "multi-vector embeddings"
+      ],
+      "doctype": "concept",
+      "summary": "An overview of vector compression techniques in Weaviate, explaining how different quantization methods can help balance resource costs and system performance while managing vector size and information retention.",
+      "hash": "d9c76c24f7ff91c62432d80395d71a5e2f9c82933ad324368fb1d92485288740"
+    },
+    "weaviate/configuration/compression/rq-compression.md": {
+      "path": "weaviate/configuration/compression/rq-compression.md",
+      "title": "Rotational Quantization (RQ)",
+      "topics": [
+        "vector compression",
+        "machine learning",
+        "weaviate configuration",
+        "compression techniques",
+        "vector indexing"
+      ],
+      "doctype": "how-to",
+      "summary": "A guide for enabling and configuring Rotational Quantization (RQ) compression in Weaviate, a vector compression technique that offers 4x compression with high recall for vector embeddings.",
+      "hash": "e525d4c394074fb102f0a8e7e26b06cf98c568b7b2354169432ae4fc08c98a77"
+    },
+    "weaviate/configuration/compression/multi-vectors.md": {
+      "path": "weaviate/configuration/compression/multi-vectors.md",
+      "title": "Multi-vector encodings",
+      "topics": [
+        "vector embeddings",
+        "compression",
+        "MUVERA encoding",
+        "multi-vector representations",
+        "semantic information"
+      ],
+      "doctype": "concept",
+      "summary": "Explains multi-vector embeddings and the MUVERA encoding technique, which transforms multiple vectors into a compact single vector representation while preserving semantic relationships and managing storage costs.",
+      "hash": "4c163114be505be7124ffc0402eccd8f4b325aa354ff175ffd33c9d0ef12525d"
+    },
+    "weaviate/manage-collections/migrate.mdx": {
+      "path": "weaviate/manage-collections/migrate.mdx",
+      "title": "Migrate data",
+      "topics": [
+        "weaviate",
+        "data migration",
+        "multi-tenancy",
+        "collections",
+        "cursor-based migration"
+      ],
+      "doctype": "how-to",
+      "summary": "A comprehensive guide for migrating data between Weaviate instances, covering various scenarios like collection-to-collection, collection-to-tenant, tenant-to-collection, and tenant-to-tenant migrations using different client libraries.",
+      "hash": "1c897f017b47184662d250cec08dc43d920deac15d57b550dc899eb9cb0ddd36"
+    },
+    "weaviate/manage-collections/vector-config.mdx": {
+      "path": "weaviate/manage-collections/vector-config.mdx",
+      "title": "Vectorizer and vector index config",
+      "topics": [
+        "vector configuration",
+        "collection management",
+        "vectorizers",
+        "named vectors",
+        "vector indexing",
+        "multi-vector embeddings"
+      ],
+      "doctype": "how-to",
+      "summary": "A comprehensive guide to configuring vector settings for Weaviate collections, including specifying vectorizers, setting vector index types, defining named vectors, and configuring property-level vectorization settings.",
+      "hash": "6c8d0fa9dbd225d79bcc71148cb4d77f0680297d8da6d755019b6106d925e425"
+    },
+    "weaviate/manage-collections/collection-aliases.mdx": {
+      "path": "weaviate/manage-collections/collection-aliases.mdx",
+      "title": "Collection aliases",
+      "topics": [
+        "weaviate",
+        "collection management",
+        "data operations",
+        "aliases",
+        "zero-downtime migration"
+      ],
+      "doctype": "how-to",
+      "summary": "A comprehensive guide to using collection aliases in Weaviate, explaining how to create, list, update, and delete aliases, with support for zero-downtime migrations and multi-language client examples.",
+      "hash": "8af9654765c8674601fa5084b7ec23be2bc417c1d646c7785de55176fcb9588e"
+    },
+    "weaviate/manage-collections/index.mdx": {
+      "path": "weaviate/manage-collections/index.mdx",
+      "title": "Manage collections",
+      "topics": [
+        "Weaviate",
+        "collections",
+        "vector search",
+        "data management",
+        "AI model integration",
+        "multi-tenancy",
+        "object management"
+      ],
+      "doctype": "how-to",
+      "summary": "A comprehensive guide to managing Weaviate collections, covering core components like objects, AI model integrations, and configuration settings for effective vector search and data storage.",
+      "hash": "e3880cf0c9fba88f59eb966161f65912d33beac76e97f357094faa5463512ca0"
+    },
+    "weaviate/manage-collections/generative-reranker-models.mdx": {
+      "path": "weaviate/manage-collections/generative-reranker-models.mdx",
+      "title": "Generative and reranker models",
+      "topics": [
+        "Weaviate",
+        "Machine Learning",
+        "Model Integration",
+        "Reranking",
+        "Generative AI",
+        "Search",
+        "RAG"
+      ],
+      "doctype": "how-to",
+      "summary": "A guide for configuring and updating generative and reranker model integrations in Weaviate collections across multiple programming languages. Covers how to specify, set, and update these model configurations for enhanced search and retrieval capabilities.",
+      "hash": "796c997e7d3ce9239d066624dc5bda20156e1233e0c5668ecc6e6555d0f347f4"
+    },
+    "weaviate/manage-collections/cross-references.mdx": {
+      "path": "weaviate/manage-collections/cross-references.mdx",
+      "title": "Cross-references",
+      "topics": [
+        "weaviate",
+        "cross-references",
+        "data management",
+        "database relationships",
+        "object references"
+      ],
+      "doctype": "how-to",
+      "summary": "A comprehensive guide to defining, creating, managing, and manipulating cross-references between collections in Weaviate, covering one-way, two-way, and multiple cross-reference scenarios across different programming languages.",
+      "hash": "95ced917797667d7dbea2833bdf0807e74decdd3f74527bfb0bc5dafaa09f0e4"
+    },
+    "weaviate/manage-collections/tenant-states.mdx": {
+      "path": "weaviate/manage-collections/tenant-states.mdx",
+      "title": "Manage tenant states & temperature",
+      "topics": [
+        "weaviate",
+        "multi-tenancy",
+        "data management",
+        "storage tiers",
+        "tenant states",
+        "resource optimization"
+      ],
+      "doctype": "how-to",
+      "summary": "Explains how to manage tenant states (Active, Inactive, Offloaded) in Weaviate's multi-tenant collections, covering state transitions and their impact on data storage and accessibility.",
+      "hash": "2d537ba1bea62bac2f7901b1dcb54baa5adb0dfadd2b1b1624d229033042bb64"
+    },
+    "weaviate/manage-collections/multi-node-setup.mdx": {
+      "path": "weaviate/manage-collections/multi-node-setup.mdx",
+      "title": "Multi-node setup",
+      "topics": [
+        "weaviate",
+        "multi-node deployment",
+        "replication",
+        "sharding",
+        "collection configuration"
+      ],
+      "doctype": "how-to",
+      "summary": "Provides guidance on configuring multi-node setups in Weaviate, including replication settings, sharding configurations, and shard management across different programming languages and clients.",
+      "hash": "f8f976344379deb921aab7597564feefc3b6ddb8ab8e45a09b2eadf0cdb8a6ef"
+    },
+    "weaviate/manage-collections/multi-tenancy.mdx": {
+      "path": "weaviate/manage-collections/multi-tenancy.mdx",
+      "title": "Multi-tenancy operations",
+      "topics": [
+        "multi-tenancy",
+        "data isolation",
+        "tenant management",
+        "database operations",
+        "collection configuration"
+      ],
+      "doctype": "how-to",
+      "summary": "A comprehensive guide to implementing multi-tenancy in Weaviate, covering how to enable multi-tenancy, add and manage tenants, perform CRUD operations, and handle cross-references across different tenancy configurations.",
+      "hash": "2dfc2ac3223ec4077bb3fc8b5b2def3c86ac2786a91a95290e5477a7767b093d"
+    },
+    "weaviate/manage-collections/collection-operations.mdx": {
+      "path": "weaviate/manage-collections/collection-operations.mdx",
+      "title": "Basic collection operations",
+      "topics": [
+        "Weaviate",
+        "collections",
+        "database management",
+        "schema operations",
+        "CRUD operations"
+      ],
+      "doctype": "how-to",
+      "summary": "A comprehensive guide to managing collections in Weaviate, covering operations like creating, reading, updating, and deleting collections with code examples across multiple programming languages.",
+      "hash": "672d4284ac0886a3ef23aa14862615e87cd40f8d3b94d4c06cd8ee1967c15f51"
+    },
+    "weaviate/starter-guides/generative.md": {
+      "path": "weaviate/starter-guides/generative.md",
+      "title": "Retrieval augmented generation (RAG)",
+      "topics": [
+        "Weaviate",
+        "RAG",
+        "Large Language Models",
+        "Generative Search",
+        "Machine Learning"
+      ],
+      "doctype": "tutorial",
+      "summary": "A comprehensive tutorial on using Retrieval Augmented Generation (RAG) with Weaviate, covering what RAG is, how to configure Weaviate for RAG, importing data, and performing generative queries with different techniques.",
+      "hash": "7d4e67d912135858227111f5114ccd92654d7c9f56b162cc0f7ebd8d8f68b546"
+    },
+    "weaviate/starter-guides/index.mdx": {
+      "path": "weaviate/starter-guides/index.mdx",
+      "title": "Starter guides",
+      "topics": [
+        "Weaviate",
+        "Getting Started",
+        "Deployment",
+        "Collections",
+        "RAG",
+        "Indexing",
+        "Resource Management"
+      ],
+      "doctype": "concept",
+      "summary": "An overview of starter guides for Weaviate, providing introductory information on various aspects of setup, configuration, and key functionalities for new users.",
+      "hash": "4460fa9bd59e7d59036dd9793436f9916670a9082762800a5fa4fe40078bab8a"
+    },
+    "weaviate/starter-guides/which-weaviate.md": {
+      "path": "weaviate/starter-guides/which-weaviate.md",
+      "title": "Weaviate configurations",
+      "topics": [
+        "weaviate",
+        "deployment",
+        "vectorization",
+        "cloud computing",
+        "machine learning"
+      ],
+      "doctype": "concept",
+      "summary": "A comprehensive guide to understanding Weaviate deployment options, vectorization strategies, and configuration choices for different use cases from evaluation to production environments.",
+      "hash": "66428c5f07c0140231ccf3d13368f16a214b6d54df16ddee33146ae0075dcc3a"
+    },
+    "weaviate/starter-guides/custom-vectors.mdx": {
+      "path": "weaviate/starter-guides/custom-vectors.mdx",
+      "title": "'Quickstart: Bring your own vectors'",
+      "topics": [
+        "vector databases",
+        "data import",
+        "vector embeddings",
+        "Weaviate",
+        "vector search"
+      ],
+      "doctype": "tutorial",
+      "summary": "A step-by-step tutorial demonstrating how to import data with pre-existing vector embeddings into Weaviate, including setup, connection, collection definition, data import, and performing a vector search.",
+      "hash": "17e6c6c4212e170ed58ebc5350bbe26d45236335e59b410b3ebaccc78fb8c027"
+    },
+    "weaviate/starter-guides/managing-collections/collections-scaling-limits.mdx": {
+      "path": "weaviate/starter-guides/managing-collections/collections-scaling-limits.mdx",
+      "title": "Scaling limits with collections",
+      "topics": [
+        "weaviate",
+        "database architecture",
+        "multi-tenancy",
+        "collection management",
+        "scalability"
+      ],
+      "doctype": "concept",
+      "summary": "A comprehensive guide exploring architectural choices for managing data in Weaviate, comparing multi-tenancy and dedicated collection strategies. The document helps developers understand the trade-offs between different approaches to scaling and organizing data in vector databases.",
+      "hash": "d759bc94b40e16f49d35849bf4786ec0bbdc6884e49f16c575eb87574c630064"
+    },
+    "weaviate/starter-guides/managing-collections/index.mdx": {
+      "path": "weaviate/starter-guides/managing-collections/index.mdx",
+      "title": "Collection definitions (schemas)",
+      "topics": [
+        "Weaviate",
+        "schema design",
+        "collection configuration",
+        "vector database",
+        "data modeling"
+      ],
+      "doctype": "tutorial",
+      "summary": "A comprehensive tutorial guiding users through defining schemas in Weaviate, covering collection creation, property configuration, vectorizer and module settings, and best practices for structuring data effectively.",
+      "hash": "6f52dc081235036c0c19a9c40d75c07ad3b343d6df2124136ac475e29fd91815"
+    },
+    "weaviate/starter-guides/managing-resources/index.md": {
+      "path": "weaviate/starter-guides/managing-resources/index.md",
+      "title": "Managing resources (Hot, Warm, Cold)",
+      "topics": [
+        "resource management",
+        "storage tiers",
+        "vector indexing",
+        "vector compression",
+        "multi-tenancy",
+        "performance optimization"
+      ],
+      "doctype": "how-to",
+      "summary": "A comprehensive guide to managing Weaviate resources across hot, warm, and cold storage tiers, covering vector index types, compression techniques, and tenant states to optimize performance and cost-efficiency.",
+      "hash": "fbb1502a29dfae24ff90cb3d29c264c76149ae04125dd129d179eb5d6ccec09b"
+    },
+    "weaviate/starter-guides/managing-resources/tenant-states.mdx": {
+      "path": "weaviate/starter-guides/managing-resources/tenant-states.mdx",
+      "title": "Tenant states",
+      "topics": [
+        "multi-tenancy",
+        "resource management",
+        "data storage",
+        "tenant configuration",
+        "index types"
+      ],
+      "doctype": "concept",
+      "summary": "Explains the different tenant states (Active, Inactive, Offloaded) in Weaviate multi-tenant collections, detailing how these states impact resource usage, performance, and data accessibility.",
+      "hash": "8d804a318e711902bf382374d00273a624a01a7159a9e708573f0cc5a946f067"
+    },
+    "weaviate/starter-guides/managing-resources/compression.mdx": {
+      "path": "weaviate/starter-guides/managing-resources/compression.mdx",
+      "title": "Compression",
+      "topics": [
+        "vector compression",
+        "weaviate",
+        "vector indexing",
+        "performance optimization",
+        "memory management"
+      ],
+      "doctype": "concept",
+      "summary": "A comprehensive guide to vector compression techniques in Weaviate, explaining different compression algorithms (PQ, SQ, RQ, BQ), their performance characteristics, impact on recall, and cost-saving benefits for vector storage and indexing.",
+      "hash": "8d549fa8669a5db4d61a524b7232357cf0b5d6658ea386d5376170cc7d804d65"
+    },
+    "weaviate/starter-guides/managing-resources/indexing.mdx": {
+      "path": "weaviate/starter-guides/managing-resources/indexing.mdx",
+      "title": "Indexing",
+      "topics": [
+        "weaviate",
+        "vector-indexes",
+        "inverted-indexes",
+        "search",
+        "indexing",
+        "database-configuration"
+      ],
+      "doctype": "concept",
+      "summary": "An overview of Weaviate's indexing strategies, explaining vector and inverted indexes, including HNSW, flat, and dynamic index types, and how they facilitate fast search and filtering in different data scenarios.",
+      "hash": "343d7456fe6eecba833fb17a54558374158df14fefc2a9875877fe512d7cb07c"
+    },
+    "weaviate/config-refs/datatypes.md": {
+      "path": "weaviate/config-refs/datatypes.md",
+      "title": "Property data types",
+      "topics": [
+        "weaviate",
+        "schema",
+        "data types",
+        "property configuration"
+      ],
+      "doctype": "reference",
+      "summary": "Comprehensive reference guide for Weaviate schema data types, covering available property types like text, boolean, int, number, date, uuid, geoCoordinates, phoneNumber, blob, object, and cross-reference with examples and usage details.",
+      "hash": "d8ada2f6705aacf10c84d68c102f8f09d7e24b8ae65790a17b511b192c9be75e"
+    },
+    "weaviate/config-refs/index.mdx": {
+      "path": "weaviate/config-refs/index.mdx",
+      "title": "Configuration",
+      "topics": [
+        "weaviate",
+        "configuration",
+        "vector-index",
+        "inverted-index",
+        "data-types",
+        "distance-metrics",
+        "environment-variables"
+      ],
+      "doctype": "reference",
+      "summary": "A comprehensive reference guide for Weaviate's configuration options, covering collections, data types, distance metrics, indexing, and environment variables.",
+      "hash": "5bbca38d5b07548080cadfdc7bfe1cca25ddbf49e84b7aed5fde7bcc91083638"
+    },
+    "weaviate/config-refs/distances.md": {
+      "path": "weaviate/config-refs/distances.md",
+      "title": "Distance metrics",
+      "topics": [
+        "vector similarity",
+        "distance metrics",
+        "search algorithms",
+        "vector indexing",
+        "computational optimization"
+      ],
+      "doctype": "reference",
+      "summary": "A comprehensive reference guide to distance metrics used in Weaviate for vector similarity calculations, covering available distance types, their characteristics, implementation details, and API exposure.",
+      "hash": "e8b763484fcd5d4bbde172ddd5850b28ac99b42075264ec8c12f17a38aec7a99"
+    },
+    "weaviate/config-refs/collections.mdx": {
+      "path": "weaviate/config-refs/collections.mdx",
+      "title": "Collection definition",
+      "topics": [
+        "collections",
+        "vector databases",
+        "schema design",
+        "data modeling",
+        "indexing",
+        "vectorization"
+      ],
+      "doctype": "reference",
+      "summary": "Comprehensive reference guide for defining and configuring Weaviate collections, covering parameters like vectorization, indexing, replication, and multi-tenancy.",
+      "hash": "2fce325d723fe9ab1bbf9aad99d3b735a6cdc1225d9384f19ffe7fe077f1f963"
+    },
+    "weaviate/config-refs/indexing/inverted-index.mdx": {
+      "path": "weaviate/config-refs/indexing/inverted-index.mdx",
+      "title": "Inverted index",
+      "topics": [
+        "weaviate",
+        "indexing",
+        "search",
+        "filtering",
+        "configuration"
+      ],
+      "doctype": "reference",
+      "summary": "A comprehensive reference for Weaviate's inverted index configuration, explaining different index types, parameters, and how they impact search and filtering operations across collections.",
+      "hash": "92a719b33008b09da7f5016452dd1e7a66bc7ef8145f04a4744dbca4c3623028"
+    },
+    "weaviate/config-refs/indexing/vector-index.mdx": {
+      "path": "weaviate/config-refs/indexing/vector-index.mdx",
+      "title": "Vector index",
+      "topics": [
+        "vector indexing",
+        "HNSW",
+        "flat index",
+        "dynamic index",
+        "vector compression",
+        "indexing configuration"
+      ],
+      "doctype": "reference",
+      "summary": "Comprehensive reference for vector index types and configuration in Weaviate, covering HNSW, flat, and dynamic indexing strategies, with detailed parameters for optimizing vector search performance.",
+      "hash": "8276744779096776e8144eddff06e6add837aa98194606353396793c1a5e243d"
+    },
+    "weaviate/model-providers/index.md": {
+      "path": "weaviate/model-providers/index.md",
+      "title": "Model provider integrations",
+      "topics": [
+        "weaviate",
+        "model providers",
+        "embeddings",
+        "AI integrations",
+        "generative AI",
+        "vector search"
+      ],
+      "doctype": "reference",
+      "summary": "Comprehensive overview of Weaviate's model provider integrations, including API-based and locally hosted models for embeddings, generative AI, and other AI functionalities across various providers.",
+      "hash": "e93b55bf36b9a88ec76e261473a2c4c0a69665bce4a5f1ab8efad39d9e9ff89d"
+    },
+    "weaviate/model-providers/_includes/google-api-key-note.md": {
+      "path": "weaviate/model-providers/_includes/google-api-key-note.md",
+      "title": "google-api-key-note",
+      "topics": [
+        "API keys",
+        "Google Vertex AI",
+        "Gemini API",
+        "Deprecation"
+      ],
+      "doctype": "reference",
+      "summary": "Describes the supported and deprecated API key headers for Google Vertex AI and Gemini API in Weaviate versions v1.27.7, v1.26.12, and v1.25.27.",
+      "hash": "ecadcbdebcc2be4600110cb562e1d1fdd732ebbb6c982aed07f9846681825685"
+    },
+    "weaviate/model-providers/_includes/ollama/api-endpoint.mdx": {
+      "path": "weaviate/model-providers/_includes/ollama/api-endpoint.mdx",
+      "title": "api-endpoint",
+      "topics": [
+        "Weaviate",
+        "Ollama",
+        "Docker",
+        "API Configuration"
+      ],
+      "doctype": "how-to",
+      "summary": "Explains how to configure the Ollama API endpoint for Weaviate, particularly when running in different environments like Docker containers and local setups.",
+      "hash": "f8b8cb3ae1a90c01dbada689c071ac1f7e7881db127447903a8a829f926684a5"
+    },
+    "weaviate/model-providers/voyageai/embeddings.md": {
+      "path": "weaviate/model-providers/voyageai/embeddings.md",
+      "title": "Text Embeddings",
+      "topics": [
+        "weaviate",
+        "voyageai",
+        "text embeddings",
+        "vector search",
+        "machine learning",
+        "ai integrations"
+      ],
+      "doctype": "how-to",
+      "summary": "A comprehensive guide to integrating Voyage AI's text embedding models with Weaviate, covering configuration, API credentials, data import, and search operations using Voyage AI's embedding capabilities.",
+      "hash": "38c9665eee114b2a55661c5a5b2423cfbe126de83a3da3c03ae172fbd54a07c8"
+    },
+    "weaviate/model-providers/voyageai/embeddings-multimodal.md": {
+      "path": "weaviate/model-providers/voyageai/embeddings-multimodal.md",
+      "title": "Multimodal Embeddings",
+      "topics": [
+        "multimodal embeddings",
+        "VoyageAI",
+        "vector search",
+        "machine learning",
+        "AI integration"
+      ],
+      "doctype": "how-to",
+      "summary": "A guide to using VoyageAI's multimodal embedding models with Weaviate, covering configuration, data import, and search operations for text and image-based vector searches.",
+      "hash": "e6b87ec6aff16823eb662828c75becaf1c994858e3688dd6917463ca422c6c40"
+    },
+    "weaviate/model-providers/voyageai/index.md": {
+      "path": "weaviate/model-providers/voyageai/index.md",
+      "title": "Voyage AI + Weaviate",
+      "topics": [
+        "machine learning",
+        "vector search",
+        "AI integration",
+        "embedding models",
+        "reranker models",
+        "natural language processing"
+      ],
+      "doctype": "concept",
+      "summary": "An overview of how Weaviate integrates with Voyage AI's models, including embedding and reranker capabilities that enable developers to build sophisticated AI-driven applications with enhanced search and vectorization capabilities.",
+      "hash": "5af300c11cff525ccc933faf23722d4bbbc5c64095a507f949c73ac34455cb1d"
+    },
+    "weaviate/model-providers/voyageai/reranker.md": {
+      "path": "weaviate/model-providers/voyageai/reranker.md",
+      "title": "Reranker",
+      "topics": [
+        "weaviate",
+        "voyageai",
+        "reranking",
+        "machine learning",
+        "model providers",
+        "search"
+      ],
+      "doctype": "how-to",
+      "summary": "A guide to integrating Voyage AI's reranker models with Weaviate, explaining how to configure and use reranking capabilities for search results using various available Voyage AI models.",
+      "hash": "ac701282af99bcfcfd6d6796c7102d9e66b4b2dc9ac99fe702001e321d7fe3af"
+    },
+    "weaviate/model-providers/cohere/generative.md": {
+      "path": "weaviate/model-providers/cohere/generative.md",
+      "title": "Generative AI",
+      "topics": [
+        "generative AI",
+        "retrieval augmented generation",
+        "Cohere API",
+        "Weaviate integration",
+        "language models"
+      ],
+      "doctype": "how-to",
+      "summary": "A comprehensive guide to integrating Cohere's generative AI models with Weaviate for retrieval augmented generation (RAG), including configuration, model selection, and usage examples for single prompt and grouped task generation.",
+      "hash": "6f20c7906817c114db1b1bf08ab7da1b686c79867f56b36390677a47cb12c25a"
+    },
+    "weaviate/model-providers/cohere/embeddings.md": {
+      "path": "weaviate/model-providers/cohere/embeddings.md",
+      "title": "Text Embeddings",
+      "topics": [
+        "weaviate",
+        "cohere",
+        "embeddings",
+        "vector search",
+        "machine learning",
+        "text embedding"
+      ],
+      "doctype": "how-to",
+      "summary": "A comprehensive guide to using Cohere's embedding models with Weaviate, covering configuration, API credentials, data import, and search operations using Cohere's text embedding capabilities.",
+      "hash": "87b89bde09c287201f1ea7d83a45f4e025931f0802e6770d701b7c3096758bb2"
+    },
+    "weaviate/model-providers/cohere/embeddings-multimodal.md": {
+      "path": "weaviate/model-providers/cohere/embeddings-multimodal.md",
+      "title": "Multimodal Embeddings",
+      "topics": [
+        "weaviate",
+        "cohere",
+        "multimodal embeddings",
+        "vector search",
+        "machine learning",
+        "AI integration"
+      ],
+      "doctype": "how-to",
+      "summary": "A guide to using Cohere's multimodal embedding models with Weaviate for generating and searching embeddings across text and image data. The document covers configuration, data import, and various search techniques using Cohere's embedding models.",
+      "hash": "3c76ce05ec3e66c209fa229d3d995e05d7c6b738e06ca06f37746f099ce3aec1"
+    },
+    "weaviate/model-providers/cohere/index.md": {
+      "path": "weaviate/model-providers/cohere/index.md",
+      "title": "Cohere + Weaviate",
+      "topics": [
+        "machine learning",
+        "AI integration",
+        "vector search",
+        "generative AI",
+        "embeddings",
+        "reranking"
+      ],
+      "doctype": "concept",
+      "summary": "An overview of how Weaviate integrates with Cohere's AI models, including embedding, generative AI, and reranker capabilities. The document explains how developers can leverage Cohere's models directly within the Weaviate database to build sophisticated AI-driven applications.",
+      "hash": "1f7db4d4cd7b6497c0c41c80ef14ade2e5e65f46faca10b31b6600c5f9dad37e"
+    },
+    "weaviate/model-providers/cohere/reranker.md": {
+      "path": "weaviate/model-providers/cohere/reranker.md",
+      "title": "Reranker",
+      "topics": [
+        "weaviate",
+        "cohere",
+        "reranking",
+        "model providers",
+        "search",
+        "machine learning"
+      ],
+      "doctype": "how-to",
+      "summary": "A guide to integrating Cohere's reranker models with Weaviate, explaining how to configure and use Cohere reranker models to improve search result rankings within a Weaviate collection.",
+      "hash": "680ff2474936f178cea1a40b72e4d03014e913ab7790c27486509ecd0e93fb85"
+    },
+    "weaviate/model-providers/jinaai/embeddings.md": {
+      "path": "weaviate/model-providers/jinaai/embeddings.md",
+      "title": "Text Embeddings",
+      "topics": [
+        "weaviate",
+        "embeddings",
+        "jina ai",
+        "vector search",
+        "machine learning models"
+      ],
+      "doctype": "how-to",
+      "summary": "A comprehensive guide to integrating Jina AI's text embedding models with Weaviate, covering configuration, data import, and search operations using Jina AI's embedding capabilities.",
+      "hash": "ef3ca847372f00799de4fdcd14243d39b40e44c7d7ab58814c1f93c94b33f8e1"
+    },
+    "weaviate/model-providers/jinaai/embeddings-multimodal.md": {
+      "path": "weaviate/model-providers/jinaai/embeddings-multimodal.md",
+      "title": "Multimodal Embeddings",
+      "topics": [
+        "multimodal embeddings",
+        "vector search",
+        "Jina AI",
+        "machine learning",
+        "model integration"
+      ],
+      "doctype": "how-to",
+      "summary": "A comprehensive guide to using Jina AI's multimodal embeddings with Weaviate, covering configuration, data import, and various search operations including text, hybrid, and media searches using multimodal embedding models.",
+      "hash": "8776f290c18b9035a7a86306602441ed7691a79fe40b2982225d525fd2b87bd9"
+    },
+    "weaviate/model-providers/jinaai/index.md": {
+      "path": "weaviate/model-providers/jinaai/index.md",
+      "title": "Jina AI + Weaviate",
+      "topics": [
+        "model providers",
+        "embeddings",
+        "vector search",
+        "AI integration",
+        "natural language processing"
+      ],
+      "doctype": "concept",
+      "summary": "An overview of Weaviate's integration with Jina AI, highlighting how developers can leverage Jina AI's models for embedding and vector search directly within the Weaviate Database.",
+      "hash": "a564d4ee8a0e33d3241b48de7bb4b5e0f038651e8c8e7a09000af022bb7b49ca"
+    },
+    "weaviate/model-providers/jinaai/reranker.md": {
+      "path": "weaviate/model-providers/jinaai/reranker.md",
+      "title": "Reranker",
+      "topics": [
+        "weaviate",
+        "jina-ai",
+        "machine-learning",
+        "reranking",
+        "search",
+        "model-integration"
+      ],
+      "doctype": "how-to",
+      "summary": "A guide to integrating Jina AI reranker models with Weaviate, explaining how to configure and use reranking capabilities for search results using Jina AI's API and models.",
+      "hash": "2aefc707ec11193a7e4e88e4cdf8b488c27ea0b39b10c693c37fe36ff574a27a"
+    },
+    "weaviate/model-providers/jinaai/embeddings-colbert.md": {
+      "path": "weaviate/model-providers/jinaai/embeddings-colbert.md",
+      "title": "ColBERT Embeddings",
+      "topics": [
+        "weaviate",
+        "embeddings",
+        "machine learning",
+        "jina ai",
+        "vector search",
+        "colbert"
+      ],
+      "doctype": "how-to",
+      "summary": "A comprehensive guide to using Jina AI's ColBERT embedding models with Weaviate, covering configuration, data import, and search operations using the Jina AI vectorizer integration.",
+      "hash": "b62e7547c75cc82e6366b2cb2e266258477faa8a221fb646c7d7feff44d2c945"
+    },
+    "weaviate/model-providers/anyscale/generative.md": {
+      "path": "weaviate/model-providers/anyscale/generative.md",
+      "title": "Generative AI",
+      "topics": [
+        "generative AI",
+        "Weaviate",
+        "Anyscale",
+        "retrieval augmented generation",
+        "model integration"
+      ],
+      "doctype": "how-to",
+      "summary": "A comprehensive guide to integrating Anyscale's generative AI models with Weaviate, covering configuration, API credentials, collection setup, and retrieval augmented generation techniques.",
+      "hash": "05e93f0fb2e59174bd9906370d6885d07549d6b1b237554e12710cc3adad91f6"
+    },
+    "weaviate/model-providers/anyscale/index.md": {
+      "path": "weaviate/model-providers/anyscale/index.md",
+      "title": "Anyscale + Weaviate",
+      "topics": [
+        "model providers",
+        "generative AI",
+        "retrieval augmented generation",
+        "Anyscale integration",
+        "AI model integration"
+      ],
+      "doctype": "how-to",
+      "summary": "A guide to integrating Anyscale's generative AI models with Weaviate, enabling developers to leverage powerful natural language processing capabilities directly from the Weaviate Database.",
+      "hash": "697c2614320742e170ccb7d3dc6e3441c2b708cdc6633d32845a0e4de7d3aca6"
+    },
+    "weaviate/model-providers/google/generative.md": {
+      "path": "weaviate/model-providers/google/generative.md",
+      "title": "Generative AI",
+      "topics": [
+        "google",
+        "generative ai",
+        "vertex ai",
+        "gemini api",
+        "retrieval augmented generation",
+        "model providers",
+        "rag"
+      ],
+      "doctype": "how-to",
+      "summary": "A comprehensive guide to integrating Google's Generative AI models (Vertex AI and Gemini API) with Weaviate, explaining how to configure collections, provide API credentials, and perform retrieval augmented generation using Google's generative models.",
+      "hash": "b9e5ecce1cf6a78b86e586333b679a51598d84a33624593f1d02ff5732a6de25"
+    },
+    "weaviate/model-providers/google/embeddings.md": {
+      "path": "weaviate/model-providers/google/embeddings.md",
+      "title": "Text Embeddings",
+      "topics": [
+        "embeddings",
+        "google",
+        "vertex ai",
+        "gemini api",
+        "vector search",
+        "text embedding"
+      ],
+      "doctype": "how-to",
+      "summary": "A comprehensive guide to using Google's Gemini and Vertex AI embedding models with Weaviate for generating text embeddings, configuring vector indexes, and performing vector and hybrid searches.",
+      "hash": "71ca161f99057750902f5f01318d8d2473eeabb29d1821063e81af45198aef66"
+    },
+    "weaviate/model-providers/google/embeddings-multimodal.md": {
+      "path": "weaviate/model-providers/google/embeddings-multimodal.md",
+      "title": "Multimodal Embeddings",
+      "topics": [
+        "weaviate",
+        "google vertex ai",
+        "multimodal embeddings",
+        "vector search",
+        "machine learning"
+      ],
+      "doctype": "how-to",
+      "summary": "A comprehensive guide to using Google's multimodal embeddings in Weaviate, covering configuration, data import, and various search operations including vector and hybrid searches across text and image modalities.",
+      "hash": "feec4bdf417eba56da7b68264bf93ca4f75759abb225714b8869214f2bfdadf3"
+    },
+    "weaviate/model-providers/google/index.md": {
+      "path": "weaviate/model-providers/google/index.md",
+      "title": "Google + Weaviate",
+      "topics": [
+        "model providers",
+        "google",
+        "AI integration",
+        "embedding models",
+        "generative AI",
+        "vector search",
+        "Vertex AI",
+        "Gemini API"
+      ],
+      "doctype": "concept",
+      "summary": "An overview of Weaviate's integration with Google's AI technologies, including embedding models and generative AI models for vector search and retrieval augmented generation (RAG).",
+      "hash": "e273b67eaee06759feec430235b9a40501482fb99444795d640efa6887897ca1"
+    },
+    "weaviate/model-providers/google/_includes/use_google_auth_instructions.mdx": {
+      "path": "weaviate/model-providers/google/_includes/use_google_auth_instructions.mdx",
+      "title": "use_google_auth_instructions",
+      "topics": [
+        "authentication",
+        "google vertex ai",
+        "credentials",
+        "environment variables",
+        "containerization"
+      ],
+      "doctype": "how-to",
+      "summary": "Instructions for configuring Google Vertex AI authentication in Weaviate, including setting environment variables and locating credential files for generating access tokens in private deployments.",
+      "hash": "a273650e9e82a6ec52c32c7060b538788c0e9ad7bf716982b450fa59b98079a4"
+    },
+    "weaviate/model-providers/databricks/generative.md": {
+      "path": "weaviate/model-providers/databricks/generative.md",
+      "title": "Generative AI",
+      "topics": [
+        "weaviate",
+        "databricks",
+        "generative ai",
+        "retrieval augmented generation",
+        "model integration",
+        "api configuration"
+      ],
+      "doctype": "how-to",
+      "summary": "A comprehensive guide to integrating Databricks generative AI models with Weaviate, explaining how to configure API credentials, set up collections, and perform retrieval augmented generation (RAG) using Databricks language models.",
+      "hash": "eb7ee86ac7a94aae6c90705d8f3b194ec1fe57322edd538533c73d5fc20bf6e2"
+    },
+    "weaviate/model-providers/databricks/embeddings.md": {
+      "path": "weaviate/model-providers/databricks/embeddings.md",
+      "title": "Text Embeddings",
+      "topics": [
+        "weaviate",
+        "databricks",
+        "embeddings",
+        "vector search",
+        "machine learning",
+        "model integration"
+      ],
+      "doctype": "how-to",
+      "summary": "A guide for integrating Databricks text embedding models with Weaviate, explaining how to configure the vectorizer, import data, and perform vector and hybrid searches using Databricks embedding endpoints.",
+      "hash": "f5e69c9cc9f2914b7ba12da3585a19da796067ccfb7791ec37553e4ee7e7e012"
+    },
+    "weaviate/model-providers/databricks/index.md": {
+      "path": "weaviate/model-providers/databricks/index.md",
+      "title": "Databricks + Weaviate",
+      "topics": [
+        "model providers",
+        "databricks",
+        "AI integration",
+        "embedding models",
+        "generative AI",
+        "vector search",
+        "RAG"
+      ],
+      "doctype": "concept",
+      "summary": "An overview of how Weaviate integrates with Databricks' Foundation Model APIs, enabling seamless use of Databricks embedding and generative AI models for vector search and retrieval augmented generation (RAG).",
+      "hash": "360ef229a5bb8b5648f4b43dc6a60b695952b42f72c0422ae6c5e31cdebe7774"
+    },
+    "weaviate/model-providers/kubeai/generative.md": {
+      "path": "weaviate/model-providers/kubeai/generative.md",
+      "title": "Generative AI",
+      "topics": [
+        "generative AI",
+        "retrieval augmented generation",
+        "KubeAI",
+        "Weaviate integration",
+        "model providers",
+        "AI models"
+      ],
+      "doctype": "how-to",
+      "summary": "A comprehensive guide to integrating KubeAI generative AI models with Weaviate, explaining how to configure and use generative AI for retrieval augmented generation (RAG) with single prompt and grouped task methods.",
+      "hash": "d9ec3195a0dae5303fbbefa252e48e6442fcee9240ab3d0602dbec417d3d5cf4"
+    },
+    "weaviate/model-providers/kubeai/embeddings.md": {
+      "path": "weaviate/model-providers/kubeai/embeddings.md",
+      "title": "Text Embeddings",
+      "topics": [
+        "weaviate",
+        "embeddings",
+        "kubeai",
+        "vector search",
+        "machine learning",
+        "text embedding"
+      ],
+      "doctype": "how-to",
+      "summary": "A comprehensive guide to implementing KubeAI text embeddings in Weaviate, covering configuration, data import, and search operations using OpenAI-style API integration for vector and hybrid search.",
+      "hash": "25fca1bc4a315f5c4265dd68dc545c9403656c559c11dae367d31a3e858c682a"
+    },
+    "weaviate/model-providers/kubeai/index.md": {
+      "path": "weaviate/model-providers/kubeai/index.md",
+      "title": "KubeAI + Weaviate",
+      "topics": [
+        "model providers",
+        "AI integration",
+        "embedding models",
+        "generative AI",
+        "vector search",
+        "retrieval augmented generation"
+      ],
+      "doctype": "concept",
+      "summary": "This document explains how Weaviate integrates with KubeAI's AI models, specifically for embedding and generative AI capabilities, enabling developers to build sophisticated AI-driven applications using OpenAI-style API endpoints.",
+      "hash": "8bf328efb3bebaa32c501a0f6f7dc9e9122a05228d58e45b3bb2c6f068a0e09b"
+    },
+    "weaviate/model-providers/imagebind/embeddings-multimodal.md": {
+      "path": "weaviate/model-providers/imagebind/embeddings-multimodal.md",
+      "title": "Multimodal Embeddings",
+      "topics": [
+        "weaviate",
+        "embeddings",
+        "multimodal",
+        "imagebind",
+        "vector search",
+        "model integration"
+      ],
+      "doctype": "how-to",
+      "summary": "A guide to using Meta's ImageBind multimodal embeddings with Weaviate, covering configuration, data import, and search capabilities across text, image, audio, and other media types.",
+      "hash": "dcee3d476868236cc4187b3e0ec0da1b042f75cceb4c14eb94f2abbc9b9409b7"
+    },
+    "weaviate/model-providers/imagebind/index.md": {
+      "path": "weaviate/model-providers/imagebind/index.md",
+      "title": "Locally Hosted ImageBind + Weaviate",
+      "topics": [
+        "weaviate",
+        "imagebind",
+        "model providers",
+        "multi-modal embeddings",
+        "vector search"
+      ],
+      "doctype": "how-to",
+      "summary": "A guide to integrating Meta's ImageBind library with Weaviate, explaining how to use ImageBind's embedding models for multi-modal vector search and enable AI-driven application development.",
+      "hash": "efc0d4a4a2aa92e2e03cc517a1813d441309d4a177547215bc7cd3358401e50e"
+    },
+    "weaviate/model-providers/openai-azure/generative.md": {
+      "path": "weaviate/model-providers/openai-azure/generative.md",
+      "title": "Generative AI",
+      "topics": [
+        "Azure OpenAI",
+        "Generative AI",
+        "Retrieval Augmented Generation",
+        "Weaviate Integration",
+        "Model Providers"
+      ],
+      "doctype": "how-to",
+      "summary": "This documentation explains how to integrate Azure OpenAI's generative AI models with Weaviate, covering configuration, API credentials setup, and performing retrieval augmented generation (RAG) using single prompt and grouped task methods.",
+      "hash": "74f3000613a7ba8264743df436af482c8cde63b6b06e06a57f2b4a772caa77b6"
+    },
+    "weaviate/model-providers/openai-azure/embeddings.md": {
+      "path": "weaviate/model-providers/openai-azure/embeddings.md",
+      "title": "Text Embeddings",
+      "topics": [
+        "Azure OpenAI",
+        "Text Embeddings",
+        "Vector Search",
+        "Hybrid Search",
+        "Model Integration"
+      ],
+      "doctype": "how-to",
+      "summary": "A comprehensive guide to integrating Azure OpenAI text embedding models with Weaviate, covering configuration, API credentials, data import, and vector search operations using Azure OpenAI's embedding capabilities.",
+      "hash": "4a13ebe4caa0ad0adf9840171a0c72a910d879e9a2eb542b87e70a2d77c7689e"
+    },
+    "weaviate/model-providers/openai-azure/index.md": {
+      "path": "weaviate/model-providers/openai-azure/index.md",
+      "title": "Azure OpenAI + Weaviate",
+      "topics": [
+        "machine learning",
+        "AI integration",
+        "vector search",
+        "embeddings",
+        "generative AI",
+        "Azure OpenAI",
+        "Weaviate"
+      ],
+      "doctype": "concept",
+      "summary": "An overview of how Weaviate integrates with Microsoft Azure's OpenAI models, enabling developers to use embedding and generative AI models directly within the Weaviate Database for advanced AI-driven applications.",
+      "hash": "9771f8a4d585638ac1ad0ce3560739918541c939f84eda3a8ee27a9c9384d64a"
+    },
+    "weaviate/model-providers/xai/generative.md": {
+      "path": "weaviate/model-providers/xai/generative.md",
+      "title": "Generative AI",
+      "topics": [
+        "generative AI",
+        "retrieval augmented generation",
+        "xAI",
+        "Weaviate integration",
+        "model providers"
+      ],
+      "doctype": "how-to",
+      "summary": "A comprehensive guide to integrating xAI's generative AI models with Weaviate for retrieval augmented generation (RAG), covering configuration, API setup, and different methods of generating text from search results.",
+      "hash": "eea864741fa85e6f4be21f85040737a8608bfab5004307b53a471a7fcf7b8e18"
+    },
+    "weaviate/model-providers/xai/index.md": {
+      "path": "weaviate/model-providers/xai/index.md",
+      "title": "xAI + Weaviate",
+      "topics": [
+        "AI model integration",
+        "generative AI",
+        "retrieval augmented generation",
+        "xAI",
+        "Weaviate database"
+      ],
+      "doctype": "concept",
+      "summary": "An overview of how Weaviate integrates with xAI's generative AI models, enabling developers to perform retrieval augmented generation (RAG) directly from the Weaviate Database using xAI's powerful language models.",
+      "hash": "60c9936abc25007397b3647dfa62ad72decd3df3a74553edfef42f7b5bcb62cc"
+    },
+    "weaviate/model-providers/model2vec/embeddings.md": {
+      "path": "weaviate/model-providers/model2vec/embeddings.md",
+      "title": "Text Embeddings",
+      "topics": [
+        "weaviate",
+        "model2vec",
+        "text embeddings",
+        "vector search",
+        "hybrid search",
+        "model providers",
+        "machine learning"
+      ],
+      "doctype": "how-to",
+      "summary": "A comprehensive guide to using Model2Vec embeddings with Weaviate, covering configuration, data import, and search operations using the Model2Vec vectorizer integration.",
+      "hash": "009650ceaff06e9d79079f3c89f2fcf33b435b6758fcce778131b6489c962c02"
+    },
+    "weaviate/model-providers/model2vec/index.md": {
+      "path": "weaviate/model-providers/model2vec/index.md",
+      "title": "Model2Vec + Weaviate",
+      "topics": [
+        "model providers",
+        "embeddings",
+        "vector search",
+        "AI integration"
+      ],
+      "doctype": "concept",
+      "summary": "An overview of how Weaviate integrates with the Model2Vec library, enabling developers to use lightweight embedding models for vector search and AI-driven applications directly within the Weaviate Database.",
+      "hash": "a5a16d9cc2002ac3b90ff7b16c36528257d4e307d097b274c711124fcb801d71"
+    },
+    "weaviate/model-providers/nvidia/generative.md": {
+      "path": "weaviate/model-providers/nvidia/generative.md",
+      "title": "Generative AI",
+      "topics": [
+        "generative AI",
+        "NVIDIA NIM",
+        "retrieval augmented generation",
+        "model integration",
+        "AI models"
+      ],
+      "doctype": "how-to",
+      "summary": "A comprehensive guide to integrating NVIDIA's generative AI models with Weaviate, explaining how to configure collections, set up API credentials, and perform retrieval augmented generation using NVIDIA's NIM API.",
+      "hash": "2b2176c5dc62673c3c873317e1362bbf101c08bb9c730f216b386b50c00fedbf"
+    },
+    "weaviate/model-providers/nvidia/embeddings.md": {
+      "path": "weaviate/model-providers/nvidia/embeddings.md",
+      "title": "Text Embeddings",
+      "topics": [
+        "weaviate",
+        "nvidia",
+        "text embeddings",
+        "vector search",
+        "machine learning models",
+        "api integration"
+      ],
+      "doctype": "how-to",
+      "summary": "A comprehensive guide for integrating NVIDIA's text embedding models with Weaviate, covering configuration, data import, and search operations using NVIDIA's NIM APIs for generating and using text embeddings.",
+      "hash": "54e75235d0a1e1357492c9aaa5d394b25721956e2f255d8aeccb074ff3613c4d"
+    },
+    "weaviate/model-providers/nvidia/embeddings-multimodal.md": {
+      "path": "weaviate/model-providers/nvidia/embeddings-multimodal.md",
+      "title": "Multimodal Embeddings",
+      "topics": [
+        "weaviate",
+        "nvidia",
+        "multimodal embeddings",
+        "vector search",
+        "model integration",
+        "machine learning"
+      ],
+      "doctype": "how-to",
+      "summary": "A guide to integrating NVIDIA's multimodal embedding models with Weaviate, explaining how to configure the vectorizer, import data, and perform vector, hybrid, and media search operations using NVIDIA's NIM APIs.",
+      "hash": "af08db2bd7e032be61981834b98658b6d37ef675a50729395ad3edfe565709f9"
+    },
+    "weaviate/model-providers/nvidia/index.md": {
+      "path": "weaviate/model-providers/nvidia/index.md",
+      "title": "NVIDIA + Weaviate",
+      "topics": [
+        "AI integration",
+        "model providers",
+        "vector search",
+        "embeddings",
+        "generative AI",
+        "reranker models",
+        "NVIDIA"
+      ],
+      "doctype": "concept",
+      "summary": "An overview of how Weaviate integrates with NVIDIA's AI models, including embedding, generative AI, and reranker capabilities, enabling developers to build sophisticated AI-driven applications with enhanced search and generation functionalities.",
+      "hash": "142596a93deda29522e43504e24547dcaab1bc668f0e5d7b5392c94506df857a"
+    },
+    "weaviate/model-providers/nvidia/reranker.md": {
+      "path": "weaviate/model-providers/nvidia/reranker.md",
+      "title": "Reranker",
+      "topics": [
+        "weaviate",
+        "nvidia",
+        "reranking",
+        "model providers",
+        "search",
+        "api integration"
+      ],
+      "doctype": "how-to",
+      "summary": "A guide to integrating NVIDIA's reranker models with Weaviate, explaining how to configure and use NVIDIA reranker models for improving search result rankings through Weaviate's search pipeline.",
+      "hash": "2f185db84f1f9399ade252bb7edf2e94fe0d36b21edbeb1bf84e37918c0c9290"
+    },
+    "weaviate/model-providers/transformers/embeddings.md": {
+      "path": "weaviate/model-providers/transformers/embeddings.md",
+      "title": "Text Embeddings",
+      "topics": [
+        "weaviate",
+        "transformers",
+        "hugging face",
+        "embeddings",
+        "vector search",
+        "machine learning"
+      ],
+      "doctype": "how-to",
+      "summary": "A comprehensive guide to using Hugging Face Transformers text embedding models with Weaviate for generating and searching vector embeddings. The document covers configuration, data import, and search operations using local transformer models.",
+      "hash": "41aef1bdabaee556dcfa05b327f8d8e8ed23d158a2ae3d24668be3d7ec2f69d9"
+    },
+    "weaviate/model-providers/transformers/embeddings-multimodal.md": {
+      "path": "weaviate/model-providers/transformers/embeddings-multimodal.md",
+      "title": "Multimodal (CLIP) Embeddings",
+      "topics": [
+        "weaviate",
+        "transformers",
+        "multimodal embeddings",
+        "CLIP models",
+        "vector search",
+        "machine learning"
+      ],
+      "doctype": "how-to",
+      "summary": "A comprehensive guide to using CLIP multimodal embeddings in Weaviate, explaining how to configure the vectorizer, import data, and perform various search operations using Hugging Face Transformers CLIP models.",
+      "hash": "dd5a2505494050e2a7d0f71ca3d82104795d3b50df30050cc8279b01c54c5398"
+    },
+    "weaviate/model-providers/transformers/embeddings-multimodal-custom-image.md": {
+      "path": "weaviate/model-providers/transformers/embeddings-multimodal-custom-image.md",
+      "title": "Multimodal Embeddings (custom)",
+      "topics": [
+        "embeddings",
+        "transformers",
+        "huggingface",
+        "CLIP",
+        "docker",
+        "machine learning",
+        "model integration"
+      ],
+      "doctype": "how-to",
+      "summary": "A guide for creating and configuring custom CLIP model images for multimodal embeddings in Weaviate, covering how to build Docker images with public or local models from Hugging Face for vector generation.",
+      "hash": "4ac5d121cfb99ba8be5c871008c4d65c96e3b3cd209cec3cb48c600519bc21b7"
+    },
+    "weaviate/model-providers/transformers/embeddings-custom-image.md": {
+      "path": "weaviate/model-providers/transformers/embeddings-custom-image.md",
+      "title": "Text Embeddings (custom)",
+      "topics": [
+        "weaviate",
+        "transformers",
+        "embeddings",
+        "docker",
+        "hugging face",
+        "machine learning",
+        "model deployment"
+      ],
+      "doctype": "how-to",
+      "summary": "A guide for creating and configuring custom Docker images for Transformers embeddings models in Weaviate, covering how to build images for both public and private models from Hugging Face.",
+      "hash": "f69dd37bf3f6c3f0dba2cdfae13bb073fa393aa2fca91d954057a88405d162b1"
+    },
+    "weaviate/model-providers/transformers/index.md": {
+      "path": "weaviate/model-providers/transformers/index.md",
+      "title": "Locally Hosted Transformers + Weaviate",
+      "topics": [
+        "hugging face",
+        "transformers",
+        "machine learning",
+        "vector search",
+        "embeddings",
+        "model integration"
+      ],
+      "doctype": "concept",
+      "summary": "An overview of how Weaviate integrates with Hugging Face Transformers models, enabling developers to leverage powerful embedding and machine learning models directly within the Weaviate database for AI-driven applications.",
+      "hash": "7bb4c53d97ef9b29a49d2470c3d9de1a074295fb236bb3439cc0dd3075d46ac0"
+    },
+    "weaviate/model-providers/transformers/reranker.md": {
+      "path": "weaviate/model-providers/transformers/reranker.md",
+      "title": "Reranker",
+      "topics": [
+        "weaviate",
+        "transformers",
+        "machine learning",
+        "search",
+        "reranking",
+        "hugging face"
+      ],
+      "doctype": "how-to",
+      "summary": "A guide to using Hugging Face Transformers reranker models with Weaviate for enhancing search result relevance through a two-step search and reranking process.",
+      "hash": "714de00d2a862920a61846050995b1a8132b03c3a1577d897437e7469fc2aeb0"
+    },
+    "weaviate/model-providers/octoai/generative.md": {
+      "path": "weaviate/model-providers/octoai/generative.md",
+      "title": "Generative AI (Deprecated)",
+      "topics": [
+        "generative AI",
+        "retrieval augmented generation",
+        "OctoAI",
+        "Weaviate integration",
+        "large language models"
+      ],
+      "doctype": "how-to",
+      "summary": "A guide for integrating OctoAI's generative AI models with Weaviate, explaining how to configure collections, use API credentials, and perform retrieval augmented generation with various language models.",
+      "hash": "0606024d5e4d861521b929096cb6f49d2f29156eef70cc6d82114e47934c4d00"
+    },
+    "weaviate/model-providers/octoai/embeddings.md": {
+      "path": "weaviate/model-providers/octoai/embeddings.md",
+      "title": "Text Embeddings (Deprecated)",
+      "topics": [
+        "weaviate",
+        "octoai",
+        "embeddings",
+        "vector search",
+        "model integration"
+      ],
+      "doctype": "how-to",
+      "summary": "A guide for integrating OctoAI text embedding models with Weaviate, explaining how to configure the vectorizer, import data, and perform vector and hybrid searches using OctoAI embeddings.",
+      "hash": "9133f9f54bda0c219f0b1dd0b1bd24d4ff8b07daa669e15f6fb0d3429f25d1a2"
+    },
+    "weaviate/model-providers/octoai/index.md": {
+      "path": "weaviate/model-providers/octoai/index.md",
+      "title": "OctoAI + Weaviate (Deprecated)",
+      "topics": [
+        "model providers",
+        "OctoAI",
+        "vector embeddings",
+        "generative AI",
+        "RAG",
+        "AI integration"
+      ],
+      "doctype": "concept",
+      "summary": "Explains the integration of OctoAI's models with Weaviate, covering embedding models for vector search and generative AI models for retrieval augmented generation (RAG).",
+      "hash": "1138f7f3ad11fa4c19532d08e029daa85be5e285173f75378eea197afe7f4e89"
+    },
+    "weaviate/model-providers/octoai/_includes/octoai_deprecation.md": {
+      "path": "weaviate/model-providers/octoai/_includes/octoai_deprecation.md",
+      "title": "octoai_deprecation",
+      "topics": [
+        "deprecation",
+        "model migration",
+        "OctoAI",
+        "embedding models",
+        "generative AI",
+        "Weaviate"
+      ],
+      "doctype": "how-to",
+      "summary": "Provides guidance for users of OctoAI integrations in Weaviate, explaining how to migrate embedding and generative AI collections as OctoAI winds down its services by October 31, 2024.",
+      "hash": "1d00085e774ab2d852676582fedcc2fe3862776e89e3bc033b3cddc098e7ed5f"
+    },
+    "weaviate/model-providers/friendliai/generative.md": {
+      "path": "weaviate/model-providers/friendliai/generative.md",
+      "title": "Generative AI",
+      "topics": [
+        "generative AI",
+        "Retrieval Augmented Generation",
+        "Weaviate integration",
+        "FriendliAI",
+        "model providers",
+        "RAG"
+      ],
+      "doctype": "how-to",
+      "summary": "A comprehensive guide to integrating FriendliAI generative AI models with Weaviate, explaining how to configure collections, set up API credentials, and perform retrieval augmented generation using different AI models.",
+      "hash": "e4f26497bc9a7d7288ffcbff9144a5815169111c9ea5f63d2d393ce5859b9a94"
+    },
+    "weaviate/model-providers/friendliai/index.md": {
+      "path": "weaviate/model-providers/friendliai/index.md",
+      "title": "FriendliAI + Weaviate",
+      "topics": [
+        "model providers",
+        "generative AI",
+        "integration",
+        "retrieval augmented generation",
+        "natural language processing"
+      ],
+      "doctype": "concept",
+      "summary": "An overview of the integration between Weaviate and FriendliAI, explaining how developers can leverage FriendliAI's generative AI models within the Weaviate Database for building advanced AI-driven applications.",
+      "hash": "47849b91fd03f3c87a570d1f2788f1bba82197bd9bf46df741c7bf071a2b546b"
+    },
+    "weaviate/model-providers/anthropic/generative.md": {
+      "path": "weaviate/model-providers/anthropic/generative.md",
+      "title": "Generative AI",
+      "topics": [
+        "generative AI",
+        "Anthropic",
+        "retrieval augmented generation",
+        "RAG",
+        "AI model integration"
+      ],
+      "doctype": "how-to",
+      "summary": "A comprehensive guide to integrating Anthropic's generative AI models with Weaviate, covering configuration, API key setup, model selection, and performing retrieval augmented generation (RAG) with single prompt and grouped task methods.",
+      "hash": "95860379dea8539c0cf9c3e5a70f88a71fc54cf519a5e032b7c3c64d108ec88a"
+    },
+    "weaviate/model-providers/anthropic/index.md": {
+      "path": "weaviate/model-providers/anthropic/index.md",
+      "title": "Anthropic + Weaviate",
+      "topics": [
+        "AI integration",
+        "model providers",
+        "generative AI",
+        "retrieval augmented generation",
+        "Anthropic models"
+      ],
+      "doctype": "concept",
+      "summary": "An overview of how Weaviate integrates with Anthropic's generative AI models, enabling developers to leverage Anthropic's powerful natural language processing capabilities directly within the Weaviate Database.",
+      "hash": "32fcdb6887208003e6683f12d606aff664a28a6a52faf8001f72c8618ae7f76b"
+    },
+    "weaviate/model-providers/aws/generative.md": {
+      "path": "weaviate/model-providers/aws/generative.md",
+      "title": "Generative AI",
+      "topics": [
+        "AWS",
+        "generative AI",
+        "SageMaker",
+        "Bedrock",
+        "retrieval augmented generation",
+        "RAG",
+        "model integration"
+      ],
+      "doctype": "how-to",
+      "summary": "A comprehensive guide to integrating AWS generative AI models (SageMaker and Bedrock) with Weaviate, covering configuration, model selection, and retrieval augmented generation techniques.",
+      "hash": "037d64baf8a23c192bbdf2ec246f869e288d8e8a53a8255ed3441d68e904be24"
+    },
+    "weaviate/model-providers/aws/embeddings.md": {
+      "path": "weaviate/model-providers/aws/embeddings.md",
+      "title": "Text Embeddings",
+      "topics": [
+        "aws",
+        "embeddings",
+        "vector search",
+        "text2vec",
+        "SageMaker",
+        "Bedrock"
+      ],
+      "doctype": "how-to",
+      "summary": "This document explains how to integrate AWS SageMaker and Bedrock embedding models with Weaviate for generating text embeddings, configuring vector indexes, and performing vector and hybrid searches using AWS model providers.",
+      "hash": "c33a5e7f9c59d206419dff3aa46944153425edfbce05cd1fc047d553af9cf24f"
+    },
+    "weaviate/model-providers/aws/index.md": {
+      "path": "weaviate/model-providers/aws/index.md",
+      "title": "AWS + Weaviate",
+      "topics": [
+        "AWS",
+        "machine learning",
+        "model integration",
+        "vector search",
+        "generative AI",
+        "embeddings",
+        "Sagemaker",
+        "Bedrock"
+      ],
+      "doctype": "concept",
+      "summary": "An overview of Weaviate's integration with AWS model providers, highlighting how developers can leverage AWS Sagemaker and Bedrock for embedding and generative AI models directly within the Weaviate Database.",
+      "hash": "680854e16b88ba6fe902db465c24679d92e1102df9958dd60e5a5221e0c50255"
+    },
+    "weaviate/model-providers/huggingface/embeddings.md": {
+      "path": "weaviate/model-providers/huggingface/embeddings.md",
+      "title": "Text Embeddings",
+      "topics": [
+        "embeddings",
+        "machine learning",
+        "vector search",
+        "hugging face",
+        "weaviate",
+        "text vectorization"
+      ],
+      "doctype": "how-to",
+      "summary": "A comprehensive guide to using Hugging Face embedding models with Weaviate for generating text embeddings, configuring vector indexes, and performing vector and hybrid searches using Hugging Face's models.",
+      "hash": "a6dde115f3657ed5f7397d066c2f31f517ac51a33bcf88c29f88966899fa36e5"
+    },
+    "weaviate/model-providers/huggingface/index.md": {
+      "path": "weaviate/model-providers/huggingface/index.md",
+      "title": "Hugging Face + Weaviate",
+      "topics": [
+        "machine learning",
+        "model integration",
+        "vector search",
+        "natural language processing",
+        "AI models",
+        "embeddings"
+      ],
+      "doctype": "concept",
+      "summary": "An overview of how Weaviate integrates with Hugging Face's Inference API, enabling developers to leverage Hugging Face Hub's models for vector search and AI-driven applications directly within the Weaviate Database.",
+      "hash": "19aaadf3aeb17b9af3dca38ae49e67cf045b674a1e43f76698cd284728be185b"
+    },
+    "weaviate/model-providers/ollama/generative.md": {
+      "path": "weaviate/model-providers/ollama/generative.md",
+      "title": "Generative AI",
+      "topics": [
+        "generative AI",
+        "Ollama",
+        "retrieval augmented generation",
+        "machine learning",
+        "model integration"
+      ],
+      "doctype": "how-to",
+      "summary": "A guide to integrating Ollama generative AI models with Weaviate for retrieval augmented generation (RAG), covering configuration, connection, and usage across different programming languages.",
+      "hash": "5697e5876bf12c58063fd428ac39566f931313e18ccacdf2707ad52965bc2af7"
+    },
+    "weaviate/model-providers/ollama/embeddings.md": {
+      "path": "weaviate/model-providers/ollama/embeddings.md",
+      "title": "Text Embeddings",
+      "topics": [
+        "weaviate",
+        "ollama",
+        "embeddings",
+        "vector search",
+        "model integration"
+      ],
+      "doctype": "how-to",
+      "summary": "A comprehensive guide to using Ollama's embedding models with Weaviate for generating text embeddings, configuring vector indexes, and performing vector and hybrid searches using local Ollama models.",
+      "hash": "f8929e3ac8d1d5da35ad56af659fa92ffe90f2edfc913c2811fbfd4986d58336"
+    },
+    "weaviate/model-providers/ollama/index.md": {
+      "path": "weaviate/model-providers/ollama/index.md",
+      "title": "Ollama + Weaviate",
+      "topics": [
+        "model providers",
+        "ollama",
+        "embeddings",
+        "generative AI",
+        "vector search",
+        "RAG"
+      ],
+      "doctype": "concept",
+      "summary": "An overview of how Weaviate integrates with the Ollama library, enabling developers to use Ollama's embedding and generative AI models directly within Weaviate for advanced AI-driven applications.",
+      "hash": "b4fc2344c2321a405a4f310ba04032eb1f420ab91a22aef7bea741e17855227e"
+    },
+    "weaviate/model-providers/weaviate/embeddings.md": {
+      "path": "weaviate/model-providers/weaviate/embeddings.md",
+      "title": "Text Embeddings",
+      "topics": [
+        "embeddings",
+        "vector search",
+        "weaviate cloud",
+        "text vectorization",
+        "model providers"
+      ],
+      "doctype": "how-to",
+      "summary": "A guide to using Weaviate Embeddings models for generating text embeddings in Weaviate Cloud, covering configuration, data import, and search operations across multiple programming languages.",
+      "hash": "4e77fca60381e1547eac4fdd041e66bf876ae31365eabe2a2cefebd1038187ac"
+    },
+    "weaviate/model-providers/weaviate/index.md": {
+      "path": "weaviate/model-providers/weaviate/index.md",
+      "title": "Weaviate Embeddings",
+      "topics": [
+        "weaviate",
+        "embeddings",
+        "vector search",
+        "AI integrations",
+        "cloud services"
+      ],
+      "doctype": "how-to",
+      "summary": "A guide to using Weaviate Embeddings, a paid service that provides vectorizer models for transforming text data into vector embeddings, enabling semantic and hybrid search operations within Weaviate Cloud.",
+      "hash": "4395e87eb34ede4401adac0f0392fa34935eb297c35ded9ce34bce254e775961"
+    },
+    "weaviate/model-providers/mistral/generative.md": {
+      "path": "weaviate/model-providers/mistral/generative.md",
+      "title": "Generative AI",
+      "topics": [
+        "generative AI",
+        "retrieval augmented generation",
+        "Mistral AI",
+        "Weaviate integration",
+        "API configuration"
+      ],
+      "doctype": "how-to",
+      "summary": "A comprehensive guide for integrating Mistral's generative AI models with Weaviate, covering configuration, API key setup, model selection, and retrieval augmented generation techniques.",
+      "hash": "93ba91990c6dae0b8ebe1473a4f30c9989b64ee89c31f7d076ab6acb85feeec2"
+    },
+    "weaviate/model-providers/mistral/embeddings.md": {
+      "path": "weaviate/model-providers/mistral/embeddings.md",
+      "title": "Text Embeddings",
+      "topics": [
+        "weaviate",
+        "mistral",
+        "text embeddings",
+        "vector search",
+        "model providers",
+        "AI integration"
+      ],
+      "doctype": "how-to",
+      "summary": "A comprehensive guide for integrating Mistral's text embedding models with Weaviate, covering configuration, API setup, data import, and vector search operations using Mistral embeddings.",
+      "hash": "36b7cd3eee7af1b7c2c79c8c4524e07dedaecf3f9585c72120798514829b7377"
+    },
+    "weaviate/model-providers/mistral/index.md": {
+      "path": "weaviate/model-providers/mistral/index.md",
+      "title": "Mistral + Weaviate",
+      "topics": [
+        "AI integration",
+        "vector search",
+        "embeddings",
+        "generative AI",
+        "RAG",
+        "model providers"
+      ],
+      "doctype": "concept",
+      "summary": "An overview of how Weaviate integrates with Mistral's AI models, including embedding and generative AI capabilities that enable developers to build sophisticated AI-driven applications using Mistral's models directly within the Weaviate Database.",
+      "hash": "0e6f9b9e8d84a2eaed67fea23eaf6073f5bdada53847cb2899bad7231be0b94c"
+    },
+    "weaviate/model-providers/openai/generative.md": {
+      "path": "weaviate/model-providers/openai/generative.md",
+      "title": "Generative AI",
+      "topics": [
+        "OpenAI",
+        "Generative AI",
+        "Retrieval Augmented Generation",
+        "RAG",
+        "AI Integration",
+        "Large Language Models"
+      ],
+      "doctype": "how-to",
+      "summary": "A comprehensive guide to integrating OpenAI's generative AI models with Weaviate, covering configuration, API key setup, model selection, and performing retrieval augmented generation (RAG) using single prompt and grouped task methods.",
+      "hash": "991ebf27d5c04a09cbb81b0c867e8140f327eb38ad9ad9fe3155e11fa3975e4d"
+    },
+    "weaviate/model-providers/openai/embeddings.md": {
+      "path": "weaviate/model-providers/openai/embeddings.md",
+      "title": "Text Embeddings",
+      "topics": [
+        "embeddings",
+        "OpenAI",
+        "vector search",
+        "model integration",
+        "text vectorization"
+      ],
+      "doctype": "how-to",
+      "summary": "A comprehensive guide to integrating OpenAI embedding models with Weaviate, covering configuration, data import, and search operations using OpenAI's text embedding models.",
+      "hash": "a91cd9c8876241ccbb2fde36b7ab43888c074495e9dc377022a2d0ba180ea1d1"
+    },
+    "weaviate/model-providers/openai/index.md": {
+      "path": "weaviate/model-providers/openai/index.md",
+      "title": "OpenAI + Weaviate",
+      "topics": [
+        "machine learning",
+        "AI integration",
+        "vector search",
+        "generative AI",
+        "embeddings",
+        "OpenAI",
+        "Weaviate"
+      ],
+      "doctype": "concept",
+      "summary": "An overview of how Weaviate integrates with OpenAI's APIs, showcasing capabilities for embedding models and generative AI models that enable advanced vector search and retrieval augmented generation (RAG).",
+      "hash": "180ef81118397ebf105a8b904765de7137574967e57dba7a3384767a7ef0d82f"
+    },
+    "weaviate/model-providers/gpt4all/embeddings.md": {
+      "path": "weaviate/model-providers/gpt4all/embeddings.md",
+      "title": "Text Embeddings",
+      "topics": [
+        "embeddings",
+        "vector search",
+        "machine learning",
+        "model integration",
+        "text vectorization"
+      ],
+      "doctype": "how-to",
+      "summary": "A guide to using GPT4All embeddings in Weaviate for generating text embeddings, configuring vector indexes, and performing vector and hybrid searches using the GPT4All model integration.",
+      "hash": "a23a30e6d1da7d4f88030fc260dd6eeb1dd8a853ac3d646146795d27ddf38206"
+    },
+    "weaviate/model-providers/gpt4all/index.md": {
+      "path": "weaviate/model-providers/gpt4all/index.md",
+      "title": "GPT4All + Weaviate",
+      "topics": [
+        "model providers",
+        "AI integration",
+        "embedding models",
+        "vector search",
+        "local AI"
+      ],
+      "doctype": "concept",
+      "summary": "An overview of the Weaviate integration with GPT4All, explaining how developers can leverage GPT4All's local AI models for embedding and vector search within Weaviate, with a note that this integration is now deprecated.",
+      "hash": "de8422da34e26198041bd374b5ad4caaf7ee5c7b150da2478111fa9106f4b2c5"
+    },
+    "weaviate/release-notes/index.md": {
+      "path": "weaviate/release-notes/index.md",
+      "title": "Release Notes",
+      "topics": [
+        "release notes",
+        "version history",
+        "Weaviate database",
+        "client libraries"
+      ],
+      "doctype": "reference",
+      "summary": "Comprehensive documentation of Weaviate's recent version releases, including links to release notes for the database and client libraries across multiple programming languages.",
+      "hash": "421af5418028dc3d9afe508fb9902d1bc2aacfa90507d0348fcfc9098fac7224"
+    },
+    "weaviate/quickstart/index.md": {
+      "path": "weaviate/quickstart/index.md",
+      "title": "Quickstart (with cloud resources)",
+      "topics": [
+        "Weaviate",
+        "Vector Database",
+        "Cloud Setup",
+        "Semantic Search",
+        "Retrieval Augmented Generation",
+        "RAG",
+        "Machine Learning"
+      ],
+      "doctype": "tutorial",
+      "summary": "A comprehensive tutorial that guides users through setting up a Weaviate cloud instance, creating a collection, importing data, and performing advanced vector search and generative AI operations using semantic search and retrieval augmented generation (RAG).",
+      "hash": "965831dcaeb28e5232b3bcebcdec4512bcb577c0ec0735f129f85b586ad4d45a"
+    },
+    "weaviate/quickstart/local.md": {
+      "path": "weaviate/quickstart/local.md",
+      "title": "'Quickstart: Locally hosted'",
+      "topics": [
+        "weaviate",
+        "vector database",
+        "ollama",
+        "local setup",
+        "semantic search",
+        "RAG",
+        "machine learning"
+      ],
+      "doctype": "tutorial",
+      "summary": "A comprehensive tutorial guiding users through setting up a local Weaviate instance with Ollama, creating a collection, importing data, and performing semantic search and retrieval augmented generation (RAG) using local AI models.",
+      "hash": "87f0af44dbd11450265de56166d233af301b0ba3196ec8438798f7cf0c355e4a"
+    },
+    "weaviate/search/basics.md": {
+      "path": "weaviate/search/basics.md",
+      "title": "Search patterns and basics",
+      "topics": [
+        "weaviate",
+        "search",
+        "querying",
+        "data retrieval",
+        "vector search",
+        "pagination",
+        "cross-references",
+        "metadata"
+      ],
+      "doctype": "how-to",
+      "summary": "A comprehensive guide to performing basic search operations in Weaviate, covering techniques like listing objects, limiting results, specifying properties, retrieving vectors and metadata, and handling multi-tenancy.",
+      "hash": "58ed6372e7ce861d8f583ad243b3385e616591a93e87affccfc98b97e6bb5062"
+    },
+    "weaviate/search/generative.md": {
+      "path": "weaviate/search/generative.md",
+      "title": "Retrieval Augmented Generation (RAG)",
+      "topics": [
+        "retrieval augmented generation",
+        "generative AI",
+        "vector search",
+        "Weaviate",
+        "RAG",
+        "generative models"
+      ],
+      "doctype": "how-to",
+      "summary": "A comprehensive guide to performing Retrieval Augmented Generation (RAG) in Weaviate, explaining how to configure generative model providers, perform single and grouped prompt searches, and work with images in generative queries.",
+      "hash": "6dd03093135d20a2337a007577eb32c71e4db1352b0fd12841732e9b11fa2ed5"
+    },
+    "weaviate/search/image.md": {
+      "path": "weaviate/search/image.md",
+      "title": "Image search",
+      "topics": [
+        "image search",
+        "vector similarity",
+        "base64 image",
+        "weaviate search"
+      ],
+      "doctype": "how-to",
+      "summary": "A comprehensive guide to performing image similarity search in Weaviate using local image paths or base64 representations, demonstrating how to search for similar images across multiple programming languages.",
+      "hash": "c88c1c3a28bd390f61dbcf1ca4d3eee9385702531417363141ed384988557c9a"
+    },
+    "weaviate/search/index.mdx": {
+      "path": "weaviate/search/index.mdx",
+      "title": "Search",
+      "topics": [
+        "search techniques",
+        "vector search",
+        "keyword search",
+        "hybrid search",
+        "image search",
+        "RAG",
+        "reranking",
+        "aggregation",
+        "search filters"
+      ],
+      "doctype": "how-to",
+      "summary": "A comprehensive guide to search techniques in Weaviate, covering various search methods including vector, keyword, hybrid, and image searches, along with advanced features like RAG, reranking, and filtering.",
+      "hash": "d623310c3574bb00f6c514cafbdd0ae6db24cf21686e4e9567d95f5d83b5e294"
+    },
+    "weaviate/search/multi-vector.md": {
+      "path": "weaviate/search/multi-vector.md",
+      "title": "Multiple target vectors",
+      "topics": [
+        "vector search",
+        "multi-vector search",
+        "search strategies",
+        "vector distance",
+        "query optimization"
+      ],
+      "doctype": "how-to",
+      "summary": "A comprehensive guide to performing multi-target vector searches in Weaviate, explaining how to specify target vectors, query vectors, and different join strategies for combining search results across multiple vector spaces.",
+      "hash": "67a86e528981111588bc593c70b7f27ccfb6df238979549e4c9eb4447b9e449a"
+    },
+    "weaviate/search/filters.md": {
+      "path": "weaviate/search/filters.md",
+      "title": "Filters",
+      "topics": [
+        "search",
+        "filtering",
+        "query operators",
+        "weaviate",
+        "database filtering"
+      ],
+      "doctype": "how-to",
+      "summary": "A comprehensive guide to filtering search results in Weaviate across different programming languages and client versions, covering single and multiple condition filters, cross-reference filtering, geo-coordinate filtering, and filtering by metadata.",
+      "hash": "919847954fcc171b5189c8ca58278a98afcb4aeb1fcfc12850e6e6e2cfda5d8a"
+    },
+    "weaviate/search/similarity.md": {
+      "path": "weaviate/search/similarity.md",
+      "title": "Vector similarity search",
+      "topics": [
+        "vector search",
+        "similarity search",
+        "near text",
+        "near image",
+        "near object",
+        "near vector",
+        "distance threshold",
+        "filtering",
+        "grouping"
+      ],
+      "doctype": "how-to",
+      "summary": "A comprehensive guide to performing vector similarity searches in Weaviate, covering various search methods like text, image, and object-based searches, with examples across multiple programming languages and search configuration options.",
+      "hash": "22f87ef5ad534f52c1e897c16f7d7153e0f2c68e0172b2a50beb8a09bf9b380f"
+    },
+    "weaviate/search/rerank.md": {
+      "path": "weaviate/search/rerank.md",
+      "title": "Reranking",
+      "topics": [
+        "search",
+        "vector search",
+        "keyword search",
+        "reranking",
+        "named vectors"
+      ],
+      "doctype": "how-to",
+      "summary": "A guide to reranking search results in Weaviate, demonstrating how to reorder vector and keyword search results using different criteria or algorithms across multiple programming languages.",
+      "hash": "0e7e7c1473d88b1a49c34cf06efce42e81b9d2a7529b0f2d5fec02451579116b"
+    },
+    "weaviate/search/bm25.md": {
+      "path": "weaviate/search/bm25.md",
+      "title": "Keyword search",
+      "topics": [
+        "search",
+        "bm25",
+        "keyword search",
+        "text search",
+        "tokenization",
+        "fuzzy matching",
+        "scoring",
+        "filtering"
+      ],
+      "doctype": "how-to",
+      "summary": "A comprehensive guide to performing BM25 (keyword) searches in Weaviate, covering basic queries, search operators, scoring, property targeting, weighting, tokenization, filtering, and fuzzy matching.",
+      "hash": "1d64e245376dd532bb0e3fec584859960db64697d766706f5011075cdfa42638"
+    },
+    "weaviate/search/aggregate.md": {
+      "path": "weaviate/search/aggregate.md",
+      "title": "Aggregate data",
+      "topics": [
+        "weaviate",
+        "search",
+        "aggregation",
+        "data analysis",
+        "query techniques",
+        "metadata",
+        "filtering",
+        "similarity search",
+        "hybrid search"
+      ],
+      "doctype": "how-to",
+      "summary": "A comprehensive guide to performing aggregate queries in Weaviate, demonstrating how to count, analyze, and retrieve aggregated data from collections using various methods like meta properties, text and integer property aggregation, grouping, and filtering.",
+      "hash": "f8dcee9bf614e79adebbc0d90b5908e8c6f2424833c5540c3052d097b409f62c"
+    },
+    "weaviate/search/hybrid.md": {
+      "path": "weaviate/search/hybrid.md",
+      "title": "Hybrid search",
+      "topics": [
+        "hybrid search",
+        "vector search",
+        "keyword search",
+        "BM25",
+        "search parameters",
+        "fusion methods",
+        "search weighting"
+      ],
+      "doctype": "how-to",
+      "summary": "A comprehensive guide to performing hybrid search in Weaviate, which combines vector and keyword search using configurable fusion methods, weighting, and additional search parameters.",
+      "hash": "9c5dfca6c836c2e52f5e44aaf3e6ac99c4cff7882f5b41a666b2bb6a4829a588"
+    },
+    "weaviate/connections/connect-cloud.mdx": {
+      "path": "weaviate/connections/connect-cloud.mdx",
+      "title": "Weaviate Cloud",
+      "topics": [
+        "weaviate",
+        "cloud connection",
+        "api key",
+        "client configuration",
+        "environment variables",
+        "third-party api keys"
+      ],
+      "doctype": "how-to",
+      "summary": "A comprehensive guide for connecting to a Weaviate Cloud (WCD) instance, covering API key retrieval, connection examples across multiple programming languages, and configuration of third-party API keys.",
+      "hash": "9fb143f8074b3b1420ef320b2411440d2495771171f6606769ead50c7dc18500"
+    },
+    "weaviate/connections/connect-local.mdx": {
+      "path": "weaviate/connections/connect-local.mdx",
+      "title": "Local instances",
+      "topics": [
+        "weaviate",
+        "connections",
+        "local instance",
+        "authentication",
+        "client configuration",
+        "connection methods"
+      ],
+      "doctype": "how-to",
+      "summary": "A comprehensive guide to connecting to a locally hosted Weaviate instance, covering connection methods for different clients, authentication options, and configuration settings.",
+      "hash": "adba1553bb15597783c755bd5b73b009e4bdd50d4437955b4de561ff82aa9cee"
+    },
+    "weaviate/connections/index.mdx": {
+      "path": "weaviate/connections/index.mdx",
+      "title": "Connect to Weaviate",
+      "topics": [
+        "weaviate",
+        "client connections",
+        "cloud instances",
+        "local instances",
+        "embedded instances"
+      ],
+      "doctype": "how-to",
+      "summary": "A guide for connecting client applications to Weaviate instances, covering different connection types including cloud, local, custom, and embedded Weaviate instances.",
+      "hash": "1a4a64f85e6d8330244ebd14cbd0bc56fe77a0f92d252f4f35af206d0fa83fac"
+    },
+    "weaviate/connections/connect-query.mdx": {
+      "path": "weaviate/connections/connect-query.mdx",
+      "title": "Connect with Query App",
+      "topics": [
+        "Weaviate",
+        "GraphQL",
+        "Query Tool",
+        "Cloud Connections",
+        "Authentication"
+      ],
+      "doctype": "how-to",
+      "summary": "A guide to using the Weaviate Cloud Query tool, explaining how to open the tool, select a Weaviate instance, pass authentication details, and run example queries in the GraphQL interface.",
+      "hash": "327375e1a81a8f45c34ae712121face59a2275b80b4a34435420597c39e68cde"
+    },
+    "weaviate/connections/connect-custom.mdx": {
+      "path": "weaviate/connections/connect-custom.mdx",
+      "title": "Custom connections",
+      "topics": [
+        "weaviate",
+        "client connections",
+        "authentication",
+        "API keys",
+        "gRPC",
+        "OIDC"
+      ],
+      "doctype": "how-to",
+      "summary": "Explains how to establish custom connections to Weaviate using Python and TypeScript clients, covering various connection configurations including environment variables, API keys, timeouts, and OIDC authentication.",
+      "hash": "95d5dea08d4627a131682d7fc678f567c80460d77a8795e35fbd6306dbe0f774"
+    },
+    "weaviate/connections/connect-embedded.mdx": {
+      "path": "weaviate/connections/connect-embedded.mdx",
+      "title": "Embedded Weaviate",
+      "topics": [
+        "weaviate",
+        "embedded database",
+        "client connections",
+        "python",
+        "typescript"
+      ],
+      "doctype": "how-to",
+      "summary": "A guide for starting and connecting to an Embedded Weaviate instance using different client libraries and versions, demonstrating how to set up a local Weaviate database.",
+      "hash": "ae93fc42344d307274e4e84831323ff06dc0184dd8bc449c20f34cd77134bba0"
+    },
+    "weaviate/recipes/multi-vector-colipali-rag.md": {
+      "path": "weaviate/recipes/multi-vector-colipali-rag.md",
+      "title": "\"Multi-vector RAG: Using Weaviate to search a collection of PDF documents \"",
+      "topics": [
+        "Multimodal RAG",
+        "Vector Search",
+        "PDF Document Retrieval",
+        "Weaviate",
+        "ColPali",
+        "ColQwen2",
+        "Vision Language Models"
+      ],
+      "doctype": "tutorial",
+      "summary": "A comprehensive tutorial demonstrating how to build a multimodal Retrieval-Augmented Generation (RAG) system using ColQwen2 for multi-vector embeddings, Weaviate for vector storage, and Qwen2.5-VL for generating answers from PDF documents.",
+      "hash": "1319f2a4f69e51935b2b9d63eb71035b232ffac3d0554543affac4d5634a6555"
+    },
+    "weaviate/recipes/similarity_search_embed_multilingual_v2.0.md": {
+      "path": "weaviate/recipes/similarity_search_embed_multilingual_v2.0.md",
+      "title": "\"Similarity Search with Cohere\"",
+      "topics": [
+        "Weaviate",
+        "Similarity Search",
+        "Cohere",
+        "Vector Embeddings",
+        "Python"
+      ],
+      "doctype": "how-to",
+      "summary": "A comprehensive guide demonstrating how to perform similarity search using Weaviate and Cohere's multilingual embedding model, covering collection creation, data import, and different query techniques like nearText, nearObject, and nearVector.",
+      "hash": "8d3688b4f8f41a195127420f5ed08a0d66fbc3b11936809794b0147c961fc743"
+    },
+    "weaviate/recipes/weaviate_embeddings_service.md": {
+      "path": "weaviate/recipes/weaviate_embeddings_service.md",
+      "title": "\"How to Use Weaviate Embedding Service\"",
+      "topics": [
+        "Weaviate",
+        "Embedding Service",
+        "Vector Search",
+        "Hybrid Search",
+        "Generative AI",
+        "Machine Learning"
+      ],
+      "doctype": "how-to",
+      "summary": "A comprehensive tutorial demonstrating how to use Weaviate Cloud's Embedding Service, including creating a collection, importing data, and performing various search types like vector search, hybrid search, and generative search.",
+      "hash": "4e761fb2c14c4c737ede936c1e441d09ae9f54f24c9f4e7ea00d91efea2ad18f"
+    },
+    "weaviate/recipes/hybrid_search_mistral_embed.md": {
+      "path": "weaviate/recipes/hybrid_search_mistral_embed.md",
+      "title": "\"Hybrid Search with Mistral\"",
+      "topics": [
+        "Weaviate",
+        "Hybrid Search",
+        "Mistral Embeddings",
+        "Vector Search",
+        "Python"
+      ],
+      "doctype": "how-to",
+      "summary": "A step-by-step guide demonstrating how to perform hybrid search using Mistral embeddings in Weaviate, including connecting to Weaviate, creating a collection, importing data, and executing hybrid search queries with different parameters.",
+      "hash": "e1c7307fab1c59e9a2d6ed86a4b30a9da348b1daad25f944cdf340788311b08b"
+    },
+    "weaviate/recipes/rag_titan-text-express-v1_bedrock.md": {
+      "path": "weaviate/recipes/rag_titan-text-express-v1_bedrock.md",
+      "title": "\"Generative search (RAG) with AWS Bedrock\"",
+      "topics": [
+        "Weaviate",
+        "Retrieval Augmented Generation",
+        "AWS Bedrock",
+        "Vector Search",
+        "Generative AI"
+      ],
+      "doctype": "how-to",
+      "summary": "A step-by-step guide demonstrating how to perform Retrieval Augmented Generation (RAG) using Weaviate and AWS Bedrock, including collection creation, data import, and generative search queries with Titan text model.",
+      "hash": "8618d39fab72898de538948115bc3d0d1203fb86934373c2dded09d853d8d874"
+    },
+    "weaviate/recipes/rag_llama_3.1_nemotron_51b_instruct.md": {
+      "path": "weaviate/recipes/rag_llama_3.1_nemotron_51b_instruct.md",
+      "title": "\"Generate new content with NVIDIA models and RAG\"",
+      "topics": [
+        "Weaviate",
+        "RAG",
+        "NVIDIA",
+        "Generative Search",
+        "Vector Database",
+        "Hybrid Search"
+      ],
+      "doctype": "how-to",
+      "summary": "A comprehensive tutorial demonstrating how to use NVIDIA models with Weaviate for generative search and retrieval-augmented generation (RAG), covering connection setup, data chunking, hybrid search, and generative query techniques.",
+      "hash": "4e4dae886e0e82c5321842d7a90626b1acf19f715ac1a22389c10737072a1c48"
+    },
+    "weaviate/benchmarks/ann.md": {
+      "path": "weaviate/benchmarks/ann.md",
+      "title": "ANN Benchmark",
+      "topics": [
+        "vector search",
+        "performance benchmarks",
+        "approximate nearest neighbor",
+        "HNSW indexing",
+        "vector database performance"
+      ],
+      "doctype": "reference",
+      "summary": "A comprehensive documentation of Weaviate's Approximate Nearest Neighbor (ANN) performance benchmarks, detailing metrics, datasets, and performance characteristics across different vector search scenarios.",
+      "hash": "11985faee2784012048a5598ec683b2ff6a90d0a5b505b73abb42297869f639b"
+    },
+    "weaviate/benchmarks/index.md": {
+      "path": "weaviate/benchmarks/index.md",
+      "title": "Benchmarks",
+      "topics": [
+        "vector database",
+        "performance benchmarks",
+        "ANN search",
+        "vector search latency",
+        "throughput"
+      ],
+      "doctype": "reference",
+      "summary": "A comprehensive overview of Weaviate's performance benchmarks, highlighting vector search latencies, throughput, and upcoming benchmark categories for vector database capabilities.",
+      "hash": "63514deabb905ad0770513388ca2388091ab79f55d7bf1825b089d273a1a1dbc"
+    },
+    "weaviate/concepts/storage.md": {
+      "path": "weaviate/concepts/storage.md",
+      "title": "Storage",
+      "topics": [
+        "database architecture",
+        "vector storage",
+        "persistent storage",
+        "fault-tolerance",
+        "indexing",
+        "LSM-Tree",
+        "HNSW",
+        "Write-Ahead Logging"
+      ],
+      "doctype": "concept",
+      "summary": "An in-depth explanation of Weaviate's storage architecture, covering how objects, vectors, and inverted indexes are persistently stored with fault tolerance, using techniques like LSM-Tree, HNSW indexing, and Write-Ahead Logging.",
+      "hash": "7bf208c19235a286c5660687bdeb99ce136e2eb707397fc4956edf61acfa9331"
+    },
+    "weaviate/concepts/resources.md": {
+      "path": "weaviate/concepts/resources.md",
+      "title": "Resource Planning",
+      "topics": [
+        "resource management",
+        "cpu",
+        "memory",
+        "gpu",
+        "vector search",
+        "system optimization",
+        "weaviate performance"
+      ],
+      "doctype": "concept",
+      "summary": "A comprehensive guide to resource planning for Weaviate, covering CPU, memory, and GPU considerations for optimal performance at scale. Explains how to manage and optimize resource usage for vector search and data import.",
+      "hash": "cd005c0eb78e15854723cee87b9558598bccb315f910c41d552a2f43a7292980"
+    },
+    "weaviate/concepts/cluster.md": {
+      "path": "weaviate/concepts/cluster.md",
+      "title": "Horizontal Scaling",
+      "topics": [
+        "weaviate",
+        "cluster architecture",
+        "horizontal scaling",
+        "sharding",
+        "replication",
+        "high availability"
+      ],
+      "doctype": "concept",
+      "summary": "Explains Weaviate's approach to horizontal scaling, covering key concepts like shards and replicas, motivations for scaling, and architectural considerations for distributing data and queries across multiple nodes.",
+      "hash": "35355300b123838fe368790b78001f19d442f9a4a5be189cfa972057a75e2aed"
+    },
+    "weaviate/concepts/reranking.md": {
+      "path": "weaviate/concepts/reranking.md",
+      "title": "Reranking",
+      "topics": [
+        "search",
+        "relevance",
+        "machine learning",
+        "vector search",
+        "multi-stage search"
+      ],
+      "doctype": "concept",
+      "summary": "Reranking is a technique for improving search relevance by reordering search results using a secondary model after initial retrieval, allowing for more computationally expensive relevance scoring on a smaller subset of data.",
+      "hash": "af21c49ec3dc2683ffc187c139b8bfa8a0611484052b0fc0c8d158d4d6817cb7"
+    },
+    "weaviate/concepts/data.md": {
+      "path": "weaviate/concepts/data.md",
+      "title": "Data structure",
+      "topics": [
+        "data objects",
+        "collections",
+        "schemas",
+        "vectors",
+        "multi-tenancy",
+        "cross-references"
+      ],
+      "doctype": "concept",
+      "summary": "A comprehensive overview of Weaviate's data structure, explaining how data objects are organized into collections, the role of schemas, vector representations, and multi-tenancy features in managing and storing data.",
+      "hash": "765a6a951f77068f4bfacf8825d417a0a30bc79deb901ff2547a129c22cc1251"
+    },
+    "weaviate/concepts/modules.md": {
+      "path": "weaviate/concepts/modules.md",
+      "title": "Modules",
+      "topics": [
+        "weaviate",
+        "vector database",
+        "modular architecture",
+        "vectorization",
+        "data processing",
+        "extensions"
+      ],
+      "doctype": "concept",
+      "summary": "An overview of Weaviate's modular architecture, explaining how optional modules extend the core vector database functionality by providing specialized capabilities like vectorization, ranking, and data processing.",
+      "hash": "1043c2c45c9f511bcb6ab6807a8905a9cd6e276c46ebbd92642e61491c373e6d"
+    },
+    "weaviate/concepts/vector-quantization.md": {
+      "path": "weaviate/concepts/vector-quantization.md",
+      "title": "Compression (Vector Quantization)",
+      "topics": [
+        "vector compression",
+        "machine learning",
+        "vector embeddings",
+        "quantization techniques",
+        "vector indexing"
+      ],
+      "doctype": "concept",
+      "summary": "A comprehensive overview of vector quantization techniques in Weaviate, explaining how different compression methods like Binary, Product, Scalar, and Rotational quantization can reduce memory footprint and improve search performance while managing the trade-offs between compression and recall.",
+      "hash": "60ccdbc8da95da3d2189c65413ee58a27e910d4fc356168fd9c3854927c9f075"
+    },
+    "weaviate/concepts/index.md": {
+      "path": "weaviate/concepts/index.md",
+      "title": "Concepts",
+      "topics": [
+        "vector database",
+        "system architecture",
+        "data indexing",
+        "vector search",
+        "distributed systems",
+        "database concepts"
+      ],
+      "doctype": "concept",
+      "summary": "An overview of foundational concepts and architectural principles behind Weaviate, covering core data structures, modules, indexing, vector search, and system architecture.",
+      "hash": "57bc1fdd0c195798aa3883d57b9de6f3696366f26ea0af3ab638ba06a1efc407"
+    },
+    "weaviate/concepts/filtering.md": {
+      "path": "weaviate/concepts/filtering.md",
+      "title": "Filtering",
+      "topics": [
+        "vector search",
+        "pre-filtering",
+        "HNSW index",
+        "filtering strategies",
+        "roaring bitmaps",
+        "indexing"
+      ],
+      "doctype": "concept",
+      "summary": "Explains Weaviate's filtered vector search capabilities, focusing on pre-filtering techniques, different filtering strategies like ACORN and sweeping, and performance optimizations using indexes such as indexFilterable and indexRangeFilters.",
+      "hash": "aa2e78bb3e8155b348e5472edf4ea221385f98b4bc1030ebd190279809685a8f"
+    },
+    "weaviate/concepts/interface.md": {
+      "path": "weaviate/concepts/interface.md",
+      "title": "Interface",
+      "topics": [
+        "API design",
+        "GraphQL",
+        "RESTful API",
+        "gRPC",
+        "client libraries",
+        "Weaviate architecture"
+      ],
+      "doctype": "concept",
+      "summary": "An overview of Weaviate's API interfaces, including RESTful, GraphQL, and emerging gRPC support, detailing the design principles, API capabilities, and client library integrations for interacting with Weaviate.",
+      "hash": "844185d06c86d11ae8f5a93ce6232542d21a52180e55ff5ee025251cb81cd941"
+    },
+    "weaviate/concepts/replication-architecture/cluster-architecture.md": {
+      "path": "weaviate/concepts/replication-architecture/cluster-architecture.md",
+      "title": "Cluster Architecture",
+      "topics": [
+        "distributed systems",
+        "database architecture",
+        "node discovery",
+        "metadata replication",
+        "data replication",
+        "Raft consensus",
+        "leaderless replication"
+      ],
+      "doctype": "concept",
+      "summary": "Describes Weaviate's distributed cluster architecture, explaining how nodes coordinate metadata replication using Raft and implement leaderless data replication with eventual consistency across a distributed system.",
+      "hash": "361688d4125d5b955e1c922d03f781224c9e46c41e047c28da9db23ab6dfd84e"
+    },
+    "weaviate/concepts/replication-architecture/index.md": {
+      "path": "weaviate/concepts/replication-architecture/index.md",
+      "title": "Replication Architecture",
+      "topics": [
+        "database replication",
+        "distributed systems",
+        "CAP theorem",
+        "high availability",
+        "cluster architecture",
+        "data consistency"
+      ],
+      "doctype": "concept",
+      "summary": "An in-depth exploration of Weaviate's replication architecture, explaining how data is distributed across multiple nodes to improve reliability, availability, and performance using a leaderless replication design.",
+      "hash": "3a16680818517837bd87f56c38c14b930f5985f4a027bf35a84eb4d1d95d7152"
+    },
+    "weaviate/concepts/replication-architecture/multi-dc.md": {
+      "path": "weaviate/concepts/replication-architecture/multi-dc.md",
+      "title": "Multi-Data center",
+      "topics": [
+        "replication",
+        "distributed systems",
+        "data center architecture",
+        "geographic redundancy"
+      ],
+      "doctype": "concept",
+      "summary": "Explains the concept of Multi-Data center (Multi-DC) replication, which allows data to be distributed across multiple geographic regions for improved latency and redundancy, though not yet fully implemented in the current Weaviate version.",
+      "hash": "7a8e0c5c84702e07f285bc79d1669d00e344ef193fc3b6a909f7124122533412"
+    },
+    "weaviate/concepts/replication-architecture/motivation.md": {
+      "path": "weaviate/concepts/replication-architecture/motivation.md",
+      "title": "Use Cases (Motivation)",
+      "topics": [
+        "weaviate",
+        "database replication",
+        "high availability",
+        "distributed systems",
+        "system architecture"
+      ],
+      "doctype": "concept",
+      "summary": "Explores four key motivations for database replication in Weaviate: high availability, increased read throughput, zero downtime upgrades, and regional proximity. Discusses how replication addresses critical infrastructure challenges in distributed database systems.",
+      "hash": "cea3149b10b2ccfc233930db8f362fd894dac4adc47dcc36223b5dc016799cc9"
+    },
+    "weaviate/concepts/replication-architecture/philosophy.md": {
+      "path": "weaviate/concepts/replication-architecture/philosophy.md",
+      "title": "Philosophy",
+      "topics": [
+        "weaviate",
+        "database architecture",
+        "replication",
+        "distributed systems",
+        "CAP theorem",
+        "system design"
+      ],
+      "doctype": "concept",
+      "summary": "Explores the design principles behind Weaviate's replication architecture, focusing on a user-centric approach that prioritizes availability, scalability, and eventual consistency for large-scale information retrieval systems.",
+      "hash": "de1db23149ff9a610d5ef2b2ed1ccb01d5305a5d62a31bede780ccdc51649af8"
+    },
+    "weaviate/concepts/replication-architecture/consistency.md": {
+      "path": "weaviate/concepts/replication-architecture/consistency.md",
+      "title": "Consistency",
+      "topics": [
+        "Weaviate",
+        "Distributed Systems",
+        "Replication",
+        "Consistency Models",
+        "Cluster Architecture"
+      ],
+      "doctype": "concept",
+      "summary": "This document explains Weaviate's replication architecture, focusing on consistency models for cluster metadata and data objects. It covers tunable consistency levels, async replication, repair strategies, and how Weaviate balances consistency and availability in a distributed system.",
+      "hash": "e87a8a7b660b827b5805ef790d055b8e2d8e44ddf2a0a49bb9c11d5f68e86ab3"
+    },
+    "weaviate/concepts/search/vector-search.md": {
+      "path": "weaviate/concepts/search/vector-search.md",
+      "title": "Vector Search",
+      "topics": [
+        "vector search",
+        "semantic search",
+        "machine learning",
+        "embeddings",
+        "similarity search",
+        "vector indexes"
+      ],
+      "doctype": "concept",
+      "summary": "A comprehensive explanation of vector search in Weaviate, covering how vector embeddings enable similarity-based semantic search across various data types including text, images, and audio by comparing vector representations of objects and queries.",
+      "hash": "b2379d6b66d36ded85b232ff6cd99aa36c9bd351758f1929dccef4c7b3874ea2"
+    },
+    "weaviate/concepts/search/index.md": {
+      "path": "weaviate/concepts/search/index.md",
+      "title": "Search",
+      "topics": [
+        "search",
+        "vector search",
+        "keyword search",
+        "hybrid search",
+        "filtering",
+        "retrieval augmented generation",
+        "reranking"
+      ],
+      "doctype": "concept",
+      "summary": "An overview of Weaviate's search capabilities, explaining the search process, different search types (keyword, vector, and hybrid), and additional search optimization techniques like filtering, reranking, and retrieval augmented generation (RAG).",
+      "hash": "d1eb266df69d544824496fc3bf775c31403f70668efa274b446c0ce8d6f8377b"
+    },
+    "weaviate/concepts/search/hybrid-search.md": {
+      "path": "weaviate/concepts/search/hybrid-search.md",
+      "title": "Hybrid search",
+      "topics": [
+        "search",
+        "vector search",
+        "keyword search",
+        "BM25",
+        "score fusion",
+        "semantic search"
+      ],
+      "doctype": "concept",
+      "summary": "Hybrid search combines vector (semantic) and keyword (BM25) search techniques to leverage the strengths of both approaches, providing more comprehensive search results by running parallel searches and combining their scores using fusion strategies.",
+      "hash": "696807d3f68472aaf0042abfea24bcd14ecea2436068cf239875f64f8b69bf24"
+    },
+    "weaviate/concepts/search/keyword-search.md": {
+      "path": "weaviate/concepts/search/keyword-search.md",
+      "title": "Keyword Search (BM25)",
+      "topics": [
+        "search",
+        "bm25",
+        "tokenization",
+        "information retrieval",
+        "search algorithms"
+      ],
+      "doctype": "concept",
+      "summary": "An in-depth explanation of keyword search in Weaviate using the BM25 algorithm, covering how exact token-based matching works, its key components like tokenization and stopwords, and how it differs from vector search.",
+      "hash": "a79526bcd5434da56bc19d70e8e3875dc5719849ea0d7c6b92207a1a02f62267"
+    },
+    "weaviate/concepts/indexing/vector-index.md": {
+      "path": "weaviate/concepts/indexing/vector-index.md",
+      "title": "Vector Indexing",
+      "topics": [
+        "vector databases",
+        "vector indexing",
+        "HNSW",
+        "flat index",
+        "dynamic index",
+        "similarity search",
+        "vector embeddings"
+      ],
+      "doctype": "concept",
+      "summary": "A comprehensive overview of vector indexing in Weaviate, explaining different index types like HNSW, flat, and dynamic indexes, and how they optimize similarity search operations in vector databases.",
+      "hash": "316b262b635ffae76d91b3fe67ed4a5a5b2ab3d78bde6d8b437d366d84d2a7f1"
+    },
+    "weaviate/concepts/indexing/inverted-index.md": {
+      "path": "weaviate/concepts/indexing/inverted-index.md",
+      "title": "Inverted indexes",
+      "topics": [
+        "indexing",
+        "search",
+        "filtering",
+        "database architecture",
+        "performance optimization"
+      ],
+      "doctype": "concept",
+      "summary": "Explains Weaviate's inverted index architecture, which maps values to objects for efficient keyword search and filtering. The document details how inverted indexes are created, configured, and used to optimize search and filtering performance across different property types.",
+      "hash": "3aacbe9ee7b4e25e75591d247962fc55b28c603e53e7e1bd26f4d630df26807e"
+    },
+    "weaviate/concepts/indexing/index.md": {
+      "path": "weaviate/concepts/indexing/index.md",
+      "title": "Indexing",
+      "topics": [
+        "vector indexing",
+        "HNSW",
+        "flat indexing",
+        "dynamic indexing",
+        "inverted indexing",
+        "search optimization"
+      ],
+      "doctype": "concept",
+      "summary": "An overview of Weaviate's indexing systems, including vector indexes (HNSW, flat, and dynamic) and inverted indexes, which are crucial for optimizing search performance and data retrieval efficiency.",
+      "hash": "64954764dad939d333a1b3b9cfa55137ba1661b4a9cde707bafbee7d4b950932"
+    },
+    "weaviate/more-resources/glossary.md": {
+      "path": "weaviate/more-resources/glossary.md",
+      "title": "Glossary",
+      "topics": [
+        "terminology",
+        "Weaviate",
+        "vector database",
+        "AI concepts"
+      ],
+      "doctype": "reference",
+      "summary": "A comprehensive glossary of technical terms and concepts related to Weaviate, vector databases, and AI technologies, providing clear definitions to help users understand key terminology.",
+      "hash": "dac03762916a96199028a74f6dd77afc1cbc5cad16a762320adf64a3b67833ff"
+    },
+    "weaviate/more-resources/write-great-bug-reports.md": {
+      "path": "weaviate/more-resources/write-great-bug-reports.md",
+      "title": "How to write great bug reports",
+      "topics": [
+        "bug reporting",
+        "software documentation",
+        "troubleshooting",
+        "issue tracking"
+      ],
+      "doctype": "how-to",
+      "summary": "A comprehensive guide to creating effective bug reports, providing detailed advice on what information to include, how to reproduce issues, and why clear communication is crucial when reporting software problems.",
+      "hash": "ef728362d275a5aa066501c7e0df3dfc734f72761af77cbd3fb3553206b04c6e"
+    },
+    "weaviate/more-resources/faq.md": {
+      "path": "weaviate/more-resources/faq.md",
+      "title": "FAQ",
+      "topics": [
+        "Weaviate",
+        "vector database",
+        "documentation",
+        "system design",
+        "querying",
+        "data management"
+      ],
+      "doctype": "reference",
+      "summary": "A comprehensive FAQ document covering various aspects of Weaviate, including its architecture, configuration, data management, querying, performance, and technical details about vector search and database operations.",
+      "hash": "4dad587a49e567c1359f7c135677b0beae2bc00fb1597584e25b4ec66ecc0bcd"
+    },
+    "weaviate/more-resources/performance.md": {
+      "path": "weaviate/more-resources/performance.md",
+      "title": "Index types and performance",
+      "topics": [
+        "database indexing",
+        "vector search",
+        "performance optimization",
+        "database query performance",
+        "HNSW",
+        "inverted indexes"
+      ],
+      "doctype": "concept",
+      "summary": "Explores the different index types used in Weaviate, including HNSW and inverted indexes, and discusses the performance characteristics of various database operations like data import, querying, and reference resolution.",
+      "hash": "a5b965b2e15a9ebd6d73ee65f181192f266f45e5246260f950a9a6337aa15817"
+    },
+    "weaviate/more-resources/index.md": {
+      "path": "weaviate/more-resources/index.md",
+      "title": "More resources",
+      "topics": [
+        "documentation",
+        "resources",
+        "community support",
+        "FAQs"
+      ],
+      "doctype": "reference",
+      "summary": "A comprehensive collection of additional resources for Weaviate, including FAQs, glossary, example datasets, use cases, performance information, and community support channels.",
+      "hash": "00e3faccfff28d58f7cb9c8bc7cc0313aa84d68f384a8708e5c7e3cb652770af"
+    },
+    "weaviate/more-resources/example-datasets.md": {
+      "path": "weaviate/more-resources/example-datasets.md",
+      "title": "Example datasets",
+      "topics": [
+        "Weaviate",
+        "machine learning datasets",
+        "semantic search",
+        "multi-modal search",
+        "Docker",
+        "Wikipedia",
+        "news articles"
+      ],
+      "doctype": "how-to",
+      "summary": "A guide to example datasets for Weaviate, including multi-modal text/image search, Wikipedia semantic search, Wikidata search, and news publications dataset with instructions for running these datasets using Docker Compose.",
+      "hash": "bd73534af9c5c16f6a92a1caaf045fd1c0db235d8ed28b83fd452f62205d12c2"
+    },
+    "weaviate/more-resources/example-use-cases.md": {
+      "path": "weaviate/more-resources/example-use-cases.md",
+      "title": "Example use cases and demos",
+      "topics": [
+        "vector databases",
+        "semantic search",
+        "machine learning",
+        "artificial intelligence",
+        "multimodal search",
+        "retrieval-augmented generation",
+        "classification"
+      ],
+      "doctype": "reference",
+      "summary": "A comprehensive overview of various use cases and demo projects showcasing the capabilities of vector databases, including similarity search, LLM integration, classification, and multimodal search across text, image, and audio modalities.",
+      "hash": "47a6ebb1dab1149c1e00e29a944bbcf2eafd4c39d0cd4367e4c3f3ada9dd5107"
+    },
+    "weaviate/api/index.mdx": {
+      "path": "weaviate/api/index.mdx",
+      "title": "APIs",
+      "topics": [
+        "Weaviate",
+        "API",
+        "REST",
+        "GraphQL",
+        "gRPC",
+        "database interfaces",
+        "client libraries"
+      ],
+      "doctype": "reference",
+      "summary": "Comprehensive overview of Weaviate's API interfaces, including REST, GraphQL, and gRPC APIs, along with information about official client libraries for multiple programming languages.",
+      "hash": "b3df44bda911a412deeb29aab14881cce5c3781a17eed3c701c68db827934b1c"
+    },
+    "weaviate/api/grpc.md": {
+      "path": "weaviate/api/grpc.md",
+      "title": "gRPC",
+      "topics": [
+        "gRPC",
+        "API",
+        "Weaviate",
+        "Protocol Buffers",
+        "client libraries",
+        "server configuration"
+      ],
+      "doctype": "how-to",
+      "summary": "A guide to using gRPC with Weaviate, explaining the gRPC interface, Protocol Buffer definitions, and how to configure gRPC on both server and client sides for efficient communication with Weaviate database instances.",
+      "hash": "61b4b1c1c61fdddccbc814ac29e401d704e5bbf5fa53b42b1527bee631ba4111"
+    },
+    "weaviate/api/rest.md": {
+      "path": "weaviate/api/rest.md",
+      "title": "RESTful API",
+      "topics": [
+        "REST API",
+        "Weaviate",
+        "database management",
+        "API documentation",
+        "querying"
+      ],
+      "doctype": "reference",
+      "summary": "Comprehensive reference guide for Weaviate's REST API, covering database configuration, collection management, object operations, and programmatic querying.",
+      "hash": "48942975c3a5a8d2e540a39cc384f6cccc9a8f49586f6bc2426dbad6bd483025"
+    },
+    "weaviate/api/graphql/search-operators.md": {
+      "path": "weaviate/api/graphql/search-operators.md",
+      "title": "Search operators",
+      "topics": [
+        "GraphQL",
+        "Vector Search",
+        "Keyword Search",
+        "Hybrid Search",
+        "Search Operators",
+        "Weaviate API"
+      ],
+      "doctype": "reference",
+      "summary": "Comprehensive guide to GraphQL search operators in Weaviate, including vector search (nearVector, nearText, nearObject), keyword search (BM25), hybrid search, and module-specific operators like multimodal search and question answering.",
+      "hash": "33480a3fad18add05e8082f6320942c84893cbcb306d8ec591d0b4fcfd4f7dbd"
+    },
+    "weaviate/api/graphql/explore.md": {
+      "path": "weaviate/api/graphql/explore.md",
+      "title": "Explore",
+      "topics": [
+        "weaviate",
+        "graphql",
+        "vector search",
+        "explore function",
+        "search operators"
+      ],
+      "doctype": "reference",
+      "summary": "Reference documentation for the Weaviate GraphQL Explore function, which enables vector searches across collections when a single inference module is enabled. It details the syntax, search operators, and usage of the Explore query.",
+      "hash": "53cd52d6172db66e831e456e1bab9767ea8697ebe25da6c4249f8010c00826af"
+    },
+    "weaviate/api/graphql/additional-operators.md": {
+      "path": "weaviate/api/graphql/additional-operators.md",
+      "title": "Additional operators",
+      "topics": [
+        "GraphQL",
+        "Pagination",
+        "Sorting",
+        "Query Filtering",
+        "Result Limitation",
+        "Cursor-based Queries"
+      ],
+      "doctype": "reference",
+      "summary": "Comprehensive reference for additional GraphQL query operators in Weaviate, including limit, offset, autocut, cursor, sorting, and grouping functionality that extend query capabilities and result manipulation.",
+      "hash": "9f192747e54cbe1e6a73b585d7c62f6743d3551bb50faa256a8274cd78dc224a"
+    },
+    "weaviate/api/graphql/get.md": {
+      "path": "weaviate/api/graphql/get.md",
+      "title": "Object-level queries (Get)",
+      "topics": [
+        "GraphQL",
+        "Weaviate",
+        "Object Retrieval",
+        "Vector Search",
+        "Query Parameters"
+      ],
+      "doctype": "reference",
+      "summary": "Comprehensive documentation for Weaviate's GraphQL Get queries, covering object retrieval methods, search operators, filtering, cross-references, and additional query parameters for efficient data fetching.",
+      "hash": "3709110d7cf3ce83b940255b17c9f460487cba16be2658747d90f9f6a094e800"
+    },
+    "weaviate/api/graphql/filters.md": {
+      "path": "weaviate/api/graphql/filters.md",
+      "title": "Conditional filters",
+      "topics": [
+        "GraphQL",
+        "Weaviate",
+        "Filtering",
+        "Search",
+        "Query Operators"
+      ],
+      "doctype": "reference",
+      "summary": "Comprehensive documentation on GraphQL filtering in Weaviate, covering filter operators, syntax, and special filtering cases such as cross-references, geo-coordinates, and null state filtering.",
+      "hash": "d9a8e5ddce32be5a08b6211cc065219038ab1eb2811f3ad6752ba6cb21bbe44a"
+    },
+    "weaviate/api/graphql/index.md": {
+      "path": "weaviate/api/graphql/index.md",
+      "title": "Search (GraphQL | gRPC)",
+      "topics": [
+        "GraphQL",
+        "gRPC",
+        "API",
+        "Weaviate",
+        "Query Language",
+        "Data Retrieval"
+      ],
+      "doctype": "reference",
+      "summary": "Comprehensive documentation for Weaviate's GraphQL and gRPC APIs, covering query structures, API usage, limitations, and references for different query types and operations.",
+      "hash": "8509b8d40aea300007a52ead2199d4f8c4e400608277ffdea1c78da5336300ba"
+    },
+    "weaviate/api/graphql/additional-properties.md": {
+      "path": "weaviate/api/graphql/additional-properties.md",
+      "title": "Additional properties (metadata)",
+      "topics": [
+        "GraphQL",
+        "Weaviate",
+        "API",
+        "Metadata",
+        "Vector Search",
+        "Additional Properties"
+      ],
+      "doctype": "reference",
+      "summary": "A comprehensive guide to accessing additional properties and metadata in Weaviate's GraphQL API, covering various retrievable properties like ID, vector, distance, classification, and feature projection.",
+      "hash": "6c2392e47fc6998804933ea337b613b940fd44071b9805724edf30a60bd891be"
+    },
+    "weaviate/api/graphql/aggregate.md": {
+      "path": "weaviate/api/graphql/aggregate.md",
+      "title": "Aggregate",
+      "topics": [
+        "GraphQL",
+        "Weaviate",
+        "Data Aggregation",
+        "Query Operations",
+        "Vector Search"
+      ],
+      "doctype": "reference",
+      "summary": "Documentation for Weaviate's GraphQL Aggregate queries, explaining how to perform aggregation operations on data collections, including support for different data types, grouping, filtering, and combining with vector search.",
+      "hash": "c3409d4aa87821817e0e16c00607940ca4098636c36f701a1d094b01dcd93039"
+    },
+    "weaviate/tutorials/index.mdx": {
+      "path": "weaviate/tutorials/index.mdx",
+      "title": "Tutorials",
+      "topics": [
+        "weaviate",
+        "data management",
+        "spark connector",
+        "multi-vector embeddings",
+        "cross-references",
+        "role-based access control"
+      ],
+      "doctype": "tutorial",
+      "summary": "A comprehensive overview of Weaviate tutorials covering advanced features like data loading, multi-vector embeddings, cross-referencing, and access control to help users leverage Weaviate's capabilities for their specific needs.",
+      "hash": "5747bdcf19a4214cb6dda1329337453e8165bf551ad2866948bf4e1ed7538e17"
+    },
+    "weaviate/tutorials/spark-connector.md": {
+      "path": "weaviate/tutorials/spark-connector.md",
+      "title": "Load data into Weaviate with Spark",
+      "topics": [
+        "spark",
+        "data import",
+        "vector database",
+        "weaviate",
+        "etl",
+        "data processing"
+      ],
+      "doctype": "tutorial",
+      "summary": "A comprehensive tutorial demonstrating how to use the Spark Connector to import data from Apache Spark into Weaviate, covering installation, data loading, writing to Weaviate, and advanced configuration options for vector data import.",
+      "hash": "b29f496a008309fb86409f49e046c625b6c89df023a08976660f933aec0b2f79"
+    },
+    "weaviate/tutorials/wikipedia.md": {
+      "path": "weaviate/tutorials/wikipedia.md",
+      "title": "Wikipedia with custom vectors",
+      "topics": [
+        "weaviate",
+        "vector database",
+        "wikipedia",
+        "data import",
+        "semantic search",
+        "OpenAI embeddings"
+      ],
+      "doctype": "tutorial",
+      "summary": "A comprehensive tutorial demonstrating how to import a Wikipedia dataset with pre-generated OpenAI vector embeddings into Weaviate, create a schema, and perform semantic search queries using nearText and hybrid search techniques.",
+      "hash": "09fc1915b0c8494cb9a99e3f93cb98f330ee0c8d2d146471e63cda069e121ab0"
+    },
+    "weaviate/tutorials/modules.md": {
+      "path": "weaviate/tutorials/modules.md",
+      "title": "Modules - an introduction",
+      "topics": [
+        "weaviate",
+        "modules",
+        "vector search",
+        "data processing",
+        "machine learning"
+      ],
+      "doctype": "tutorial",
+      "summary": "An introductory tutorial explaining Weaviate modules, which are optional components that enhance Weaviate's functionality by adding capabilities like data vectorization, semantic search, and result processing.",
+      "hash": "8c7413e23a07c10f031576080cb37e58a1827df80d6c0e9edfb2fb088ad82729"
+    },
+    "weaviate/tutorials/query.md": {
+      "path": "weaviate/tutorials/query.md",
+      "title": "Queries in detail",
+      "topics": [
+        "Weaviate",
+        "GraphQL",
+        "vector search",
+        "scalar search",
+        "query techniques",
+        "data retrieval"
+      ],
+      "doctype": "tutorial",
+      "summary": "A comprehensive tutorial exploring different query techniques in Weaviate, covering vector and scalar searches, object retrieval, filtering, and aggregation using GraphQL queries.",
+      "hash": "daad2ef93bc40feb0458506fbcef1c27d93176ca79f72286c0d957b5ae10692f"
+    },
+    "weaviate/tutorials/import.md": {
+      "path": "weaviate/tutorials/import.md",
+      "title": "Imports in detail",
+      "topics": [
+        "data import",
+        "batch import",
+        "Weaviate",
+        "vector databases",
+        "data integration"
+      ],
+      "doctype": "tutorial",
+      "summary": "A comprehensive tutorial on importing data into Weaviate, covering batch import techniques, data object structure, best practices for efficient data integration, and performance optimization strategies.",
+      "hash": "6feb02dfb77b0da52688217f51a4ee0b51b80c9be5b36f93c4eed1795748e0b6"
+    },
+    "weaviate/tutorials/cross-references.mdx": {
+      "path": "weaviate/tutorials/cross-references.mdx",
+      "title": "Manage relationships with cross-references",
+      "topics": [
+        "Weaviate",
+        "cross-references",
+        "object relationships",
+        "data modeling",
+        "search queries"
+      ],
+      "doctype": "tutorial",
+      "summary": "A comprehensive tutorial explaining how to use cross-references in Weaviate to establish and manage relationships between objects, including how to create cross-references and use them in queries to retrieve and filter data.",
+      "hash": "d04eb30d45626f8a125bc5fe795af1c15a34c1b2e9d91cc431c134042f713424"
+    },
+    "weaviate/tutorials/vector-provision-options.mdx": {
+      "path": "weaviate/tutorials/vector-provision-options.mdx",
+      "title": "Imports - Vector provision options",
+      "topics": [
+        "weaviate",
+        "vector import",
+        "machine learning",
+        "data import",
+        "vectorization"
+      ],
+      "doctype": "tutorial",
+      "summary": "A tutorial demonstrating three approaches to vector provisioning when importing data into Weaviate: providing object vectors, configuring a vectorizer, and combining both methods.",
+      "hash": "4bf8c6a09153d6962b1039bf608d16b32d248406c818aa6cc2e31f0d3b879ee3"
+    },
+    "weaviate/tutorials/multi-vector-embeddings.md": {
+      "path": "weaviate/tutorials/multi-vector-embeddings.md",
+      "title": "Multi-vector embeddings (ColBERT, ColPali, etc.)",
+      "topics": [
+        "vector embeddings",
+        "machine learning",
+        "semantic search",
+        "Weaviate",
+        "ColBERT",
+        "multi-vector embeddings"
+      ],
+      "doctype": "tutorial",
+      "summary": "A comprehensive tutorial demonstrating how to use multi-vector embeddings in Weaviate, covering both model integration (with ColBERT) and user-provided embeddings, and explaining the concept of late interaction in semantic search.",
+      "hash": "94c94f2426221965b5f8214fd265fbc85849f0427af959f3fc80b391028afd1f"
+    },
+    "weaviate/modules/text2vec-contextionary.md": {
+      "path": "weaviate/modules/text2vec-contextionary.md",
+      "title": "\"Contextionary Vectorizer\"",
+      "topics": [
+        "text vectorization",
+        "machine learning",
+        "embeddings",
+        "weaviate modules",
+        "vector search"
+      ],
+      "doctype": "reference",
+      "summary": "Documentation for the text2vec-contextionary module in Weaviate, which provides a local, lightweight vectorization method using FastText and weighted mean of word embeddings for context-based text vectorization.",
+      "hash": "f821c296fa394dd72f66df05d872295a3ba12a4e0156aa4f1a6406c00386e319"
+    },
+    "weaviate/modules/ner-transformers.md": {
+      "path": "weaviate/modules/ner-transformers.md",
+      "title": "Named Entity Recognition",
+      "topics": [
+        "natural language processing",
+        "named entity recognition",
+        "transformers",
+        "weaviate",
+        "machine learning",
+        "token classification"
+      ],
+      "doctype": "how-to",
+      "summary": "Documentation for Weaviate's Named Entity Recognition (NER) module, explaining how to integrate and use transformer-based models for extracting and classifying entities from text objects in Weaviate.",
+      "hash": "a77f4b033f38e159db01907b746f0ed86042f987922295758b1af43188fb5104"
+    },
+    "weaviate/modules/ref2vec-centroid.md": {
+      "path": "weaviate/modules/ref2vec-centroid.md",
+      "title": "Ref2Vec Centroid Vectorizer",
+      "topics": [
+        "vector search",
+        "weaviate",
+        "machine learning",
+        "data vectorization",
+        "vector indexing"
+      ],
+      "doctype": "how-to",
+      "summary": "A documentation guide for the Ref2Vec Centroid module in Weaviate, explaining how to enable, configure, and use vector calculations based on the centroid of referenced object vectors.",
+      "hash": "a0dfc5e2b6fadd74c8be990cb18d238de37fcd4298592c255baacd23bad44812"
+    },
+    "weaviate/modules/qna-openai.md": {
+      "path": "weaviate/modules/qna-openai.md",
+      "title": "Question Answering - OpenAI",
+      "topics": [
+        "weaviate",
+        "openai",
+        "question-answering",
+        "machine learning",
+        "natural language processing"
+      ],
+      "doctype": "reference",
+      "summary": "Documentation for the Weaviate Question Answering (Q&A) OpenAI module, which provides answer extraction functionality using OpenAI's completions endpoint in GraphQL queries. The module allows semantic search and answer extraction with configurable model parameters.",
+      "hash": "676c2e6401c34ad31bfbae0460c16524bcbe53759c82d2e69f9c8806cdd0cf56"
+    },
+    "weaviate/modules/qna-transformers.md": {
+      "path": "weaviate/modules/qna-transformers.md",
+      "title": "Question Answering - transformers",
+      "topics": [
+        "weaviate",
+        "question-answering",
+        "transformers",
+        "machine learning",
+        "graphql",
+        "docker"
+      ],
+      "doctype": "how-to",
+      "summary": "A guide to using the Question Answering (QnA) Transformers module in Weaviate, which enables extracting precise answers from data using BERT-related models via GraphQL queries.",
+      "hash": "abb7c2d5d5eff57e34327d277f5dc1ffd73feacac2787289e943b71e23fcf898"
+    },
+    "weaviate/modules/custom-modules.md": {
+      "path": "weaviate/modules/custom-modules.md",
+      "title": "Custom modules",
+      "topics": [
+        "machine learning",
+        "weaviate modules",
+        "model integration",
+        "vectorization",
+        "custom ml models"
+      ],
+      "doctype": "how-to",
+      "summary": "A comprehensive guide to creating and integrating custom machine learning modules in Weaviate, explaining two approaches: replacing parts of an existing module or building a completely new module to extend Weaviate's functionality.",
+      "hash": "afad4f897fee1aa3d409a3336a3831c48e45e83efd0795dff0bea43b1019c974"
+    },
+    "weaviate/modules/index.md": {
+      "path": "weaviate/modules/index.md",
+      "title": "Reference - Modules",
+      "topics": [
+        "weaviate",
+        "modules",
+        "vectorizers",
+        "generative AI",
+        "rerankers",
+        "backup",
+        "offloading",
+        "module types"
+      ],
+      "doctype": "reference",
+      "summary": "A comprehensive reference guide to Weaviate modules, explaining different types of modules including vectorizers, rerankers, generative AI, backup, and offloading modules, and their capabilities within the Weaviate ecosystem.",
+      "hash": "4573c07f09063e5b37ab35a5c87109f887018b06e58f7c5707b84ff331cf06b0"
+    },
+    "weaviate/modules/usage-modules.md": {
+      "path": "weaviate/modules/usage-modules.md",
+      "title": "Usage Module",
+      "topics": [
+        "weaviate",
+        "analytics",
+        "configuration",
+        "monitoring",
+        "usage-tracking"
+      ],
+      "doctype": "how-to",
+      "summary": "Guide to configuring and using the Weaviate usage module for collecting and uploading usage analytics data to Google Cloud Storage or AWS S3, with support for runtime configuration and monitoring.",
+      "hash": "a6a07ce53a2114ceb07274aa0839ac02140799bead9fd7d74ef7d1a8cc9f3cf0"
+    },
+    "weaviate/modules/model_providers.md": {
+      "path": "weaviate/modules/model_providers.md",
+      "title": "Model Provider Integrations",
+      "topics": [
+        "model providers",
+        "AI integrations",
+        "vectorizer",
+        "generative AI",
+        "reranker"
+      ],
+      "doctype": "reference",
+      "summary": "Provides an overview and navigation guide for Weaviate's integrations with various model providers including Anthropic, AWS, Cohere, Hugging Face, Ollama, and OpenAI.",
+      "hash": "9c71d8afce1d3ee1f831995fe5a4941144a220397333f6c67ddf393abdf7d85e"
+    },
+    "weaviate/modules/sum-transformers.md": {
+      "path": "weaviate/modules/sum-transformers.md",
+      "title": "Summarization",
+      "topics": [
+        "weaviate",
+        "machine learning",
+        "text summarization",
+        "transformers",
+        "GraphQL",
+        "Docker"
+      ],
+      "doctype": "how-to",
+      "summary": "A guide to using the SUM Transformers module in Weaviate, which allows users to generate concise summaries of text objects using transformer-based models during query time, with configuration and usage instructions for Docker and GraphQL.",
+      "hash": "cdfc9ac90f0227725c08e79837bd5d3bbba166668a3d532cfd2222f6453360d9"
+    },
+    "weaviate/modules/img2vec-neural.md": {
+      "path": "weaviate/modules/img2vec-neural.md",
+      "title": "ResNet Image Vectorizer",
+      "topics": [
+        "weaviate",
+        "image vectorization",
+        "machine learning",
+        "resnet",
+        "docker",
+        "neural networks"
+      ],
+      "doctype": "reference",
+      "summary": "Documentation for the Weaviate img2vec-neural module, which enables local image vectorization using a ResNet50 model encapsulated in a Docker container, providing image embedding capabilities for Weaviate vector searches.",
+      "hash": "f1109250551856207f4cb196f3a4ca42472148238362ef3498e9f5273fc3177d"
+    },
+    "weaviate/modules/spellcheck.md": {
+      "path": "weaviate/modules/spellcheck.md",
+      "title": "Spell Check",
+      "topics": [
+        "weaviate",
+        "text search",
+        "spell checking",
+        "graphql",
+        "query optimization"
+      ],
+      "doctype": "how-to",
+      "summary": "A guide to using the Weaviate Spell Check module, which enables spell checking and autocorrection for GraphQL queries using a Python spellchecker library, improving text data quality and search accuracy.",
+      "hash": "715c2998457406803e328d4850895f96e8385d737af5b6f466ed465cb40c20e0"
+    },
+    "weaviate/client-libraries/go.md": {
+      "path": "weaviate/client-libraries/go.md",
+      "title": "Go",
+      "topics": [
+        "weaviate",
+        "go",
+        "client library",
+        "sdk",
+        "authentication",
+        "installation"
+      ],
+      "doctype": "how-to",
+      "summary": "Documentation for the official Weaviate Go client library, covering installation, authentication methods, example usage, and migration guides for integrating Weaviate with Go applications.",
+      "hash": "4a810af6dfd0c60df5a4f2a1669b6709114bc3774a5542f47e3a047c03bd026a"
+    },
+    "weaviate/client-libraries/community.md": {
+      "path": "weaviate/client-libraries/community.md",
+      "title": "Community clients",
+      "topics": [
+        "client libraries",
+        "programming languages",
+        "community contributions",
+        "Weaviate integrations"
+      ],
+      "doctype": "reference",
+      "summary": "Provides a comprehensive list of community-developed Weaviate client libraries for additional programming languages, including .NET/C#, PHP, and Ruby, with details about their maintainers, source code, and licensing.",
+      "hash": "ce20851a9b3f8d86a289c0900f44377aa96a2c5627eb040cd28b31b17e500de1"
+    },
+    "weaviate/client-libraries/index.mdx": {
+      "path": "weaviate/client-libraries/index.mdx",
+      "title": "Client Libraries / SDKs",
+      "topics": [
+        "client libraries",
+        "programming languages",
+        "API integration",
+        "Python",
+        "TypeScript",
+        "JavaScript",
+        "Go",
+        "Java"
+      ],
+      "doctype": "reference",
+      "summary": "An overview of Weaviate's official client libraries and SDKs, providing information on available client libraries for Python, TypeScript/JavaScript, Go, and Java, as well as community-contributed clients.",
+      "hash": "730fafbfc529d0e3ef6796f45e519fb4a5f4279bc3b09fcfb61792137378bf7a"
+    },
+    "weaviate/client-libraries/java.md": {
+      "path": "weaviate/client-libraries/java.md",
+      "title": "Java",
+      "topics": [
+        "weaviate",
+        "java",
+        "client library",
+        "authentication",
+        "graphql",
+        "sdk"
+      ],
+      "doctype": "how-to",
+      "summary": "Comprehensive documentation for the official Weaviate Java client library, covering installation, authentication methods, usage examples, and migration guides for integrating Weaviate with Java applications.",
+      "hash": "1b816d3f5b9bfa5ca96c160696ec923fa9870da3bb0ec84506731a1b4e389262"
+    },
+    "weaviate/client-libraries/_includes/feedback.mdx": {
+      "path": "weaviate/client-libraries/_includes/feedback.mdx",
+      "title": "feedback",
+      "topics": [
+        "documentation",
+        "user feedback",
+        "product improvement"
+      ],
+      "doctype": "concept",
+      "summary": "A feedback section designed to collect user insights, experiences, and suggestions for improving the documentation or related features.",
+      "hash": "cf948f952f2b724440f83c48f8fdec381582327eb32b6c790abc28f1d25148de"
+    },
+    "weaviate/client-libraries/python/v3_v4_migration.md": {
+      "path": "weaviate/client-libraries/python/v3_v4_migration.md",
+      "title": "Migrate from v3 to v4",
+      "topics": [
+        "python",
+        "client library",
+        "migration",
+        "weaviate",
+        "api upgrade"
+      ],
+      "doctype": "how-to",
+      "summary": "A comprehensive guide for upgrading Python applications from the deprecated Weaviate Python client v3 to the current v4 client library, covering major API changes, installation, and migration strategies.",
+      "hash": "9dad313db8c09f6d88af99f5357721c8f3cc112cd3c43ff3b53db9733a6ebe67"
+    },
+    "weaviate/client-libraries/python/index.mdx": {
+      "path": "weaviate/client-libraries/python/index.mdx",
+      "title": "Python",
+      "topics": [
+        "python",
+        "weaviate",
+        "client library",
+        "vector database",
+        "installation",
+        "configuration",
+        "querying"
+      ],
+      "doctype": "how-to",
+      "summary": "Comprehensive documentation for the Weaviate Python client library, covering installation, setup, usage, and key features for integrating Weaviate with Python applications.",
+      "hash": "3d7b8fdc961b6d3157f56fcde67a9d71b0cb161bb9ccde16bc394af8a58a28a9"
+    },
+    "weaviate/client-libraries/python/python_v3.md": {
+      "path": "weaviate/client-libraries/python/python_v3.md",
+      "title": "\"Legacy (v3) API (DEPRECATED)\"",
+      "topics": [
+        "Python",
+        "Weaviate Client",
+        "Legacy API",
+        "Deprecation",
+        "Client Library"
+      ],
+      "doctype": "reference",
+      "summary": "Documentation for the deprecated Weaviate Python v3 client, providing legacy support and migration guidance for users with existing codebases using the older client version.",
+      "hash": "c75e695b0e8c2a2d74a02f85fa5589524ba2bd3af9f12267b0543952265979ec"
+    },
+    "weaviate/client-libraries/python/async.md": {
+      "path": "weaviate/client-libraries/python/async.md",
+      "title": "Async API",
+      "topics": [
+        "python",
+        "weaviate",
+        "async programming",
+        "client libraries",
+        "asyncio"
+      ],
+      "doctype": "how-to",
+      "summary": "Documentation for the asynchronous Python client in Weaviate, explaining how to use WeaviateAsyncClient for non-blocking, concurrent operations in async Python applications.",
+      "hash": "88e52075db2fec27e122ee8a9348297960d6efab7dfc09037371b8295e09c8fd"
+    },
+    "weaviate/client-libraries/python/notes-best-practices.mdx": {
+      "path": "weaviate/client-libraries/python/notes-best-practices.mdx",
+      "title": "Notes and best practices",
+      "topics": [
+        "python",
+        "weaviate",
+        "client-libraries",
+        "best-practices",
+        "client-configuration",
+        "connection",
+        "batch-import",
+        "error-handling"
+      ],
+      "doctype": "how-to",
+      "summary": "A comprehensive guide to using the Weaviate Python client, covering client instantiation, connection methods, batch imports, error handling, and best practices for working with the Weaviate database client library.",
+      "hash": "e611aba840bb18f489ee4bb188f46bad8759251807a73bf12b7d9dc425506fb0"
+    },
+    "weaviate/client-libraries/typescript/typescript-v2.mdx": {
+      "path": "weaviate/client-libraries/typescript/typescript-v2.mdx",
+      "title": "JS/TS client v2",
+      "topics": [
+        "TypeScript",
+        "JavaScript",
+        "Weaviate",
+        "Client Library",
+        "Authentication",
+        "API Integration"
+      ],
+      "doctype": "how-to",
+      "summary": "Documentation for the legacy Weaviate TypeScript client v2, covering installation, usage, authentication methods, and key features for both JavaScript and TypeScript developers.",
+      "hash": "724bb143dcc0841184163f549fad9452080771916fc7ad911f9337abec2acbe5"
+    },
+    "weaviate/client-libraries/typescript/v2_v3_migration.mdx": {
+      "path": "weaviate/client-libraries/typescript/v2_v3_migration.mdx",
+      "title": "Migrate from v2 to v3",
+      "topics": [
+        "typescript",
+        "weaviate",
+        "client library",
+        "migration",
+        "upgrade guide"
+      ],
+      "doctype": "how-to",
+      "summary": "A comprehensive guide for migrating TypeScript applications from Weaviate client library v2 to v3, covering installation, client instantiation, key changes in design, and code migration steps.",
+      "hash": "bce4cfe902b4601dd452477e718072ad53aa33432b38a8654e46d9ae67b11c82"
+    },
+    "weaviate/client-libraries/typescript/index.mdx": {
+      "path": "weaviate/client-libraries/typescript/index.mdx",
+      "title": "JavaScript and TypeScript",
+      "topics": [
+        "TypeScript",
+        "JavaScript",
+        "Weaviate",
+        "Client Library",
+        "SDK",
+        "Installation",
+        "Configuration"
+      ],
+      "doctype": "how-to",
+      "summary": "A comprehensive guide for installing, configuring, and using the Weaviate TypeScript/JavaScript client library, covering installation, import methods, setup, and basic usage with code examples.",
+      "hash": "b2b641b77c3138508c4134736e9dba63f448a9a47ce3ddb51e2a7764cf00dfb3"
+    },
+    "weaviate/client-libraries/typescript/notes-best-practices.mdx": {
+      "path": "weaviate/client-libraries/typescript/notes-best-practices.mdx",
+      "title": "Notes and best practices",
+      "topics": [
+        "TypeScript",
+        "Weaviate client",
+        "client configuration",
+        "connection methods",
+        "type safety",
+        "generics",
+        "client initialization",
+        "authentication"
+      ],
+      "doctype": "how-to",
+      "summary": "A comprehensive guide for TypeScript developers on using the Weaviate v3 client, covering client instantiation, connection methods, authentication, type safety, and best practices for working with Weaviate in TypeScript applications.",
+      "hash": "425ea114ae5798abbd192f8c7d64415ae996a8b3406d987c84b61364340fd5eb"
+    },
+    "weaviate/client-libraries/_components/client.auth.flow.client.credentials.mdx": {
+      "path": "weaviate/client-libraries/_components/client.auth.flow.client.credentials.mdx",
+      "title": "client.auth.flow.client.credentials",
+      "topics": [
+        "authentication",
+        "OIDC",
+        "client credentials flow",
+        "server-to-server authentication"
+      ],
+      "doctype": "concept",
+      "summary": "Explains the client credentials authentication flow in OIDC, which is a secure server-to-server authentication method using a client secret for obtaining access tokens.",
+      "hash": "e378e40893a185feba47cf456212d32b4bbe6cc20bf44a9c20d459b02770c155"
+    },
+    "weaviate/client-libraries/_components/client.auth.wcs.mdx": {
+      "path": "weaviate/client-libraries/_components/client.auth.wcs.mdx",
+      "title": "client.auth.wcs",
+      "topics": [
+        "Weaviate Cloud",
+        "Authentication",
+        "OIDC",
+        "Client Libraries"
+      ],
+      "doctype": "concept",
+      "summary": "Explains how Weaviate Cloud (WCD) instances are pre-configured as token issuers for OIDC authentication, providing a brief overview of authentication mechanisms for Weaviate clients.",
+      "hash": "8ab6c4f0b6327f774c378908391016635fde7ee695c7bfcff26e1e891480b283"
+    },
+    "weaviate/client-libraries/_components/client.auth.flow.resource.owner.password.mdx": {
+      "path": "weaviate/client-libraries/_components/client.auth.flow.resource.owner.password.mdx",
+      "title": "client.auth.flow.resource.owner.password",
+      "topics": [
+        "authentication",
+        "OIDC",
+        "token management",
+        "client authentication"
+      ],
+      "doctype": "concept",
+      "summary": "Explains the Resource Owner Password Credentials (OIDC) authentication flow, detailing how username and password are used to obtain authentication tokens and the importance of refresh tokens.",
+      "hash": "25adc816b9518a19701a1d272d4cb5b001a167440f3afc425c52d6eb187a0a8d"
+    },
+    "weaviate/client-libraries/_components/client.auth.api.key.mdx": {
+      "path": "weaviate/client-libraries/_components/client.auth.api.key.mdx",
+      "title": "client.auth.api.key",
+      "topics": [
+        "authentication",
+        "API key",
+        "client configuration"
+      ],
+      "doctype": "how-to",
+      "summary": "Demonstrates how to instantiate a Weaviate client using API key authentication for connecting to a Weaviate instance.",
+      "hash": "104900a75f23beb1e64eb60d634b97b98136d314166ca659feaa4fc2f0129a64"
+    },
+    "weaviate/client-libraries/_components/client.auth.bearer.token.mdx": {
+      "path": "weaviate/client-libraries/_components/client.auth.bearer.token.mdx",
+      "title": "client.auth.bearer.token",
+      "topics": [
+        "authentication",
+        "bearer token",
+        "OIDC",
+        "token refresh",
+        "client authentication"
+      ],
+      "doctype": "reference",
+      "summary": "Explains bearer token authentication in Weaviate client libraries, covering OIDC token methods and the importance of refresh tokens for maintaining client authentication.",
+      "hash": "b4a97d865556f0b552132cbd774154d0e0542454ec638c5395ed7284b212b119"
+    },
+    "weaviate/client-libraries/_components/client.auth.oidc.introduction.mdx": {
+      "path": "weaviate/client-libraries/_components/client.auth.oidc.introduction.mdx",
+      "title": "client.auth.oidc.introduction",
+      "topics": [
+        "authentication",
+        "OIDC",
+        "access tokens",
+        "refresh tokens",
+        "client authentication"
+      ],
+      "doctype": "concept",
+      "summary": "An overview of OIDC authentication for Weaviate clients, explaining the process of selecting an authentication flow and configuring token-based authentication with access and refresh tokens.",
+      "hash": "1fb1705b4314a15f9c3df7600aa80c754c7356ca923fed54cf5322ba1122c361"
+    },
+    "weaviate/client-libraries/_components/client.auth.introduction.mdx": {
+      "path": "weaviate/client-libraries/_components/client.auth.introduction.mdx",
+      "title": "client.auth.introduction",
+      "topics": [
+        "authentication",
+        "Weaviate",
+        "client libraries",
+        "OIDC",
+        "authorization"
+      ],
+      "doctype": "concept",
+      "summary": "An overview of authentication options for Weaviate client libraries, explaining the various methods and flows for authenticating against a Weaviate instance.",
+      "hash": "93a897fd53cee26d5c57b4f9e29b6760aa24b023cf3c05efbbe3169de6837cd9"
+    },
+    "weaviate/best-practices/index.md": {
+      "path": "weaviate/best-practices/index.md",
+      "title": "Best practices",
+      "topics": [
+        "weaviate",
+        "performance optimization",
+        "system configuration",
+        "resource management",
+        "data ingestion",
+        "cluster management"
+      ],
+      "doctype": "how-to",
+      "summary": "A comprehensive guide covering best practices for using Weaviate, including recommendations for upgrades, resource management, data structures, operations, and application design to maximize performance and efficiency.",
+      "hash": "6762524869aad406f714eb80e158d1b372ab73f2d11fbbe45c7d27d0567c9d85"
+    },
+    "weaviate/best-practices/code-generation.md": {
+      "path": "weaviate/best-practices/code-generation.md",
+      "title": "AI-based Weaviate code generation",
+      "topics": [
+        "AI coding",
+        "generative AI",
+        "code generation",
+        "Weaviate client libraries",
+        "AI best practices"
+      ],
+      "doctype": "how-to",
+      "summary": "A guide to using generative AI models for writing Weaviate-related code, providing recommendations on model selection, in-context examples, and best practices for AI-assisted coding.",
+      "hash": "ed66911275f577169d09628a7fc316f0e4ffa41a63464412c31a5644faa9552f"
+    },
+    "deploy/index.mdx": {
+      "path": "deploy/index.mdx",
+      "title": "Overview",
+      "topics": [
+        "deployment",
+        "cloud services",
+        "kubernetes",
+        "docker",
+        "aws",
+        "gcp",
+        "weaviate installation"
+      ],
+      "doctype": "concept",
+      "summary": "A comprehensive overview of Weaviate deployment options, covering cloud services, containerized environments, and various deployment methods including Weaviate Cloud, Docker, Kubernetes, AWS, and GCP Marketplace.",
+      "hash": "5ffbe73f3857ac9d84daf52d12f3883a53224353b18ae0464db20c2cce3498e3"
+    },
+    "deploy/configuration/authentication.md": {
+      "path": "deploy/configuration/authentication.md",
+      "title": "Authentication",
+      "topics": [
+        "authentication",
+        "security",
+        "api-keys",
+        "oidc",
+        "authorization",
+        "docker",
+        "kubernetes"
+      ],
+      "doctype": "concept",
+      "summary": "This document explains Weaviate's authentication mechanisms, including API key, OpenID Connect (OIDC), and anonymous access methods for controlling user identity and access to Weaviate resources across different deployment environments.",
+      "hash": "9ea962b83a27b1ad6994a9bff7bc88314a81a411eb2d5d598c01235abf507784"
+    },
+    "deploy/configuration/replication.md": {
+      "path": "deploy/configuration/replication.md",
+      "title": "Replication",
+      "topics": [
+        "weaviate",
+        "configuration",
+        "replication",
+        "distributed systems",
+        "data consistency"
+      ],
+      "doctype": "how-to",
+      "summary": "A comprehensive guide to configuring replication in Weaviate, covering how to enable replication, set replication factors, manage data consistency, and use async replication across multiple nodes.",
+      "hash": "985e07fe3f6faad7bc081dcb18876f1c2a663bc547e77aabaf455d74e13ce9cd"
+    },
+    "deploy/configuration/tenant-offloading.md": {
+      "path": "deploy/configuration/tenant-offloading.md",
+      "title": "Tenant Offloading",
+      "topics": [
+        "weaviate",
+        "configuration",
+        "tenant management",
+        "s3 offloading",
+        "cloud storage"
+      ],
+      "doctype": "how-to",
+      "summary": "Explains how to configure tenant offloading in Weaviate using the offload-s3 module, including environment variables, AWS permissions, and configuration steps for reducing memory and disk usage.",
+      "hash": "e0b7b39acfd6091a4c5622f84e8e0d2dfc243b83a181fd81b256d540cbcba34b"
+    },
+    "deploy/configuration/authorization.md": {
+      "path": "deploy/configuration/authorization.md",
+      "title": "Authorization",
+      "topics": [
+        "authentication",
+        "authorization",
+        "access control",
+        "RBAC",
+        "admin list",
+        "security",
+        "user permissions"
+      ],
+      "doctype": "concept",
+      "summary": "A comprehensive guide to authorization in Weaviate, explaining different authorization schemes including Role-Based Access Control (RBAC), Admin List, and Undifferentiated Access, with details on configuring user permissions across Docker and Kubernetes deployments.",
+      "hash": "c9da691e74aef84a60e442abd94859acf39ae7f5e61018b2c0e7147942c564b4"
+    },
+    "deploy/configuration/horizontal-scaling.mdx": {
+      "path": "deploy/configuration/horizontal-scaling.mdx",
+      "title": "Horizontal Scaling Deployment Strategies",
+      "topics": [
+        "horizontal scaling",
+        "sharding",
+        "replication",
+        "database deployment",
+        "distributed systems"
+      ],
+      "doctype": "how-to",
+      "summary": "A comprehensive guide to horizontal scaling in Weaviate, explaining sharding and replication techniques for improving data distribution, availability, and performance across multiple nodes.",
+      "hash": "8b623f8764e0a9211123b5d50d09e66eda22d87abbaaeea03ec72c023d42e779"
+    },
+    "deploy/configuration/index.mdx": {
+      "path": "deploy/configuration/index.mdx",
+      "title": "Configuration Guides",
+      "topics": [
+        "weaviate",
+        "deployment",
+        "configuration",
+        "authentication",
+        "authorization",
+        "replication",
+        "cluster management",
+        "monitoring"
+      ],
+      "doctype": "reference",
+      "summary": "A comprehensive guide to Weaviate configuration, covering essential aspects of deployment including backups, environment variables, authentication, replication, and cluster management.",
+      "hash": "7959820fecae4013837528d1cbef45453616424ca9eef5a8268bb92da2db36f9"
+    },
+    "deploy/configuration/meta.md": {
+      "path": "deploy/configuration/meta.md",
+      "title": "Cluster metadata",
+      "topics": [
+        "metadata",
+        "configuration",
+        "weaviate",
+        "cluster information"
+      ],
+      "doctype": "reference",
+      "summary": "Describes how to retrieve metadata about a Weaviate instance, including hostname, version, and module-specific information.",
+      "hash": "97216e396b63fc29c193b279ca25e6ab403b0b518a945d9c9bd3e3b11ee45bf4"
+    },
+    "deploy/configuration/status.md": {
+      "path": "deploy/configuration/status.md",
+      "title": "Status",
+      "topics": [
+        "cluster status",
+        "kubernetes",
+        "liveness",
+        "readiness",
+        "schema synchronization"
+      ],
+      "doctype": "reference",
+      "summary": "Describes various cluster status endpoints in Weaviate, including liveness, readiness, and schema synchronization checks for monitoring and managing cluster health.",
+      "hash": "d7bf558d462501d9c92ba200951a098832d82d2dbf6a00061270fa2591dc9d88"
+    },
+    "deploy/configuration/nodes.md": {
+      "path": "deploy/configuration/nodes.md",
+      "title": "Cluster node data",
+      "topics": [
+        "nodes",
+        "cluster",
+        "configuration",
+        "weaviate"
+      ],
+      "doctype": "reference",
+      "summary": "Describes how to retrieve information about individual nodes in a Weaviate cluster, including parameters for output and an example of node data retrieval.",
+      "hash": "242d5488d6b5428018ef2d7fc91e9922532ddc657beeda3f5fc6dc328fcf5d0f"
+    },
+    "deploy/configuration/replica-movement.mdx": {
+      "path": "deploy/configuration/replica-movement.mdx",
+      "title": "Replica movement",
+      "topics": [
+        "weaviate",
+        "cluster management",
+        "replication",
+        "shard management",
+        "data distribution"
+      ],
+      "doctype": "how-to",
+      "summary": "Explains how to manage and control shard replica placement within a Weaviate cluster, including checking shard state, initiating replica movement, monitoring replication operations, and managing operation records.",
+      "hash": "562a54c9d173c144e9761763eacce396baf6e569c08ad752d1d58374eb841710"
+    },
+    "deploy/configuration/backups.md": {
+      "path": "deploy/configuration/backups.md",
+      "title": "Backups",
+      "topics": [
+        "weaviate",
+        "backups",
+        "configuration",
+        "cloud storage",
+        "data management"
+      ],
+      "doctype": "how-to",
+      "summary": "A comprehensive guide to configuring and using backups in Weaviate, covering backup creation, restoration, and support for multiple cloud storage providers like AWS S3, Google Cloud Storage, and Azure Storage.",
+      "hash": "6ae709a7d77a914ddfb3549f5c32e62fbf8e8edf4c91b346bcfd4f6e69716a7f"
+    },
+    "deploy/configuration/persistence.md": {
+      "path": "deploy/configuration/persistence.md",
+      "title": "Persistence",
+      "topics": [
+        "docker",
+        "kubernetes",
+        "data persistence",
+        "volume mounting",
+        "backups",
+        "disk management"
+      ],
+      "doctype": "how-to",
+      "summary": "Guide for persisting Weaviate data using volume mounting in Docker Compose and Kubernetes environments, including configuration options for data storage, disk pressure warnings, and access strategies.",
+      "hash": "d6e0d1fbe44481ed5ebd0b86cc6dc20e54c3919038d03d03a356866b22c88e92"
+    },
+    "deploy/configuration/authz-authn.mdx": {
+      "path": "deploy/configuration/authz-authn.mdx",
+      "title": "Configuration Guides",
+      "topics": [
+        "authentication",
+        "authorization",
+        "RBAC",
+        "OIDC",
+        "access control",
+        "security configuration"
+      ],
+      "doctype": "reference",
+      "summary": "A reference guide providing an overview of configuration options for authentication, authorization, and access control in Weaviate, with links to detailed configuration guides.",
+      "hash": "cdcdf1a4fd87a18a967bdad67e0f0fd89fa5e7ea855d8660b061d2db8bf45a59"
+    },
+    "deploy/configuration/async-rep.md": {
+      "path": "deploy/configuration/async-rep.md",
+      "title": "Async Replication",
+      "topics": [
+        "distributed systems",
+        "replication",
+        "consistency",
+        "environment variables",
+        "cluster configuration"
+      ],
+      "doctype": "reference",
+      "summary": "Comprehensive guide to Async Replication in distributed systems, detailing environment variables and configuration options for controlling eventual consistency, performance, and synchronization across cluster nodes.",
+      "hash": "a2e033a2fd4ebd0bde9c9e77e55c85a4475367bf47360cf55db435df21daae1d"
+    },
+    "deploy/configuration/oidc.md": {
+      "path": "deploy/configuration/oidc.md",
+      "title": "OIDC Configuration",
+      "topics": [
+        "authentication",
+        "OIDC",
+        "configuration",
+        "discovery endpoint"
+      ],
+      "doctype": "reference",
+      "summary": "Explains the OIDC configuration discovery endpoint, detailing how to retrieve OIDC provider information through the `/v1/.well-known/openid-configuration` endpoint with its usage and expected response.",
+      "hash": "558567f2f5f980f1cfa92d1aa8cf7acce25e4bdea1bc145c24b1cf0f735f5068"
+    },
+    "deploy/configuration/configuring-rbac.md": {
+      "path": "deploy/configuration/configuring-rbac.md",
+      "title": "Enable and configure RBAC",
+      "topics": [
+        "rbac",
+        "authentication",
+        "authorization",
+        "docker",
+        "kubernetes",
+        "access control"
+      ],
+      "doctype": "how-to",
+      "summary": "A comprehensive guide to enabling and configuring Role-Based Access Control (RBAC) in Weaviate, covering configuration for Docker and Kubernetes deployments, with details on predefined roles and performance considerations.",
+      "hash": "2a5991f45b878e9de4ec3513a90a78cb8f29625ec509e6d81cb71129dbcfe7de"
+    },
+    "deploy/configuration/telemetry.md": {
+      "path": "deploy/configuration/telemetry.md",
+      "title": "Telemetry",
+      "topics": [
+        "telemetry",
+        "configuration",
+        "data collection",
+        "server settings"
+      ],
+      "doctype": "reference",
+      "summary": "Explains Weaviate's telemetry data collection process, including the types of information collected and how to disable telemetry using environment configuration.",
+      "hash": "39a83e141eec7f2968de89e72f6bfd4ac94d203ce7e934233669738797387111"
+    },
+    "deploy/configuration/monitoring.md": {
+      "path": "deploy/configuration/monitoring.md",
+      "title": "Monitoring",
+      "topics": [
+        "prometheus",
+        "metrics",
+        "observability",
+        "monitoring",
+        "configuration"
+      ],
+      "doctype": "how-to",
+      "summary": "Explains how to configure and use Prometheus-compatible metrics in Weaviate, covering how to enable monitoring, scrape metrics, and understand available performance and operational metrics.",
+      "hash": "2ece1e712bf700287a170ba0a4e1e43ba5c7576245cf5ce44552ec1544e4a05d"
+    },
+    "deploy/configuration/env-vars/index.md": {
+      "path": "deploy/configuration/env-vars/index.md",
+      "title": "Environment variables",
+      "topics": [
+        "configuration",
+        "environment variables",
+        "weaviate",
+        "deployment",
+        "docker",
+        "kubernetes"
+      ],
+      "doctype": "reference",
+      "summary": "A comprehensive reference guide for Weaviate environment variables, covering configuration options for general settings, modules, authentication, authorization, multi-node instances, and async replication.",
+      "hash": "f3059cd0719b56f4a6700b85fb2c520102cf7fe8dbb3bde908f4b1ea153c17da"
+    },
+    "deploy/configuration/env-vars/runtime-config.md": {
+      "path": "deploy/configuration/env-vars/runtime-config.md",
+      "title": "Runtime configuration management",
+      "topics": [
+        "configuration",
+        "environment variables",
+        "runtime settings",
+        "weaviate configuration"
+      ],
+      "doctype": "how-to",
+      "summary": "Explains how to manage runtime configuration in Weaviate by enabling environment variable overrides, setting up configuration files, and monitoring configuration changes without requiring system restarts.",
+      "hash": "e08da27822948c4f1884d93b1f800d453a1d3a8152c12ec76cf40b5b50526ec6"
+    },
+    "deploy/installation-guides/k8s-installation.md": {
+      "path": "deploy/installation-guides/k8s-installation.md",
+      "title": "Kubernetes",
+      "topics": [
+        "kubernetes",
+        "helm",
+        "deployment",
+        "installation",
+        "container orchestration"
+      ],
+      "doctype": "how-to",
+      "summary": "A comprehensive guide for installing Weaviate on Kubernetes using Helm, covering requirements, configuration, deployment steps, and troubleshooting for various cloud environments.",
+      "hash": "c2c6e3c8580bb61a2771164bda09363105e180d7ce999aa0b15d8a0a1ac45293"
+    },
+    "deploy/installation-guides/aws-marketplace.md": {
+      "path": "deploy/installation-guides/aws-marketplace.md",
+      "title": "Marketplace - Weaviate Serverless Cloud",
+      "topics": [
+        "AWS",
+        "cloud deployment",
+        "Weaviate",
+        "serverless",
+        "installation"
+      ],
+      "doctype": "how-to",
+      "summary": "A comprehensive guide for installing a Weaviate serverless instance through AWS Marketplace, covering subscription process, billing, and deployment considerations for cloud users.",
+      "hash": "92992cd662ce923f7fee02ae5f2ea32352e6082fc15d64d88aed24fdf406f3f0"
+    },
+    "deploy/installation-guides/gke-marketplace.md": {
+      "path": "deploy/installation-guides/gke-marketplace.md",
+      "title": "GCP Marketplace - Kubernetes",
+      "topics": [
+        "kubernetes",
+        "google cloud marketplace",
+        "weaviate deployment",
+        "cloud installation"
+      ],
+      "doctype": "how-to",
+      "summary": "A comprehensive guide for deploying Weaviate on Google Cloud Marketplace, covering installation steps, configuration options, cluster access, and management of the deployed Weaviate instance.",
+      "hash": "12c205735ecea5109833621550b26523817466d2b358216202b5d94c8f62bff5"
+    },
+    "deploy/installation-guides/embedded.md": {
+      "path": "deploy/installation-guides/embedded.md",
+      "title": "Embedded Weaviate",
+      "topics": [
+        "weaviate",
+        "installation",
+        "embedded database",
+        "client configuration",
+        "server deployment"
+      ],
+      "doctype": "how-to",
+      "summary": "A comprehensive guide to setting up and using Embedded Weaviate, an experimental feature that allows running a Weaviate database instance directly within a client application for Python and TypeScript.",
+      "hash": "b778f2334b419f3d4eebe402446e10be4d713461282b45996077f78ed1b403f1"
+    },
+    "deploy/installation-guides/eks-marketplace.md": {
+      "path": "deploy/installation-guides/eks-marketplace.md",
+      "title": "Marketplace - Kubernetes",
+      "topics": [
+        "AWS",
+        "Kubernetes",
+        "EKS",
+        "Cloud Deployment",
+        "Installation"
+      ],
+      "doctype": "how-to",
+      "summary": "A comprehensive guide for installing Weaviate on an Amazon EKS cluster through the AWS Marketplace, covering subscription, configuration, deployment, and cluster management steps.",
+      "hash": "df727c34633e869c6bed30d552b6eb73549f238538304c504d8e55c9bb31d82a"
+    },
+    "deploy/installation-guides/ecs-marketplace.md": {
+      "path": "deploy/installation-guides/ecs-marketplace.md",
+      "title": "Marketplace - EC2",
+      "topics": [
+        "AWS",
+        "EC2",
+        "Docker",
+        "Weaviate deployment",
+        "CloudFormation"
+      ],
+      "doctype": "how-to",
+      "summary": "A comprehensive guide to deploying Weaviate on an EC2 instance using AWS Marketplace, covering subscription, configuration, and deployment steps for developers looking to quickly set up a Weaviate instance.",
+      "hash": "cbc8cb55699579b85f3ae9b924cf161787a06c653faffe9d46342e8adf6c4fcd"
+    },
+    "deploy/installation-guides/docker-installation.md": {
+      "path": "deploy/installation-guides/docker-installation.md",
+      "title": "Docker",
+      "topics": [
+        "Docker",
+        "Weaviate deployment",
+        "Container configuration",
+        "Installation",
+        "Environment variables"
+      ],
+      "doctype": "how-to",
+      "summary": "A comprehensive guide for installing and configuring Weaviate using Docker, covering default and customized deployment options, docker-compose configurations, and environment variable settings.",
+      "hash": "09fc0fbd27fb17633f91a8a8785353000a8918eebfadc40840010eae45af419b"
+    },
+    "deploy/installation-guides/eks.md": {
+      "path": "deploy/installation-guides/eks.md",
+      "title": "Self-Managed EKS",
+      "topics": [
+        "Kubernetes",
+        "EKS",
+        "AWS",
+        "Weaviate Deployment",
+        "Cloud Infrastructure",
+        "Helm",
+        "Container Orchestration"
+      ],
+      "doctype": "how-to",
+      "summary": "A comprehensive guide to deploying Weaviate on an Amazon EKS (Elastic Kubernetes Service) cluster using eksctl, including cluster creation, storage configuration, and Weaviate installation.",
+      "hash": "4f697dac11be33db1c388926d526f69a33815d52cc4aa019cd4840daa121f85e"
+    },
+    "deploy/installation-guides/index.md": {
+      "path": "deploy/installation-guides/index.md",
+      "title": "How to install Weaviate",
+      "topics": [
+        "weaviate",
+        "installation",
+        "deployment",
+        "docker",
+        "kubernetes",
+        "cloud services"
+      ],
+      "doctype": "how-to",
+      "summary": "A comprehensive guide to installing Weaviate across various environments, including cloud services, Docker, Kubernetes, and other deployment methods, with details on configuration and installation strategies.",
+      "hash": "e1a0e4e4e09ab34d7edf8a396ef27ccdf28e9828be0a0ad8bd41d4dfec21b347"
+    },
+    "deploy/installation-guides/gcp-marketplace.md": {
+      "path": "deploy/installation-guides/gcp-marketplace.md",
+      "title": "GCP Marketplace - Weaviate Serverless",
+      "topics": [
+        "weaviate",
+        "cloud deployment",
+        "google cloud marketplace",
+        "serverless",
+        "installation"
+      ],
+      "doctype": "how-to",
+      "summary": "A step-by-step guide for deploying Weaviate using Google Cloud Marketplace, covering prerequisites, installation instructions, and billing information for Weaviate serverless cloud deployment.",
+      "hash": "b3e741e4d125ccfcdcc64d2364c80b90a06f4b32e7f1a2e8c4d6377389428192"
+    },
+    "deploy/installation-guides/spcs-integration.mdx": {
+      "path": "deploy/installation-guides/spcs-integration.mdx",
+      "title": "Snowpark Container Services (SPCS)",
+      "topics": [
+        "Snowflake",
+        "Snowpark",
+        "Container Services",
+        "Weaviate",
+        "Installation",
+        "Cloud Deployment"
+      ],
+      "doctype": "how-to",
+      "summary": "A comprehensive guide for configuring and deploying a Weaviate instance using Snowpark Container Services (SPCS), covering environment setup, service creation, data loading, and management of containerized services.",
+      "hash": "18ba6fc86670694114602f8e6d9b58a2b001506f755ab569964028ece54fb7bb"
+    },
+    "deploy/installation-guides/weaviate-cloud.md": {
+      "path": "deploy/installation-guides/weaviate-cloud.md",
+      "title": "Weaviate Cloud",
+      "topics": [
+        "Weaviate Cloud Services",
+        "Installation",
+        "Cloud Deployment"
+      ],
+      "doctype": "how-to",
+      "summary": "A guide for installing and getting started with Weaviate Cloud Services, covering an overview of WCD, its relationship to the open-source database, available solutions, and initial setup steps.",
+      "hash": "07989db3981c1243e61390734c20d1811cc699300747f758cc61c37126dd58c6"
+    },
+    "deploy/faqs/troubleshooting.md": {
+      "path": "deploy/faqs/troubleshooting.md",
+      "title": "Deployment Troubleshooting Guide",
+      "topics": [
+        "weaviate",
+        "deployment",
+        "troubleshooting",
+        "cluster management",
+        "error resolution"
+      ],
+      "doctype": "how-to",
+      "summary": "A comprehensive guide for solving common deployment issues in Weaviate, covering problems like disk space limitations, inconsistent query results, node communication failures, and version downgrade challenges.",
+      "hash": "3651964b58a2d687259eccac6d878d39fef2b0e769cbd1c23587e1352d1f0ab8"
+    },
+    "deploy/faqs/index.md": {
+      "path": "deploy/faqs/index.md",
+      "title": "Deployment FAQs",
+      "topics": [
+        "deployment",
+        "weaviate",
+        "cloud platforms",
+        "troubleshooting",
+        "database management"
+      ],
+      "doctype": "reference",
+      "summary": "A comprehensive FAQ guide addressing common deployment challenges, cloud marketplace installations, and operational considerations when using Weaviate vector search database.",
+      "hash": "2165ff739c5cd4f7224f5a625644491338ebe98586e6bb20ba07811025634089"
+    },
+    "deploy/production/index.mdx": {
+      "path": "deploy/production/index.mdx",
+      "title": "index",
+      "topics": [
+        "kubernetes",
+        "deployment",
+        "scalability",
+        "security",
+        "cloud infrastructure",
+        "production environments"
+      ],
+      "doctype": "concept",
+      "summary": "A comprehensive guide to deploying Weaviate in production environments, covering key considerations such as scalability, data resilience, security, monitoring, and deployment options.",
+      "hash": "89851b4195d499e7024baa2bd16bbaaacd811b000de914c9e84cc3b9c9fa6e4b"
+    },
+    "deploy/production/Kubernetes/index.mdx": {
+      "path": "deploy/production/Kubernetes/index.mdx",
+      "title": "index",
+      "topics": [
+        "Kubernetes",
+        "Cloud Deployment",
+        "Enterprise Deployments",
+        "EKS",
+        "GKE",
+        "AKS"
+      ],
+      "doctype": "concept",
+      "summary": "An overview of Kubernetes deployment options for Weaviate, covering enterprise cloud providers and deployment strategies for production environments.",
+      "hash": "eff69fdb323cdb4f0cea29d3aeb70f89ca82242fe5d90c48ae3ee0236e147ee3"
+    },
+    "deploy/production/Kubernetes/production-readiness.md": {
+      "path": "deploy/production/Kubernetes/production-readiness.md",
+      "title": "production-readiness",
+      "topics": [
+        "Kubernetes",
+        "Production Deployment",
+        "Cluster Management",
+        "High Availability",
+        "Performance Optimization",
+        "Security",
+        "Monitoring",
+        "Resource Management"
+      ],
+      "doctype": "how-to",
+      "summary": "A comprehensive checklist for evaluating the readiness of a Kubernetes cluster running Weaviate, covering critical aspects such as high availability, performance, security, resource management, and observability.",
+      "hash": "e80c039228d212e7b8b0f2e1fbef997d2da28f0ba81216a1a6a5cb7844a43365"
+    },
+    "deploy/production/Kubernetes/k8s-poc.md": {
+      "path": "deploy/production/Kubernetes/k8s-poc.md",
+      "title": "k8s-poc",
+      "topics": [
+        "Kubernetes",
+        "Weaviate",
+        "Deployment",
+        "Helm",
+        "Production",
+        "Scaling",
+        "Security",
+        "Monitoring"
+      ],
+      "doctype": "how-to",
+      "summary": "A comprehensive guide for deploying Weaviate on a Kubernetes cluster, covering key aspects of production-ready deployment including Helm configuration, network security, scaling, monitoring, and backup strategies.",
+      "hash": "755ec5c00f4e38e0a9c86286adb7348c3fa1d9a83087d31b025979688cf5c1df"
+    },
+    "deploy/tutorials/index.mdx": {
+      "path": "deploy/tutorials/index.mdx",
+      "title": "Tutorials",
+      "topics": [
+        "documentation",
+        "tutorials",
+        "weaviate",
+        "learning resources"
+      ],
+      "doctype": "tutorial",
+      "summary": "A landing page for Weaviate tutorials that provides practical guidance on using Weaviate's features, with a focus on empowering users to learn based on their specific needs.",
+      "hash": "af5ad30c9e88ae3705bda74a8f42c004012b324f95311f5ee07ecf0ba8bad69e"
+    },
+    "deploy/tutorials/rbac.mdx": {
+      "path": "deploy/tutorials/rbac.mdx",
+      "title": "Setting up RBAC in Weaviate",
+      "topics": [
+        "Role-Based Access Control",
+        "Weaviate Security",
+        "User Permissions",
+        "Access Management"
+      ],
+      "doctype": "tutorial",
+      "summary": "A comprehensive tutorial that demonstrates how to set up Role-Based Access Control (RBAC) in Weaviate, covering how to create custom roles with specific permissions, assign roles to users, and manage access to collections and tenants.",
+      "hash": "ceaa0eda9226838b4fff318cdeb73bd6bf8b56a504d6a8ab4c4ce04f8c04da1c"
+    },
+    "deploy/aws/index.md": {
+      "path": "deploy/aws/index.md",
+      "title": "Deploying Weaviate on AWS",
+      "topics": [
+        "AWS",
+        "Weaviate",
+        "Cloud Deployment",
+        "Kubernetes",
+        "EKS",
+        "EC2",
+        "Serverless",
+        "Docker"
+      ],
+      "doctype": "how-to",
+      "summary": "Comprehensive guide to deploying Weaviate on AWS, covering multiple deployment methods including AWS Marketplace offerings (Serverless, EKS, EC2) and self-managed EKS options for different use cases and operational needs.",
+      "hash": "889c6851d50893ba12eba1f11bb5425a4f165a6b43370b212e45b1093756c634"
+    },
+    "deploy/aws/net-security-bp.md": {
+      "path": "deploy/aws/net-security-bp.md",
+      "title": "Network Security Best Practices",
+      "topics": [
+        "AWS",
+        "Network Security",
+        "Kubernetes",
+        "VPC",
+        "Access Control",
+        "Weaviate Deployment",
+        "Zero Trust",
+        "Service Mesh",
+        "Compliance"
+      ],
+      "doctype": "reference",
+      "summary": "A comprehensive guide to network security best practices for Weaviate deployments on AWS, covering network segmentation, access controls, security architecture, and compliance with industry security frameworks.",
+      "hash": "5e9fdc703b2e5d3cfef086b2a3f1871221f13ae791f5b4496d7e18cdbcf3c37d"
+    },
+    "deploy/migration/archive.md": {
+      "path": "deploy/migration/archive.md",
+      "title": "Archive",
+      "topics": [
+        "weaviate",
+        "migration",
+        "version-changelog"
+      ],
+      "doctype": "reference",
+      "summary": "A comprehensive archive of migration guides and changelogs for various Weaviate versions, documenting breaking changes, new features, and important migration steps from version 1.19.0 down to 1.0.0.",
+      "hash": "a9266b5e05c0fc1b880dd079d4bef5b64c3a2052c0225db5ef1c7438d1ef9f6c"
+    },
+    "deploy/migration/weaviate-1-30.md": {
+      "path": "deploy/migration/weaviate-1-30.md",
+      "title": "BlockMax WAND migration guide",
+      "topics": [
+        "weaviate",
+        "search",
+        "migration",
+        "indexing",
+        "performance",
+        "BM25",
+        "hybrid search"
+      ],
+      "doctype": "how-to",
+      "summary": "A comprehensive guide for migrating Weaviate collections to use the BlockMax WAND algorithm, which offers improved search performance for BM25 and hybrid searches in Weaviate v1.30 and above.",
+      "hash": "85bb959eea748732ec89114fbfa6b0763db28504f2a1a5eeac8717fe7cd50b49"
+    },
+    "deploy/migration/index.md": {
+      "path": "deploy/migration/index.md",
+      "title": "Migration and Upgrades",
+      "topics": [
+        "weaviate",
+        "version-upgrade",
+        "cluster-migration",
+        "backup",
+        "software-deployment"
+      ],
+      "doctype": "how-to",
+      "summary": "A comprehensive guide for upgrading Weaviate instances, covering version-specific migration steps, backup recommendations, and important considerations when moving between different Weaviate versions.",
+      "hash": "bb25eeffb3d7a8bae32e51618216a4e1b41b5070318123cef07010b29b4aaa86"
+    },
+    "deploy/migration/weaviate-1-25.md": {
+      "path": "deploy/migration/weaviate-1-25.md",
+      "title": "1.25 (For Kubernetes users)",
+      "topics": [
+        "kubernetes",
+        "weaviate",
+        "migration",
+        "cluster",
+        "raft",
+        "helm"
+      ],
+      "doctype": "how-to",
+      "summary": "A comprehensive guide for migrating Weaviate to version 1.25 on Kubernetes, covering the upgrade and downgrade process for clusters using the new Raft consensus algorithm.",
+      "hash": "54bffa2dde4855abb159ca2fd67f573dfc552d65fb30fede71548cdfefa5d8b2"
+    }
+  }
+}
