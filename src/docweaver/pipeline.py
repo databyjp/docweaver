@@ -213,7 +213,9 @@ async def coordinate_changes(
             continue
 
         logging.info(f"Parsing document and its references: {filepath}")
-        doc_bundle = parse_doc_refs(Path(filepath), include_code_body=False)
+        # Resolve path relative to DOCS_BASE_PATH
+        full_path = Path(DOCS_BASE_PATH) / filepath
+        doc_bundle = parse_doc_refs(full_path, include_code_body=False)
 
         # Add main document
         add_doc_to_prompt(doc_bundle, is_main=True)
@@ -303,8 +305,6 @@ async def make_changes(
 
         all_paths = {primary_path}
         for instr in file_instructions:
-            if not instr["path"].startswith("docs/"):
-                instr["path"] = "docs/" + instr["path"]
             all_paths.add(instr["path"])
 
         original_contents = {}
@@ -312,11 +312,19 @@ async def make_changes(
 
         for path_str in all_paths:
             path = Path(path_str)
+            if not path.is_file():
+                # If file not found, try prepending "docs/" as it might be a relative path
+                path = Path("docs") / path_str
+                if not path.is_file():
+                    raise FileNotFoundError(
+                        f"Could not find file: {path_str} or docs/{path_str}"
+                    )
+
             content = path.read_text()
-            original_contents[path_str] = content
+            original_contents[path.as_posix()] = content
 
             doc_type = "MAIN FILE" if path_str == primary_path else "REFERENCED FILE"
-            prompt_docs_list.append(f"## File: {path_str} ({doc_type})\n{content}\n")
+            prompt_docs_list.append(f"## File: {path.as_posix()} ({doc_type})\n{content}\n")
 
         prompt_docs = "\n".join(prompt_docs_list)
 
