@@ -13,7 +13,11 @@ import sys
 
 # Current task configuration - change this to switch between tasks
 # Task name is the name of the Python file in the tasks/ directory
-CURRENT_TASK_NAME = "prod_readiness"
+# CURRENT_TASK_NAME = "prod_readiness"
+# CURRENT_TASK_NAME = "vector_compression"
+CURRENT_TASK_NAME = "indexes"
+
+TASK_OUTPUT_DIR = Path("outputs") / f"task_{CURRENT_TASK_NAME}"
 
 
 def get_current_task_description() -> str:
@@ -23,40 +27,41 @@ def get_current_task_description() -> str:
 
 
 def clean_outputs():
-    """Delete all intermediate output files."""
+    """Delete all intermediate output files for the current task."""
     console = Console()
-    console.print("🧹 Cleaning all intermediate output files...")
-    if Path("outputs").exists():
-        for f in Path("outputs").glob("*.log"):
-            f.unlink()
-            console.print(f"   Deleted {f}")
-        if Path("outputs/catalog.json").exists():
-            Path("outputs/catalog.json").unlink()
-            console.print("   Deleted outputs/catalog.json")
+    console.print(
+        f"🧹 Cleaning all intermediate output files for task: {CURRENT_TASK_NAME}..."
+    )
+    if TASK_OUTPUT_DIR.exists():
+        import shutil
+
+        shutil.rmtree(TASK_OUTPUT_DIR)
+        console.print(f"   Deleted directory: {TASK_OUTPUT_DIR}")
     console.print("✓ Clean complete\n")
 
 
 async def run_search_stage(task_description: str, console: Console):
     """Run document search stage with caching."""
-    output_path = "outputs/doc_search_agent.log"
+    output_path = TASK_OUTPUT_DIR / "doc_search_agent.log"
 
-    if Path(output_path).exists():
+    if output_path.exists():
         console.print(f"✓ Using existing search results from {output_path}")
         with open(output_path) as f:
             search_data = json.load(f)
             return {"documents": search_data, "output_path": output_path}
 
     console.print("🔍 Searching documents...")
-    result = await search_documents(task_description)
+    result = await search_documents(task_description, output_path=str(output_path))
     console.print(f"   Token usage: {result['token_usage']}")
     return result
 
 
 async def run_coordinate_stage(task_description: str, console: Console):
     """Run change coordination stage with caching."""
-    output_path = "outputs/doc_instructor_agent.log"
+    output_path = TASK_OUTPUT_DIR / "doc_instructor_agent.log"
+    search_results_path = TASK_OUTPUT_DIR / "doc_search_agent.log"
 
-    if Path(output_path).exists():
+    if output_path.exists():
         console.print(f"✓ Using existing instructions from {output_path}")
         with open(output_path) as f:
             instructions_data = json.load(f)
@@ -67,16 +72,22 @@ async def run_coordinate_stage(task_description: str, console: Console):
             }
 
     console.print("📋 Coordinating changes...")
-    result = await coordinate_changes(task_description)
+    result = await coordinate_changes(
+        task_description,
+        search_results_path=str(search_results_path),
+        output_path=str(output_path),
+    )
     console.print(f"   Token usage: {result['token_usage']}")
     return result
 
 
 async def run_changes_stage(task_description: str, console: Console):
     """Run document changes stage with caching."""
-    output_path = "outputs/doc_writer_agent.log"
+    output_path = TASK_OUTPUT_DIR / "doc_writer_agent.log"
+    edits_path = TASK_OUTPUT_DIR / "doc_writer_agent_edits.log"
+    instructions_path = TASK_OUTPUT_DIR / "doc_instructor_agent.log"
 
-    if Path(output_path).exists():
+    if output_path.exists():
         console.print(f"✓ Using existing changes from {output_path}")
         with open(output_path) as f:
             changes_data = json.load(f)
@@ -87,17 +98,25 @@ async def run_changes_stage(task_description: str, console: Console):
             }
 
     console.print("✍️  Making changes...")
-    result = await make_changes(task_description)
+    result = await make_changes(
+        task_description,
+        instructions_path=str(instructions_path),
+        output_path=str(output_path),
+        edits_path=str(edits_path),
+    )
     console.print(f"   Processing time: {result['total_processing_time']:.2f} seconds")
     return result
 
 
-
-
-async def run_pr_stage(task_description: str, console: Console):
+async def run_pr_stage(task_description: str, task_name: str, console: Console):
     """Run PR creation stage."""
+    changes_path = TASK_OUTPUT_DIR / "doc_writer_agent.log"
     console.print("📝 Applying changes and creating PR...")
-    return await create_pr(feature_description=task_description)
+    return await create_pr(
+        feature_description=task_description,
+        task_name=task_name,
+        changes_path=str(changes_path),
+    )
 
 
 async def main():
@@ -107,6 +126,8 @@ async def main():
     # Handle --clean flag
     if "--clean" in sys.argv:
         clean_outputs()
+
+    TASK_OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
 
     task_description = get_current_task_description()
 
@@ -131,7 +152,7 @@ async def main():
     print(f"Revised documents saved to: {result['output_path']}\n")
 
     # Stage 4: Create PR
-    result = await run_pr_stage(task_description, console)
+    result = await run_pr_stage(task_description, CURRENT_TASK_NAME, console)
     if result["success"]:
         console.print(f"✅ {result['message']}")
         console.print(f"Branch: {result['branch_name']}")
