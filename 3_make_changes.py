@@ -13,9 +13,8 @@ import sys
 
 # Current task configuration - change this to switch between tasks
 # Task name is the name of the Python file in the tasks/ directory
-# CURRENT_TASK_NAME = "prod_readiness"
-# CURRENT_TASK_NAME = "vector_compression"
-CURRENT_TASK_NAME = "indexes"
+CURRENT_TASK_NAME = "prod_readiness"
+# CURRENT_TASK_NAME = "indexes"
 
 TASK_OUTPUT_DIR = Path("outputs") / f"task_{CURRENT_TASK_NAME}"
 
