@@ -2,7 +2,6 @@ from docweaver.pipeline import (
     search_documents,
     coordinate_changes,
     make_changes,
-    create_diffs,
     create_pr,
 )
 from rich.console import Console
@@ -11,7 +10,6 @@ from helpers import setup_logging, load_task
 from pathlib import Path
 import json
 import sys
-import shutil
 
 # Current task configuration - change this to switch between tasks
 # Task name is the name of the Python file in the tasks/ directory
@@ -94,24 +92,11 @@ async def run_changes_stage(task_description: str, console: Console):
     return result
 
 
-def run_diffs_stage(console: Console):
-    """Run diffs creation stage with caching."""
-    output_path = "outputs/diffs.log"
-
-    if Path(output_path).exists():
-        console.print(f"✓ Using existing diffs from {output_path}")
-        return {
-            "has_changes": Path(output_path).stat().st_size > 0,
-            "output_path": output_path,
-        }
-
-    console.print("📊 Creating diffs...")
-    return create_diffs()
 
 
 def run_pr_stage(console: Console):
     """Run PR creation stage."""
-    console.print("📝 Applying diffs and creating PR...")
+    console.print("📝 Applying changes and creating PR...")
     return create_pr()
 
 
@@ -145,14 +130,7 @@ async def main():
     print(f"Files changed: {result['files_changed']}")
     print(f"Revised documents saved to: {result['output_path']}\n")
 
-    # Stage 4: Create diffs
-    result = run_diffs_stage(console)
-    if result["has_changes"]:
-        print(f"Diffs saved to: {result['output_path']}\n")
-    else:
-        print("No changes found to create diffs for\n")
-
-    # Stage 5: Create PR
+    # Stage 4: Create PR
     result = run_pr_stage(console)
     if result["success"]:
         console.print(f"✅ {result['message']}")

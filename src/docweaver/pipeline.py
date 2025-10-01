@@ -26,11 +26,9 @@ from .agents import (
 )
 from .catalog import DocCatalog, get_docs_to_update, get_docs_to_remove, generate_metadata
 import time
-import difflib
 from collections import defaultdict
 from datetime import datetime
 from rich.console import Console
-from rich.syntax import Syntax
 import git
 import os
 from github import Github
@@ -519,79 +517,6 @@ async def make_changes(
     }
 
 
-def create_diffs(
-    changes_path: str = "outputs/doc_writer_agent.log",
-    output_path: str = "outputs/diffs.log",
-) -> Dict[str, Any]:
-    """
-    Create unified diffs from the revised documents.
-
-    This operation compares the original files with the revised versions
-    and generates unified diffs for review.
-
-    Args:
-        changes_path: Path to the revised documents file (default: "outputs/doc_writer_agent.log")
-        output_path: Path to save the diffs (default: "outputs/diffs.log")
-
-    Returns:
-        Dict containing diff results with keys:
-        - diffs_created: Number of diffs created
-        - output_path: Path where diffs were saved
-        - has_changes: Whether any changes were found
-    """
-    logging.info("Creating diffs from revised documents.")
-
-    with open(changes_path, "r") as f:
-        proposed_changes = json.load(f)
-
-    all_diffs = ""
-    console = Console()
-    diffs_created = 0
-
-    for change in proposed_changes:
-        file_path_str = change["path"]
-        file_path = Path(file_path_str)
-
-        # Reread the original file from disk to ensure a clean diff
-        original_content = ""
-        if file_path.exists():
-            original_content = file_path.read_text()
-        else:
-            logging.warning(
-                f"Original file not found at {file_path_str}, diff will be for a new file."
-            )
-
-        diff = "".join(
-            difflib.unified_diff(
-                original_content.splitlines(keepends=True),
-                change["revised_doc"].splitlines(keepends=True),
-                fromfile=f"a/{file_path_str}",
-                tofile=f"b/{file_path_str}",
-                n=5,  # Show 5 lines of context around changes
-            )
-        )
-
-        if diff:
-            all_diffs += diff
-            diffs_created += 1
-            console.print(f"Diff for {file_path_str}:")
-            syntax = Syntax(
-                diff, "diff", theme="monokai", line_numbers=False, word_wrap=True
-            )
-            console.print(syntax)
-            console.print("-" * 80)
-
-    Path(output_path).parent.mkdir(parents=True, exist_ok=True)
-    with open(output_path, "w") as f:
-        f.write(all_diffs)
-
-    logging.info(f"Created {diffs_created} diffs. Saved to {output_path}")
-
-    return {
-        "diffs_created": diffs_created,
-        "output_path": output_path,
-        "has_changes": diffs_created > 0,
-    }
 
 
 def create_pr(
