@@ -1,3 +1,4 @@
+import shutil
 from docweaver.pipeline import (
     search_documents,
     coordinate_changes,
@@ -11,37 +12,35 @@ from pathlib import Path
 import json
 import sys
 
-# Current task configuration - change this to switch between tasks
-# Task name is the name of the Python file in the tasks/ directory
-CURRENT_TASK_NAME = "prod_readiness"
-# CURRENT_TASK_NAME = "indexes"
+# List of tasks to run in sequence
+TASKS_TO_RUN = [
+    "prod_readiness",
+    "backup",
+    "monitorig"
+]
 
-TASK_OUTPUT_DIR = Path("outputs") / f"task_{CURRENT_TASK_NAME}"
 
-
-def get_current_task_description() -> str:
+def get_task_description(task_name: str) -> str:
     """Returns formatted task description for agents."""
-    task = load_task(CURRENT_TASK_NAME)
+    task = load_task(task_name)
     return task.get_description()
 
 
-def clean_outputs():
-    """Delete all intermediate output files for the current task."""
-    console = Console()
-    console.print(
-        f"🧹 Cleaning all intermediate output files for task: {CURRENT_TASK_NAME}..."
-    )
-    if TASK_OUTPUT_DIR.exists():
-        import shutil
-
-        shutil.rmtree(TASK_OUTPUT_DIR)
-        console.print(f"   Deleted directory: {TASK_OUTPUT_DIR}")
+def clean_task_outputs(task_name: str, console: Console):
+    """Delete all intermediate output files for a specific task."""
+    task_output_dir = Path("outputs") / f"task_{task_name}"
+    console.print(f"🧹 Cleaning all intermediate output files for task: {task_name}...")
+    if task_output_dir.exists():
+        shutil.rmtree(task_output_dir)
+        console.print(f"   Deleted directory: {task_output_dir}")
     console.print("✓ Clean complete\n")
 
 
-async def run_search_stage(task_description: str, console: Console):
+async def run_search_stage(
+    task_description: str, task_output_dir: Path, console: Console
+):
     """Run document search stage with caching."""
-    output_path = TASK_OUTPUT_DIR / "doc_search_agent.log"
+    output_path = task_output_dir / "doc_search_agent.log"
 
     if output_path.exists():
         console.print(f"✓ Using existing search results from {output_path}")
@@ -55,10 +54,12 @@ async def run_search_stage(task_description: str, console: Console):
     return result
 
 
-async def run_coordinate_stage(task_description: str, console: Console):
+async def run_coordinate_stage(
+    task_description: str, task_output_dir: Path, console: Console
+):
     """Run change coordination stage with caching."""
-    output_path = TASK_OUTPUT_DIR / "doc_instructor_agent.log"
-    search_results_path = TASK_OUTPUT_DIR / "doc_search_agent.log"
+    output_path = task_output_dir / "doc_instructor_agent.log"
+    search_results_path = task_output_dir / "doc_search_agent.log"
 
     if output_path.exists():
         console.print(f"✓ Using existing instructions from {output_path}")
@@ -80,11 +81,13 @@ async def run_coordinate_stage(task_description: str, console: Console):
     return result
 
 
-async def run_changes_stage(task_description: str, console: Console):
+async def run_changes_stage(
+    task_description: str, task_output_dir: Path, console: Console
+):
     """Run document changes stage with caching."""
-    output_path = TASK_OUTPUT_DIR / "doc_writer_agent.log"
-    edits_path = TASK_OUTPUT_DIR / "doc_writer_agent_edits.log"
-    instructions_path = TASK_OUTPUT_DIR / "doc_instructor_agent.log"
+    output_path = task_output_dir / "doc_writer_agent.log"
+    edits_path = task_output_dir / "doc_writer_agent_edits.log"
+    instructions_path = task_output_dir / "doc_instructor_agent.log"
 
     if output_path.exists():
         console.print(f"✓ Using existing changes from {output_path}")
@@ -107,9 +110,11 @@ async def run_changes_stage(task_description: str, console: Console):
     return result
 
 
-async def run_pr_stage(task_description: str, task_name: str, console: Console):
+async def run_pr_stage(
+    task_description: str, task_name: str, task_output_dir: Path, console: Console
+):
     """Run PR creation stage."""
-    changes_path = TASK_OUTPUT_DIR / "doc_writer_agent.log"
+    changes_path = task_output_dir / "doc_writer_agent.log"
     console.print("📝 Applying changes and creating PR...")
     return await create_pr(
         feature_description=task_description,
@@ -118,40 +123,35 @@ async def run_pr_stage(task_description: str, task_name: str, console: Console):
     )
 
 
-async def main():
-    setup_logging(__file__)
-    console = Console()
-
-    # Handle --clean flag
-    if "--clean" in sys.argv:
-        clean_outputs()
-
-    TASK_OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
-
-    task_description = get_current_task_description()
+async def run_task(task_name: str, console: Console):
+    """Runs the full pipeline for a single task."""
+    console.rule(f"[bold green]Starting Task: {task_name}[/bold green]")
+    task_output_dir = Path("outputs") / f"task_{task_name}"
+    task_output_dir.mkdir(parents=True, exist_ok=True)
+    task_description = get_task_description(task_name)
 
     # Stage 1: Search documents
-    result = await run_search_stage(task_description, console)
+    result = await run_search_stage(task_description, task_output_dir, console)
     print(f"\nDocument search complete. Found {len(result['documents'])} documents:")
     for doc in result["documents"]:
         print(f"- {doc['path']}: {doc['reason']}")
     print(f"Results saved to: {result['output_path']}\n")
 
     # Stage 2: Coordinate changes
-    result = await run_coordinate_stage(task_description, console)
-    print(f"Change coordination complete.")
+    result = await run_coordinate_stage(task_description, task_output_dir, console)
+    print("Change coordination complete.")
     print(f"Generated {len(result['instructions'])} editing instructions")
     print(f"Processed {result['documents_processed']} documents")
     print(f"Instructions saved to: {result['output_path']}\n")
 
     # Stage 3: Make changes
-    result = await run_changes_stage(task_description, console)
-    print(f"Document changes complete.")
+    result = await run_changes_stage(task_description, task_output_dir, console)
+    print("Document changes complete.")
     print(f"Files changed: {result['files_changed']}")
     print(f"Revised documents saved to: {result['output_path']}\n")
 
     # Stage 4: Create PR
-    result = await run_pr_stage(task_description, CURRENT_TASK_NAME, console)
+    result = await run_pr_stage(task_description, task_name, task_output_dir, console)
     if result["success"]:
         console.print(f"✅ {result['message']}")
         console.print(f"Branch: {result['branch_name']}")
@@ -159,6 +159,20 @@ async def main():
             console.print(f"PR URL: {result['pr_url']}")
     else:
         console.print(f"ℹ️ {result['message']}")
+    console.rule(f"[bold green]Finished Task: {task_name}[/bold green]\n")
+
+
+async def main():
+    setup_logging(__file__)
+    console = Console()
+
+    # Handle --clean flag
+    if "--clean" in sys.argv:
+        for task_name in TASKS_TO_RUN:
+            clean_task_outputs(task_name, console)
+
+    for task_name in TASKS_TO_RUN:
+        await run_task(task_name, console)
 
 
 if __name__ == "__main__":
