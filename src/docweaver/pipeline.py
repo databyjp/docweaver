@@ -323,8 +323,13 @@ async def make_changes(
             content = path.read_text()
             original_contents[path.as_posix()] = content
 
+            lines = content.splitlines()
+            numbered_content = "\n".join(f"{i+1}|{line}" for i, line in enumerate(lines))
+
             doc_type = "MAIN FILE" if path_str == primary_path else "REFERENCED FILE"
-            prompt_docs_list.append(f"## File: {path.as_posix()} ({doc_type})\n{content}\n")
+            prompt_docs_list.append(
+                f"## File: {path.as_posix()} ({doc_type})\n{numbered_content}\n"
+            )
 
         prompt_docs = "\n".join(prompt_docs_list)
 
@@ -372,7 +377,7 @@ async def make_changes(
             for path, ref_edits in doc_output.get("referenced_file_edits", {}).items():
                 edits_by_file[path].extend(ref_edits)
 
-        # Apply edits to all files using a more robust method
+        # Apply edits to all files using a line-based method
         for path, edits in edits_by_file.items():
             original_content = original_contents.get(path)
             if original_content is None:
@@ -381,46 +386,41 @@ async def make_changes(
                 )
                 continue
 
-            processed_edits = []
+            lines = original_content.splitlines()
+
+            # Sort edits by start_line in reverse order to avoid index shifting issues
+            edits.sort(key=lambda e: e["start_line"], reverse=True)
+
             for edit in edits:
-                replace_section = edit["replace_section"]
-                # Use finditer to locate all occurrences
-                matches = list(
-                    re.finditer(re.escape(replace_section), original_content)
+                start_line = edit["start_line"]
+                end_line = edit["end_line"]
+                replacement_txt = edit["replacement_txt"]
+                comment = edit.get("comment", "No comment")
+
+                logging.info(
+                    f"Applying edit to {path} at lines {start_line}-{end_line}: {comment}"
                 )
 
-                if not matches:
+                # Adjust for 0-based indexing. end_line is inclusive.
+                start_idx = start_line - 1
+                end_idx = end_line
+
+                # Handle invalid line numbers
+                if (
+                    start_idx < 0
+                    or start_idx > len(lines)
+                    or end_idx < start_idx
+                    or end_idx > len(lines)
+                ):
                     logging.warning(
-                        f"Edit section not found in {path}, skipping edit. "
-                        f"Section: {replace_section[:100]}..."
+                        f"Invalid line numbers for edit in {path}: start={start_line}, end={end_line}. Skipping."
                     )
                     continue
 
-                if len(matches) > 1:
-                    logging.warning(
-                        f"Edit section is not unique in {path} ({len(matches)} occurrences), "
-                        f"applying to first one. Section: {replace_section[:100]}..."
-                    )
+                replacement_lines = replacement_txt.splitlines()
+                lines[start_idx:end_idx] = replacement_lines
 
-                # Process the first match
-                match = matches[0]
-                processed_edits.append(
-                    {
-                        "start": match.start(),
-                        "end": match.end(),
-                        "replacement": edit["replacement_txt"],
-                    }
-                )
-
-            # Sort edits by start position in reverse order to avoid index shifting issues
-            processed_edits.sort(key=lambda e: e["start"], reverse=True)
-
-            # Apply edits to the original content
-            content_list = list(original_content)
-            for edit in processed_edits:
-                content_list[edit["start"] : edit["end"]] = list(edit["replacement"])
-
-            revised_contents[path] = "".join(content_list)
+            revised_contents[path] = "\n".join(lines)
 
         return [
             {

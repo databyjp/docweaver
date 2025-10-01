@@ -129,10 +129,12 @@ doc_instructor_agent = Agent(
 
 
 class DocEdit(BaseModel):
-    """Represents a single edit in a document."""
+    """Represents a single edit in a document, referencing line numbers."""
 
-    replace_section: str  # A verbatim section of the original document to be replaced.
-    replacement_txt: str  # The new text that will replace the replace_section.
+    comment: str  # A comment explaining the change.
+    start_line: int  # The starting line number of the section to be replaced (inclusive).
+    end_line: int  # The ending line number of the section to be replaced (inclusive).
+    replacement_txt: str  # The new text that will replace the specified lines.
 
 
 class DocOutput(BaseModel):
@@ -199,19 +201,20 @@ doc_writer_agent = Agent(
 
     You will be given a set of instructions on
     how to update a documentation page, and/or any referenced pages.
+    The content of each file will be provided with line numbers.
     {DOCUMENTATION_META_INFO}
 
     Pay attention to the current style of the documentation,
     and prepare an edited page, following the provided instructions.
 
-    The output will be a list of edits. Each edit consists of a section to replace and the replacement text.
-    Make sure that `replace_section` is a verbatim copy of a section in the original document,
-    so that the new section(s) can be placed at the right location.
+    The output will be a list of edits. Each edit specifies a range of lines to be replaced.
+    - `start_line` and `end_line` are inclusive and refer to the original document's line numbers.
+    - To insert text, specify the same `start_line` and `end_line` where you want to insert, and `replacement_txt` will be inserted before that line.
+    - To delete text, provide an empty `replacement_txt`.
 
     When making edits, you can modify both the main document and any referenced component files.
     - Use `edits` for changes to the main document
     - Use `referenced_file_edits` for changes to component files
-    - Make sure each edit's `replace_section` exactly matches content in the target file
 
     Your final output must be ONLY a valid JSON list of objects, conforming to the specified schema.
     Do not include any other text, markdown formatting, or explanations.
@@ -243,7 +246,9 @@ doc_writer_agent = Agent(
         "referenced_file_edits": {{
           "/path/to/example.py": [
             {{
-              "replace_section": "# Old code to be replaced...",
+              "comment": "Update the example to use the new API.",
+              "start_line": 10,
+              "end_line": 15,
               "replacement_txt": "# New replacement code..."
             }}
           ]
