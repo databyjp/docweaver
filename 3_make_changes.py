@@ -94,10 +94,10 @@ async def run_changes_stage(task_description: str, console: Console):
 
 
 
-def run_pr_stage(console: Console):
+async def run_pr_stage(task_description: str, console: Console):
     """Run PR creation stage."""
     console.print("📝 Applying changes and creating PR...")
-    return create_pr()
+    return await create_pr(feature_description=task_description)
 
 
 async def main():
@@ -131,7 +131,7 @@ async def main():
     print(f"Revised documents saved to: {result['output_path']}\n")
 
     # Stage 4: Create PR
-    result = run_pr_stage(console)
+    result = await run_pr_stage(task_description, console)
     if result["success"]:
         console.print(f"✅ {result['message']}")
         console.print(f"Branch: {result['branch_name']}")

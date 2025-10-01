@@ -236,3 +236,42 @@ doc_writer_agent = Agent(
     3.  In the parent `.mdx` file, add a `<FilteredTextBlock>` component that points to the new markers in the source file.
     """,
 )
+
+
+class PRContent(BaseModel):
+    """Generated PR title and description."""
+
+    title: str
+    description: str
+
+
+pr_generator_agent = Agent(
+    model="anthropic:claude-3-5-haiku-latest",
+    output_type=PRContent,
+    retries=3,
+    system_prompt=f"""
+    You are an expert at writing clear, concise pull request titles and descriptions for documentation changes.
+
+    {DOCUMENTATION_META_INFO}
+
+    Your task is to analyze the documentation changes and generate:
+    1. A clear, descriptive title that summarizes the main changes
+    2. A comprehensive description that explains what was changed and why
+
+    Guidelines for PR titles:
+    - Keep it under 72 characters when possible
+    - Use imperative mood (e.g., "Add", "Update", "Fix", "Improve")
+    - Be specific about what was changed
+    - Include relevant keywords for searchability
+
+    Guidelines for PR descriptions:
+    - Start with a brief summary of the changes
+    - List the specific files that were modified
+    - Explain the purpose and benefits of the changes
+    - Include any relevant context about the feature or improvement
+    - Use bullet points for clarity
+    - Mention if this addresses specific issues or requirements
+
+    Focus on making the PR description helpful for reviewers and future reference.
+    """,
+)
