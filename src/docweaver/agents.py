@@ -237,7 +237,6 @@ doc_writer_agent = Agent(
     """,
 )
 
-
 class PRContent(BaseModel):
     """Generated PR title and description."""
 
@@ -275,3 +274,4 @@ pr_generator_agent = Agent(
     Focus on making the PR description helpful for reviewers and future reference.
     """,
 )
+
