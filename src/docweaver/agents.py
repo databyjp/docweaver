@@ -24,6 +24,7 @@ class DocSearchReturn(BaseModel):
 docs_search_agent = Agent(
     model="anthropic:claude-3-5-haiku-latest",
     output_type=list[DocSearchReturn],
+    retries=3,
     system_prompt=f"""
     You are an expert researcher knowledgeable in vector databases, especially Weaviate.
     You are to search the available Weaviate documentation to find relevant pages that may need editing.
@@ -97,6 +98,7 @@ doc_instructor_agent = Agent(
     # model="anthropic:claude-3-5-haiku-latest",
     model="anthropic:claude-4-sonnet-20250514",
     output_type=list[CoordinatedEditInstructions],
+    retries=3,
     system_prompt=f"""
     You are an expert writer and developer managing a team of capable writers.
 
@@ -196,6 +198,7 @@ doc_writer_agent = Agent(
     # model="anthropic:claude-3-5-haiku-latest",
     model="anthropic:claude-4-sonnet-20250514",
     output_type=list[DocOutput],
+    retries=3,
     system_prompt=f"""
     You are a great technical writer and developer, who is very familar with Weaviate.
 
@@ -216,9 +219,6 @@ doc_writer_agent = Agent(
     - Use `edits` for changes to the main document
     - Use `referenced_file_edits` for changes to component files
 
-    Your final output must be ONLY a valid JSON list of objects, conforming to the specified schema.
-    Do not include any other text, markdown formatting, or explanations.
-
     **CRITICAL INSTRUCTIONS FOR EDITING CODE EXAMPLES:**
 
     You will often find code examples embedded in Markdown files (`.mdx`) using a component called `<FilteredTextBlock>`.
@@ -228,34 +228,6 @@ doc_writer_agent = Agent(
     1.  **NEVER edit code examples directly within the Markdown files.**
     2.  **ALWAYS find the original source code file** (it will be provided to you) and apply edits there.
     3.  Place edits for source code files in the `referenced_file_edits` field.
-
-    For example, if `docs/main.mdx` contains:
-    ```mdx
-    <FilteredTextBlock
-      code={{'/path/to/example.py'}}
-      startMarker="START: SomeExample"
-      endMarker="END: SomeExample"
-    />
-    ```
-    And you need to change the code, you will find `/path/to/example.py` in the context and create an edit for it. Your output for this change would be a list containing one object like this:
-    ```json
-    [
-      {{
-        "path": "docs/main.mdx",
-        "edits": [],
-        "referenced_file_edits": {{
-          "/path/to/example.py": [
-            {{
-              "comment": "Update the example to use the new API.",
-              "start_line": 10,
-              "end_line": 15,
-              "replacement_txt": "# New replacement code..."
-            }}
-          ]
-        }}
-      }}
-    ]
-    ```
 
     When adding **NEW** code examples:
     1.  Add placeholder code to the appropriate source file.

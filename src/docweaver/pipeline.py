@@ -10,6 +10,7 @@ from typing import Dict, Any
 import logging
 import json
 import re
+from pydantic import TypeAdapter
 
 from . import db
 from .config import DOCS_PATHS, DOCS_BASE_PATH
@@ -21,6 +22,7 @@ from .agents import (
     parse_doc_refs,
     WeaviateDoc,
     doc_writer_agent,
+    DocOutput,
 )
 from .catalog import DocCatalog, get_docs_to_update, get_docs_to_remove, generate_metadata
 import time
@@ -276,7 +278,8 @@ async def make_changes(
     Apply editing instructions to generate revised documents.
 
     This operation processes the coordination instructions and uses the doc writer agent
-    to generate actual document changes.
+    to generate actual document changes. Edits are applied cumulatively if multiple
+    instructions touch the same file.
 
     Args:
         feature_description: Description of the feature for context
@@ -298,37 +301,65 @@ async def make_changes(
 
     logging.info(f"Found {len(doc_instructions)} instruction bundles to process.")
 
-    async def process_instruction(instruction_bundle: dict):
-        """Process a single instruction bundle."""
+    # Collect all file paths from all bundles and load their original content
+    all_paths = set()
+    for instruction_bundle in doc_instructions:
+        all_paths.add(instruction_bundle["primary_path"])
+        for instr in instruction_bundle["file_instructions"]:
+            all_paths.add(instr["path"])
+
+    original_contents = {}
+    for path_str in all_paths:
+        path = Path(path_str)
+        if not path.is_file():
+            path = Path("docs") / path_str
+        if not path.is_file():
+            logging.warning(
+                f"Could not find file: {path_str} or docs/{path_str}, skipping."
+            )
+            continue
+        original_contents[path.as_posix()] = path.read_text()
+
+    revised_contents = original_contents.copy()
+    all_raw_edits = []
+
+    for instruction_bundle in doc_instructions:
         primary_path = instruction_bundle["primary_path"]
         file_instructions = instruction_bundle["file_instructions"]
 
-        all_paths = {primary_path}
+        bundle_paths = {primary_path}
         for instr in file_instructions:
-            all_paths.add(instr["path"])
+            bundle_paths.add(instr["path"])
 
-        original_contents = {}
         prompt_docs_list = []
+        bundle_contents = {}
 
-        for path_str in all_paths:
-            path = Path(path_str)
-            if not path.is_file():
-                # If file not found, try prepending "docs/" as it might be a relative path
-                path = Path("docs") / path_str
-                if not path.is_file():
-                    raise FileNotFoundError(
-                        f"Could not find file: {path_str} or docs/{path_str}"
-                    )
+        for path_str in bundle_paths:
+            # Resolve path, trying both original and docs-prefixed versions
+            canonical_path = None
+            if path_str in revised_contents:
+                canonical_path = path_str
+            else:
+                prefixed_path = (Path("docs") / path_str).as_posix()
+                if prefixed_path in revised_contents:
+                    canonical_path = prefixed_path
 
-            content = path.read_text()
-            original_contents[path.as_posix()] = content
+            if not canonical_path:
+                logging.warning(
+                    f"Content for {path_str} not found in revised_contents, skipping from bundle."
+                )
+                continue
+
+            content = revised_contents[canonical_path]
+            bundle_contents[canonical_path] = content
 
             lines = content.splitlines()
-            numbered_content = "\n".join(f"{i+1}|{line}" for i, line in enumerate(lines))
-
+            numbered_content = "\n".join(
+                f"{i+1}|{line}" for i, line in enumerate(lines)
+            )
             doc_type = "MAIN FILE" if path_str == primary_path else "REFERENCED FILE"
             prompt_docs_list.append(
-                f"## File: {path.as_posix()} ({doc_type})\n{numbered_content}\n"
+                f"## File: {canonical_path} ({doc_type})\n{numbered_content}\n"
             )
 
         prompt_docs = "\n".join(prompt_docs_list)
@@ -354,39 +385,66 @@ async def make_changes(
         {instructions_prompt}
         """
 
-        start_time = time.time()
+        bundle_start_time = time.time()
         logging.info(f"Processing instructions for primary file: {primary_path}")
-        response = await doc_writer_agent.run(prompt)
+
+        try:
+            response = await doc_writer_agent.run(prompt)
+        except Exception as e:
+            logging.error(f"Agent failed for primary_path {primary_path} after retries: {e}")
+            continue # Skip to the next bundle
+
         logging.info(
             f"Token usage for doc_writer_agent (primary_path: {primary_path}): {response.usage()}"
         )
 
-        end_time = time.time()
-        logging.info(
-            f"Finished processing instructions for primary file: {primary_path} in {end_time - start_time:.2f} seconds."
-        )
+        # The agent now returns a list of DocOutput objects directly
+        parsed_output = response.output
 
-        all_edits = [o.model_dump() for o in response.output]
-        revised_contents = original_contents.copy()
+        # Save parsed output for debugging
+        debug_output_path = Path(
+            f"outputs/doc_writer_agent_raw_output_{Path(primary_path).stem}.log"
+        )
+        debug_output_path.parent.mkdir(parents=True, exist_ok=True)
+        try:
+            output_for_log = [o.model_dump() for o in parsed_output]
+            with open(debug_output_path, "w") as f:
+                json.dump(output_for_log, f, indent=4)
+            logging.info(f"Saved parsed agent output to {debug_output_path}")
+        except Exception as e:
+            logging.error(f"Could not serialize agent output for logging: {e}")
+
+
+        try:
+            all_edits = [o.model_dump() for o in parsed_output]
+            all_raw_edits.extend(all_edits)
+        except Exception as e:
+            logging.error(
+                f"Failed to process doc_writer_agent output for {primary_path}: {e}"
+            )
+            logging.error(f"Parsed output was: \n{parsed_output}")
+            continue  # Continue to the next instruction bundle
 
         # Group all edits by file path
         edits_by_file = defaultdict(list)
         for doc_output in all_edits:
             if doc_output.get("edits"):
                 edits_by_file[doc_output["path"]].extend(doc_output["edits"])
-            for path, ref_edits in doc_output.get("referenced_file_edits", {}).items():
+            for path, ref_edits in doc_output.get(
+                "referenced_file_edits", {}
+            ).items():
                 edits_by_file[path].extend(ref_edits)
 
         # Apply edits to all files using a line-based method
         for path, edits in edits_by_file.items():
-            original_content = original_contents.get(path)
-            if original_content is None:
+            content_to_edit = revised_contents.get(path)
+            if content_to_edit is None:
                 logging.warning(
                     f"No original content found for {path}, skipping edits."
                 )
                 continue
 
-            lines = original_content.splitlines()
+            lines = content_to_edit.splitlines()
 
             # Sort edits by start_line in reverse order to avoid index shifting issues
             edits.sort(key=lambda e: e["start_line"], reverse=True)
@@ -420,39 +478,28 @@ async def make_changes(
                 replacement_lines = replacement_txt.splitlines()
                 lines[start_idx:end_idx] = replacement_lines
 
-            revised_contents[path] = "\n".join(lines)
+            # Clean trailing whitespace from all lines before saving
+            cleaned_lines = [line.rstrip() for line in lines]
+            revised_contents[path] = "\n".join(cleaned_lines)
 
-        return [
-            {
-                "path": path,
-                "revised_doc": content,
-                "edits": all_edits,
-            }
-            for path, content in revised_contents.items()
-            if original_contents.get(path) != content
-        ]
+        bundle_end_time = time.time()
+        logging.info(
+            f"Finished processing instructions for primary file: {primary_path} in {bundle_end_time - bundle_start_time:.2f} seconds."
+        )
 
-    all_responses_with_edits = []
-    for instruction_bundle in doc_instructions:
-        result = await process_instruction(instruction_bundle)
-        if result:
-            all_responses_with_edits.extend(result)
+    # After processing all bundles, determine the final set of changed documents
+    revised_docs_to_log = []
+    for path, content in revised_contents.items():
+        if original_contents.get(path) != content:
+            revised_docs_to_log.append({"path": path, "revised_doc": content})
 
     # Save raw edits
-    edits_to_log = [
-        {"path": r.get("path"), "edits": r.get("edits")}
-        for r in all_responses_with_edits
-    ]
     Path(edits_path).parent.mkdir(parents=True, exist_ok=True)
     with open(edits_path, "w") as f:
-        json.dump(edits_to_log, f, indent=4)
+        json.dump(all_raw_edits, f, indent=4)
     logging.info(f"Raw edits from agent logged to {edits_path}")
 
     # Save revised documents
-    revised_docs_to_log = [
-        {"path": r.get("path"), "revised_doc": r.get("revised_doc")}
-        for r in all_responses_with_edits
-    ]
     Path(output_path).parent.mkdir(parents=True, exist_ok=True)
     with open(output_path, "w") as f:
         json.dump(revised_docs_to_log, f, indent=4)
@@ -465,7 +512,7 @@ async def make_changes(
 
     return {
         "revised_documents": revised_docs_to_log,
-        "files_changed": len(all_responses_with_edits),
+        "files_changed": len(revised_docs_to_log),
         "total_processing_time": total_time,
         "output_path": output_path,
         "edits_path": edits_path,
@@ -505,9 +552,14 @@ def create_diffs(
         file_path_str = change["path"]
         file_path = Path(file_path_str)
 
+        # Reread the original file from disk to ensure a clean diff
         original_content = ""
         if file_path.exists():
             original_content = file_path.read_text()
+        else:
+            logging.warning(
+                f"Original file not found at {file_path_str}, diff will be for a new file."
+            )
 
         diff = "".join(
             difflib.unified_diff(
@@ -546,20 +598,20 @@ def create_pr(
     title: str = None,
     body: str = None,
     branch_name: str = None,
-    diffs_path: str = "outputs/diffs.log",
+    changes_path: str = "outputs/doc_writer_agent.log",
     docs_path: str = "docs",
 ) -> Dict[str, Any]:
     """
     Apply diffs and create a pull request.
 
     This operation applies the generated diffs to the actual files and creates
-    a pull request with the changes.
+    a pull request with the changes. Diffs are generated and applied individually.
 
     Args:
         title: PR title (auto-generated if None)
         body: PR description (auto-generated if None)
         branch_name: Branch name (auto-generated if None)
-        diffs_path: Path to the diffs file (default: "outputs/diffs.log")
+        changes_path: Path to the revised documents file (default: "outputs/doc_writer_agent.log")
         docs_path: Path to the docs repository (default: "docs")
 
     Returns:
@@ -571,39 +623,44 @@ def create_pr(
     logging.info("Creating pull request with changes.")
     console = Console()
 
-    # Check if diffs exist
-    if not Path(diffs_path).exists():
-        raise FileNotFoundError("No diffs.log found. Run create_diffs first.")
+    # Load changes
+    if not Path(changes_path).exists():
+        raise FileNotFoundError(f"No changes log found at {changes_path}")
 
-    with open(diffs_path, "r") as f:
-        diff_content = f.read()
+    with open(changes_path, "r") as f:
+        proposed_changes = json.load(f)
 
-    # Check if there are any diffs to apply
-    if Path(diffs_path).stat().st_size == 0:
-        console.print("✅ No diffs to apply, skipping.")
+    if not proposed_changes:
+        console.print("✅ No changes found in log, skipping PR creation.")
         return {"success": False, "message": "No changes to apply"}
 
     # Work in the docs directory
-    docs_path = Path(docs_path)
-    if not docs_path.exists():
+    docs_path_obj = Path(docs_path)
+    if not docs_path_obj.exists():
         raise FileNotFoundError("docs/ directory not found")
 
-    repo = git.Repo(docs_path)
+    repo = git.Repo(docs_path_obj)
     original_branch = repo.active_branch
-    temp_diff_path = None
-
+    changes_applied = False
     try:
-        # Apply diffs
-        modified_diff = diff_content.replace("--- a/docs/", "--- a/").replace(
-            "+++ b/docs/", "+++ b/"
-        )
+        # Overwrite files with their revised content
+        for change in proposed_changes:
+            file_path_str = change["path"]
+            file_path = Path(file_path_str)
 
-        temp_diff_path = docs_path / "temp_diffs.patch"
-        with open(temp_diff_path, "w") as f:
-            f.write(modified_diff)
+            # Ensure parent directory exists
+            file_path.parent.mkdir(parents=True, exist_ok=True)
 
-        repo.git.apply("--verbose", "temp_diffs.patch")
-        console.print("✅ Diffs applied successfully")
+            # Write the revised document content
+            with open(file_path, "w") as f:
+                f.write(change["revised_doc"])
+
+            console.print(f"✅ Changes for {file_path_str} written to disk.")
+            changes_applied = True
+
+        if not changes_applied:
+            console.print("✅ No changes to apply, skipping.")
+            return {"success": False, "message": "No changes to apply"}
 
         # Get GitHub token
         github_token = os.getenv("GITHUB_TOKEN")
@@ -687,9 +744,10 @@ def create_pr(
             body=body,
             head=branch_name,
             base=default_branch_name,
+            draft=True,
         )
 
-        console.print(f"✅ Pull request created: {pull.html_url}")
+        console.print(f"✅ Draft pull request created: {pull.html_url}")
 
         return {
             "success": True,
@@ -697,22 +755,17 @@ def create_pr(
             "pr_url": pull.html_url,
             "title": title,
             "body": body,
-            "message": f"Pull request for branch '{branch_name}' created successfully.",
+            "message": f"Draft pull request for branch '{branch_name}' created successfully.",
         }
 
-    except git.exc.GitCommandError as e:
-        raise RuntimeError(f"Failed to apply diffs: {e}")
     except Exception as e:
         raise RuntimeError(f"Failed to process changes: {e}")
     finally:
-        # Clean up temp file if it exists
-        if temp_diff_path and temp_diff_path.exists():
-            temp_diff_path.unlink()
-            console.print("✅ Temporary diff file removed.")
-
         # Switch back to the original branch and clean up worktree
         try:
-            original_branch.checkout(force=True)
+            # Use git checkout and clean to reset the state
+            repo.git.checkout(original_branch.name, "--force")
+            repo.git.clean("-fd")
             console.print(
                 f"✅ Switched back to original branch: {original_branch.name} and cleaned worktree."
             )
