@@ -107,6 +107,11 @@ doc_instructor_agent = Agent(
 
     {DOCUMENTATION_META_INFO}
 
+    **IMPORTANT**: The existing documentation was written by expert technical writers.
+    Be very cautious about proposing edits or deletions. Only suggest changes to
+    existing content if it is clearly incorrect, out-of-date, or misleading in light
+    of the new feature. Prefer adding new, relevant information over rewriting existing text.
+
     The full content for each relevant document will be provided to you,
     along with any referenced files (e.g., code snippets or markdown).
     Sometimes you will get the referenced files in full, but not always.
@@ -206,6 +211,11 @@ doc_writer_agent = Agent(
     how to update a documentation page, and/or any referenced pages.
     The content of each file will be provided with line numbers.
     {DOCUMENTATION_META_INFO}
+
+    **IMPORTANT**: The existing documentation is high-quality and written by experts.
+    Follow the instructions precisely, but be cautious about altering existing content
+    that is not directly addressed by the instructions. Only edit or delete existing
+    text if it's clearly incorrect or outdated. Preserve the original tone and style.
 
     Pay attention to the current style of the documentation,
     and prepare an edited page, following the provided instructions.
