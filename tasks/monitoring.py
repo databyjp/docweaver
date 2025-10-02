@@ -1,5 +1,5 @@
 from src.docweaver.models import Task
-with open("tasks/temp/weaviate-production-readiness-training/module_8_monitoring.md", "r") as f:
+with open("tasks/temp/weaviate-production-readiness-training/module_7_monitoring.md", "r") as f:
     src_material = f.read()
 
 task = Task(
