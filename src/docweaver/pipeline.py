@@ -268,6 +268,58 @@ async def coordinate_changes(
     }
 
 
+def _validate_and_log_edit(edit: dict, file_path: str) -> None:
+    """
+    Validate edit and log warnings for suspicious changes.
+
+    Flags edits that appear to be overly aggressive (large deletions/replacements)
+    without adequate justification.
+    """
+    start_line = edit.get("start_line", 0)
+    end_line = edit.get("end_line", 0)
+    replacement_txt = edit.get("replacement_txt", "")
+    comment = edit.get("comment", "No comment provided")
+    edit_type = edit.get("edit_type", "unknown")
+    justification = edit.get("justification", "No justification provided")
+
+    lines_affected = end_line - start_line + 1
+
+    # Flag large deletions
+    if lines_affected > 1 and not replacement_txt.strip():
+        logging.warning(
+            f"⚠️  LARGE DELETION in {file_path} (lines {start_line}-{end_line}, {lines_affected} lines)\n"
+            f"   Edit type: {edit_type}\n"
+            f"   Comment: {comment}\n"
+            f"   Justification: {justification}"
+        )
+
+    # Flag large replacements (>10 lines) that claim to be updates
+    elif lines_affected > 10 and edit_type == "update_outdated":
+        logging.warning(
+            f"⚠️  LARGE REPLACEMENT in {file_path} (lines {start_line}-{end_line}, {lines_affected} lines)\n"
+            f"   Edit type: {edit_type}\n"
+            f"   Comment: {comment}\n"
+            f"   Justification: {justification}\n"
+            f"   → Consider: Could this be ADD_NEW instead of UPDATE_OUTDATED?"
+        )
+
+    # Flag deletions with weak justification
+    if edit_type == "delete_redundant" and len(justification) < 50:
+        logging.warning(
+            f"⚠️  DELETION WITH WEAK JUSTIFICATION in {file_path} (lines {start_line}-{end_line})\n"
+            f"   Justification is too brief: {justification}\n"
+            f"   → Deletions should have detailed justification"
+        )
+
+    # Log all non-ADD_NEW edits for review
+    if edit_type in ["update_outdated", "delete_redundant"]:
+        logging.info(
+            f"📝 Non-additive edit in {file_path} (lines {start_line}-{end_line})\n"
+            f"   Type: {edit_type} | Comment: {comment}\n"
+            f"   Justification: {justification}"
+        )
+
+
 async def make_changes(
     feature_description: str,
     instructions_path: str = "outputs/doc_instructor_agent.log",
@@ -418,6 +470,16 @@ async def make_changes(
 
         try:
             all_edits = [o.model_dump() for o in parsed_output]
+
+            # Validate and flag suspicious edits
+            for doc_output in all_edits:
+                file_path = doc_output["path"]
+                for edit in doc_output.get("edits", []):
+                    _validate_and_log_edit(edit, file_path)
+                for ref_path, ref_edits in doc_output.get("referenced_file_edits", {}).items():
+                    for edit in ref_edits:
+                        _validate_and_log_edit(edit, ref_path)
+
             all_raw_edits.extend(all_edits)
         except Exception as e:
             logging.error(
@@ -462,7 +524,19 @@ async def make_changes(
 
                 # Adjust for 0-based indexing. end_line is inclusive.
                 start_idx = start_line - 1
-                end_idx = end_line
+
+                # For insertions (ADD_NEW, ENHANCE), the intent is to insert text *before*
+                # the specified start_line without deleting the line itself. To achieve this,
+                # the slice should be empty (e.g., lines[i:i]).
+                # For replacements and deletions, the slice should include the lines
+                # from start_line to end_line.
+                edit_type = edit.get("edit_type")
+                is_insertion = edit_type in ["add_new", "enhance"]
+
+                if is_insertion:
+                    end_idx = start_idx  # Creates an empty slice for insertion
+                else:
+                    end_idx = end_line  # Creates a slice for replacement/deletion
 
                 # Handle invalid line numbers
                 if (

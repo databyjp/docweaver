@@ -8,6 +8,7 @@ import re
 import logging
 from helpers import DOCUMENTATION_META_INFO, NEW_CODE_EXAMPLE_MARKER
 import os
+from enum import Enum
 
 
 class DocSearchDeps(BaseModel):
@@ -107,10 +108,33 @@ doc_instructor_agent = Agent(
 
     {DOCUMENTATION_META_INFO}
 
-    **IMPORTANT**: The existing documentation was written by expert technical writers.
-    Be very cautious about proposing edits or deletions. Only suggest changes to
-    existing content if it is clearly incorrect, out-of-date, or misleading in light
-    of the new feature. Prefer adding new, relevant information over rewriting existing text.
+    **CRITICAL PRESERVATION RULES**:
+    The existing documentation was written by expert technical writers and represents
+    high-quality, well-structured content. Your default approach should be to ADD new
+    information, NOT to replace existing content.
+
+    Only instruct writers to modify or delete existing content when you can cite SPECIFIC
+    EVIDENCE that the existing text is:
+    1. Factually incorrect based on the new feature description
+    2. Directly contradicts the new feature's behavior or API
+    3. Uses deprecated syntax/APIs that are replaced by this feature
+    4. Creates confusion or ambiguity with the new feature
+
+    **WHEN IN DOUBT, ADD INSTEAD OF REPLACE**:
+    - Prefer appending new sections over rewriting existing ones
+    - Prefer inserting new paragraphs over replacing existing ones
+    - Prefer adding new examples over replacing working examples
+    - Only remove text when you can explicitly justify why it's harmful to keep it
+
+    **INSTRUCTION GUIDELINES**:
+    When providing instructions to writers:
+    - Clearly specify whether to ADD new content or MODIFY existing content
+    - For modifications, cite the specific line/section and explain WHY it must change
+    - Provide the exact evidence from the feature description that contradicts existing content
+    - Default to preservation: if existing content is still accurate, leave it untouched
+    - **EVIDENCE-BASED ADDITIONS**: Only instruct writers to add information that can be directly
+      supported by the feature description, code changes, or provided context. Do not infer
+      capabilities, assume behavior, or add speculative information that isn't explicitly documented.
 
     The full content for each relevant document will be provided to you,
     along with any referenced files (e.g., code snippets or markdown).
@@ -120,7 +144,7 @@ doc_instructor_agent = Agent(
 
     For example, you can include:
     - Which files need editing and why
-    - What specific changes should be made
+    - What specific changes should be made (ADD vs MODIFY, with justification)
     - How to maintain consistency with existing documentation style
     - Any cross-references that need updating
 
@@ -131,14 +155,46 @@ doc_instructor_agent = Agent(
     The writers are capable but relatively junior, so provide clear,
     unambiguous instructions. Where possible, provide placeholder code snippets
     for them to add to the appropriate source file.
+
+    **EXAMPLES OF GOOD vs BAD INSTRUCTIONS**:
+
+    ✅ GOOD - Adding new content:
+    "ADD a new section after line 45 titled '## Using the New Feature' that explains
+    how to use the batch processing API. Include an example showing the new `batch_size` parameter."
+
+    ✅ GOOD - Targeted update with evidence:
+    "UPDATE lines 23-25. The current text states 'Maximum limit is 100' but the new
+    feature increases this to 1000. Replace with: 'Maximum limit is 1000 (increased from 100 in v2.5)'."
+
+    ❌ BAD - Vague rewrite instruction:
+    "Rewrite the introduction section to be clearer and mention the new feature."
+    (Why bad? No evidence that existing intro is unclear; should ADD mention instead)
+
+    ❌ BAD - Unnecessary deletion:
+    "Remove the section about basic usage and replace with advanced usage."
+    (Why bad? Basic usage is still valid; should KEEP basic usage and ADD advanced section)
+
+    ✅ GOOD - Enhancement without replacement:
+    "After the existing pagination example on line 78, INSERT a new paragraph explaining
+    the new cursor-based pagination option, with a code example."
     """,
 )
+
+
+class EditType(str, Enum):
+    """Classification of edit types to ensure conservative editing."""
+    ADD_NEW = "add_new"  # Adding entirely new content (preferred)
+    UPDATE_OUTDATED = "update_outdated"  # Fixing incorrect/outdated information with evidence
+    ENHANCE = "enhance"  # Adding detail to existing content without removing it
+    DELETE_REDUNDANT = "delete_redundant"  # Removing duplicate/obsolete content (use sparingly)
 
 
 class DocEdit(BaseModel):
     """Represents a single edit in a document, referencing line numbers."""
 
     comment: str  # A comment explaining the change.
+    edit_type: EditType  # Classification of the edit type (required)
+    justification: str  # Required explanation citing specific evidence for why this edit is necessary
     start_line: int  # The starting line number of the section to be replaced (inclusive).
     end_line: int  # The ending line number of the section to be replaced (inclusive).
     replacement_txt: str  # The new text that will replace the specified lines.
@@ -212,10 +268,46 @@ doc_writer_agent = Agent(
     The content of each file will be provided with line numbers.
     {DOCUMENTATION_META_INFO}
 
-    **IMPORTANT**: The existing documentation is high-quality and written by experts.
-    Follow the instructions precisely, but be cautious about altering existing content
-    that is not directly addressed by the instructions. Only edit or delete existing
-    text if it's clearly incorrect or outdated. Preserve the original tone and style.
+    **CRITICAL PRESERVATION PRINCIPLES**:
+    The existing documentation is high-quality and written by experts. Your role is to
+    ADD new information, not to rewrite existing content unless absolutely necessary.
+
+    Follow the instructions precisely, but be EXTREMELY cautious about altering existing
+    content. Only edit or delete existing text when the instructions provide SPECIFIC
+    EVIDENCE that it is incorrect, outdated, or contradictory.
+
+    **EVIDENCE-BASED ADDITIONS**:
+    Only add information that can be directly supported by the provided instructions,
+    feature descriptions, or context. Do not infer capabilities, assume behavior, or
+    add speculative information. Every new piece of information must be traceable to
+    explicit evidence in the materials provided.
+
+    **EDIT CLASSIFICATION REQUIREMENTS**:
+    For EVERY edit you create, you MUST:
+    1. Set the `edit_type` field appropriately:
+       - ADD_NEW: Use this for inserting new sections, paragraphs, or examples (PREFERRED)
+       - UPDATE_OUTDATED: Only when instructions cite specific incorrect information
+       - ENHANCE: Adding detail to existing content without removing original text
+       - DELETE_REDUNDANT: Only when instructions justify why content must be removed
+
+    2. Provide detailed `justification` that:
+       - Cites specific evidence from the instructions
+       - Explains WHY this edit is necessary (not just WHAT is changing)
+       - For UPDATE_OUDATED or DELETE_REDUNDANT, quotes the conflicting information
+
+    3. Write a clear `comment` summarizing the change
+
+    **DEFAULT TO ADDITION, NOT REPLACEMENT**:
+    - When adding related information, INSERT new sections rather than replacing existing ones
+    - When enhancing explanations, ADD new paragraphs after existing ones
+    - When adding examples, INSERT them as new examples rather than replacing working ones
+    - Only REPLACE text when you can quote the specific incorrect/outdated content
+
+    **PRESERVATION CHECKLIST** (ask yourself before each edit):
+    ✓ Does the instruction explicitly identify this text as wrong/outdated?
+    ✓ Can I ADD new content instead of replacing existing content?
+    ✓ Is the existing text still accurate even with the new feature?
+    ✓ Have I provided clear justification citing evidence from instructions?
 
     Pay attention to the current style of the documentation,
     and prepare an edited page, following the provided instructions.
@@ -244,6 +336,49 @@ doc_writer_agent = Agent(
     2.  Include this exact marker comment where the code needs to be completed:
         {NEW_CODE_EXAMPLE_MARKER}
     3.  In the parent `.mdx` file, add a `<FilteredTextBlock>` component that points to the new markers in the source file.
+
+    **EXAMPLES OF GOOD vs BAD EDITS**:
+
+    ✅ GOOD - Adding new section (edit_type: ADD_NEW):
+    {{
+      "comment": "Add new section about batch processing feature",
+      "edit_type": "add_new",
+      "justification": "Instructions request adding documentation for the new batch_size parameter introduced in the feature description. No existing content covers this.",
+      "start_line": 45,
+      "end_line": 45,
+      "replacement_txt": "\\n## Batch Processing\\n\\nYou can now process multiple items..."
+    }}
+
+    ✅ GOOD - Fixing incorrect information (edit_type: UPDATE_OUTDATED):
+    {{
+      "comment": "Update incorrect limit value",
+      "edit_type": "update_outdated",
+      "justification": "Current line 23 states 'Maximum limit is 100' but feature description specifies the limit has been increased to 1000 in the new version.",
+      "start_line": 23,
+      "end_line": 23,
+      "replacement_txt": "Maximum limit is 1000 (increased from 100 in v2.5)"
+    }}
+
+    ❌ BAD - Replacing working content unnecessarily:
+    {{
+      "comment": "Update introduction",
+      "edit_type": "update_outdated",
+      "justification": "Make it clearer",
+      "start_line": 1,
+      "end_line": 10,
+      "replacement_txt": "Completely rewritten introduction..."
+    }}
+    (Why bad? No evidence existing intro is wrong; justification too vague; should use ADD_NEW to append information instead)
+
+    ✅ GOOD - Enhancing existing content (edit_type: ENHANCE):
+    {{
+      "comment": "Add note about new performance characteristics",
+      "edit_type": "enhance",
+      "justification": "Feature description mentions 2x performance improvement. Adding this information after the existing performance section without removing current content.",
+      "start_line": 67,
+      "end_line": 67,
+      "replacement_txt": "\\n> **Note**: As of v2.5, performance has improved by 2x for large datasets."
+    }}
     """,
 )
 
