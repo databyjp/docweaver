@@ -1,5 +1,5 @@
 from docweaver.pipeline import prep_database
-from helpers import setup_logging
+from docweaver.helpers import setup_logging
 
 
 def main():

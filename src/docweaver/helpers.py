@@ -4,7 +4,7 @@ from pathlib import Path
 
 import logging
 
-from src.docweaver.models import Task
+from .models import Task
 
 DOCUMENTATION_META_INFO = """
 The Weaviate documentation generally follows the Diataxis framework.

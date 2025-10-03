@@ -6,7 +6,7 @@ from weaviate import WeaviateClient
 from pathlib import Path
 import re
 import logging
-from helpers import DOCUMENTATION_META_INFO, NEW_CODE_EXAMPLE_MARKER
+from .helpers import DOCUMENTATION_META_INFO, NEW_CODE_EXAMPLE_MARKER
 import os
 from enum import Enum
 

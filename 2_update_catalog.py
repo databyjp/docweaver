@@ -1,6 +1,6 @@
 from docweaver.pipeline import update_catalog
 import asyncio
-from helpers import setup_logging
+from docweaver.helpers import setup_logging
 
 
 async def main():

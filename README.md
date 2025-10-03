@@ -1,6 +1,41 @@
 # DocWeaver
 
-Agentic documentation editing tool that uses AI to search, coordinate, and apply changes to documentation.
+An AI-powered documentation automation tool updates technical documentation based on instructions.
+
+## How It Works
+
+A multi-agent AI system automatically updates documentation. 
+
+### Workflow
+
+#### 1. **Smart Document Discovery** (`doc_search_agent`)
+- Uses vector search (Weaviate) to find all relevant documentation files
+- Searches both document content chunks and catalog metadata (topics, summaries)
+- Intentionally "overfetches" to ensure no relevant documents are missed
+
+#### 2. **Coordinated Edit Planning** (`doc_instructor_agent`)
+- Reviews all found documents and plans necessary edits
+- Creates specific, line-by-line instructions for each file
+- Handles both markdown documentation and referenced code examples
+- Preserves existing quality content—adds new information rather than rewriting
+
+#### 3. **Precise Document Editing** (`doc_writer_agent`)
+- Executes edits with line-number precision
+- Classifies each edit (add new, update outdated, enhance, delete)
+- Maintains documentation style and structure
+- Edits code examples in source files, not in markdown
+
+#### 4. **Automated PR Creation**
+- Applies all changes to a new git branch
+- Generates comprehensive PR description
+- Creates pull request ready for review
+
+#### Key Capabilities
+- **Vector-powered search**: Finds semantically relevant docs across large codebases
+- **Context-aware editing**: Understands document structure, cross-references, and code examples
+- **Conservative by design**: Adds information rather than replacing expert-written content
+- **Evidence-based changes**: Only modifies existing text when there's specific justification
+- **Handles complexity**: Coordinates multi-file edits and code-documentation consistency
 
 ## Setup
 

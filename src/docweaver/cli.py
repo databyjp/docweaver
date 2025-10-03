@@ -1,28 +1,21 @@
+import asyncio
 import shutil
-from docweaver.pipeline import (
+from pathlib import Path
+from typing import Optional
+
+import typer
+from rich.console import Console
+
+from .pipeline import (
     search_documents,
     coordinate_changes,
     make_changes,
     create_pr,
 )
-from rich.console import Console
-import asyncio
-from docweaver.helpers import setup_logging, load_task
-from pathlib import Path
-import json
-import sys
+from .helpers import setup_logging, load_task
 
-# List of tasks to run in sequence
-TASKS_TO_RUN = [
-    "training_schema_design",
-    "training_backup",
-    "training_monitoring",
-    "training_deployment",
-    "training_security",
-    "training_replication_sharding",
-    "training_indexes",
-    "training_vector_compression",
-]
+app = typer.Typer(help="DocWeaver - AI-powered documentation editing tool")
+console = Console()
 
 
 def get_task_description(task_name: str) -> str:
@@ -31,7 +24,7 @@ def get_task_description(task_name: str) -> str:
     return task.get_description()
 
 
-def clean_task_outputs(task_name: str, console: Console):
+def clean_task_outputs(task_name: str):
     """Delete all intermediate output files for a specific task."""
     task_output_dir = Path("outputs") / f"task_{task_name}"
     console.print(f"🧹 Cleaning all intermediate output files for task: {task_name}...")
@@ -41,14 +34,13 @@ def clean_task_outputs(task_name: str, console: Console):
     console.print("✓ Clean complete\n")
 
 
-async def run_search_stage(
-    task_description: str, task_output_dir: Path, console: Console
-):
+async def run_search_stage(task_description: str, task_output_dir: Path):
     """Run document search stage with caching."""
     output_path = task_output_dir / "doc_search_agent.log"
 
     if output_path.exists():
         console.print(f"✓ Using existing search results from {output_path}")
+        import json
         with open(output_path) as f:
             search_data = json.load(f)
             return {"documents": search_data, "output_path": output_path}
@@ -59,15 +51,14 @@ async def run_search_stage(
     return result
 
 
-async def run_coordinate_stage(
-    task_description: str, task_output_dir: Path, console: Console
-):
+async def run_coordinate_stage(task_description: str, task_output_dir: Path):
     """Run change coordination stage with caching."""
     output_path = task_output_dir / "doc_instructor_agent.log"
     search_results_path = task_output_dir / "doc_search_agent.log"
 
     if output_path.exists():
         console.print(f"✓ Using existing instructions from {output_path}")
+        import json
         with open(output_path) as f:
             instructions_data = json.load(f)
             return {
@@ -86,9 +77,7 @@ async def run_coordinate_stage(
     return result
 
 
-async def run_changes_stage(
-    task_description: str, task_output_dir: Path, console: Console
-):
+async def run_changes_stage(task_description: str, task_output_dir: Path):
     """Run document changes stage with caching."""
     output_path = task_output_dir / "doc_writer_agent.log"
     edits_path = task_output_dir / "doc_writer_agent_edits.log"
@@ -96,6 +85,7 @@ async def run_changes_stage(
 
     if output_path.exists():
         console.print(f"✓ Using existing changes from {output_path}")
+        import json
         with open(output_path) as f:
             changes_data = json.load(f)
             return {
@@ -115,9 +105,7 @@ async def run_changes_stage(
     return result
 
 
-async def run_pr_stage(
-    task_description: str, task_name: str, task_output_dir: Path, console: Console
-):
+async def run_pr_stage(task_description: str, task_name: str, task_output_dir: Path):
     """Run PR creation stage."""
     changes_path = task_output_dir / "doc_writer_agent.log"
     console.print("📝 Applying changes and creating PR...")
@@ -128,7 +116,7 @@ async def run_pr_stage(
     )
 
 
-async def run_task(task_name: str, console: Console):
+async def run_task_async(task_name: str):
     """Runs the full pipeline for a single task."""
     console.rule(f"[bold green]Starting Task: {task_name}[/bold green]")
     task_output_dir = Path("outputs") / f"task_{task_name}"
@@ -136,27 +124,27 @@ async def run_task(task_name: str, console: Console):
     task_description = get_task_description(task_name)
 
     # Stage 1: Search documents
-    result = await run_search_stage(task_description, task_output_dir, console)
+    result = await run_search_stage(task_description, task_output_dir)
     print(f"\nDocument search complete. Found {len(result['documents'])} documents:")
     for doc in result["documents"]:
         print(f"- {doc['path']}: {doc['reason']}")
     print(f"Results saved to: {result['output_path']}\n")
 
     # Stage 2: Coordinate changes
-    result = await run_coordinate_stage(task_description, task_output_dir, console)
+    result = await run_coordinate_stage(task_description, task_output_dir)
     print("Change coordination complete.")
     print(f"Generated {len(result['instructions'])} editing instructions")
     print(f"Processed {result['documents_processed']} documents")
     print(f"Instructions saved to: {result['output_path']}\n")
 
     # Stage 3: Make changes
-    result = await run_changes_stage(task_description, task_output_dir, console)
+    result = await run_changes_stage(task_description, task_output_dir)
     print("Document changes complete.")
     print(f"Files changed: {result['files_changed']}")
     print(f"Revised documents saved to: {result['output_path']}\n")
 
     # Stage 4: Create PR
-    result = await run_pr_stage(task_description, task_name, task_output_dir, console)
+    result = await run_pr_stage(task_description, task_name, task_output_dir)
     if result["success"]:
         console.print(f"✅ {result['message']}")
         console.print(f"Branch: {result['branch_name']}")
@@ -167,18 +155,45 @@ async def run_task(task_name: str, console: Console):
     console.rule(f"[bold green]Finished Task: {task_name}[/bold green]\n")
 
 
-async def main():
-    setup_logging(__file__)
-    console = Console()
+@app.command()
+def run(
+    task_name: str = typer.Argument(..., help="Name of the task to run (e.g., 'training_backup')"),
+    clean: bool = typer.Option(False, "--clean", help="Clean intermediate outputs before running"),
+):
+    """Run a documentation task through the full pipeline."""
+    setup_logging("cli")
 
-    # Handle --clean flag
-    if "--clean" in sys.argv:
-        for task_name in TASKS_TO_RUN:
-            clean_task_outputs(task_name, console)
+    if clean:
+        clean_task_outputs(task_name)
 
-    for task_name in TASKS_TO_RUN:
-        await run_task(task_name, console)
+    asyncio.run(run_task_async(task_name))
+
+
+@app.command()
+def clean(
+    task_name: str = typer.Argument(..., help="Name of the task to clean"),
+):
+    """Clean intermediate output files for a task."""
+    clean_task_outputs(task_name)
+
+
+@app.command()
+def list_tasks():
+    """List all available tasks."""
+    tasks_dir = Path("tasks")
+    tasks = [f.stem for f in tasks_dir.glob("*.py") if f.stem != "__init__"]
+
+    if tasks:
+        console.print("[bold green]Available tasks:[/bold green]")
+        for task in sorted(tasks):
+            console.print(f"  • {task}")
+    else:
+        console.print("[yellow]No tasks found in tasks/ directory[/yellow]")
+
+
+def main():
+    app()
 
 
 if __name__ == "__main__":
-    asyncio.run(main())
+    main()
