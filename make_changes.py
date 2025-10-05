@@ -14,10 +14,10 @@ import sys
 
 # List of tasks to run in sequence
 TASKS_TO_RUN = [
-    # "training_schema_design",
+    "training_schema_design",
     "training_backup",
-    # "training_monitoring",
-    # "training_deployment"
+    "training_monitoring",
+    "training_deployment"
 ]
 
 
