@@ -14,10 +14,10 @@ import sys
 
 # List of tasks to run in sequence
 TASKS_TO_RUN = [
-    "training_schema_design",
+    # "training_schema_design",
     "training_backup",
-    "training_monitoring",
-    "training_deployment"
+    # "training_monitoring",
+    # "training_deployment"
 ]
 
 
@@ -49,9 +49,10 @@ async def run_search_stage(
             search_data = json.load(f)
             return {"documents": search_data, "output_path": output_path}
 
-    console.print("🔍 Searching documents...")
+    console.print("🔍 Searching documents via MCP...")
     result = await search_documents(task_description, output_path=str(output_path))
-    console.print(f"   Token usage: {result['token_usage']}")
+    if result['token_usage'] is not None:
+        console.print(f"   Token usage: {result['token_usage']}")
     return result
 
 
@@ -135,7 +136,7 @@ async def run_task(task_name: str, console: Console):
     result = await run_search_stage(task_description, task_output_dir, console)
     print(f"\nDocument search complete. Found {len(result['documents'])} documents:")
     for doc in result["documents"]:
-        print(f"- {doc['path']}: {doc['reason']}")
+        print(f"- {doc['path']}: {doc.get('reason', 'No reason provided')}")
     print(f"Results saved to: {result['output_path']}\n")
 
     # Stage 2: Coordinate changes

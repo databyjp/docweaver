@@ -1,6 +1,2 @@
-COLLECTION_NAME = "DocChunks"
-CATALOG_COLLECTION_NAME = "DocCatalog"
-
-# Documentation paths
+# Documentation paths (used for resolving relative file paths during editing)
 DOCS_BASE_PATH = "docs/docs/"
-DOCS_PATHS = ["docs/docs/weaviate/", "docs/docs/deploy/"]

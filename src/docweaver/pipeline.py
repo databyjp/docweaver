@@ -12,12 +12,8 @@ import json
 import re
 from pydantic import TypeAdapter
 
-from . import db
-from .config import DOCS_PATHS, DOCS_BASE_PATH
-from .utils import chunk_text
+from .config import DOCS_BASE_PATH
 from .agents import (
-    docs_search_agent,
-    DocSearchDeps,
     doc_instructor_agent,
     parse_doc_refs,
     WeaviateDoc,
@@ -26,7 +22,7 @@ from .agents import (
     pr_generator_agent,
     PRContent,
 )
-from .catalog import DocCatalog, get_docs_to_update, generate_metadata
+# Catalog functionality is now handled by weaviate-docs-mcp server
 import time
 from collections import defaultdict
 from datetime import datetime
@@ -34,71 +30,6 @@ from rich.console import Console
 import git
 import os
 from github import Github
-
-
-def prep_database(
-    docs_paths: list[str] | None = None, reset_collection: bool = True
-) -> Dict[str, Any]:
-    """
-    Reset and populate the document database.
-
-    This operation deletes the existing collection, creates a new one,
-    and populates it with chunks from markdown files in the specified paths.
-
-    Args:
-        docs_paths: List of documentation directories (default: from config.DOCS_PATHS)
-        reset_collection: Whether to reset the collection (default: True)
-
-    Returns:
-        Dict containing processing results with keys:
-        - files_processed: Number of files successfully processed
-        - files: List of file paths that were processed
-    """
-    logging.info("Starting database preparation...")
-
-    if docs_paths is None:
-        docs_paths = DOCS_PATHS
-
-    if reset_collection:
-        # For pipeline use, we want to reset without user prompts
-        try:
-            with db.connect() as client:
-                from .config import COLLECTION_NAME
-
-                client.collections.delete(COLLECTION_NAME)
-                logging.info("Deleted existing collection")
-        except Exception as e:
-            logging.info(f"Collection deletion skipped: {e}")
-
-    try:
-        db.create_collection()
-        logging.info("Created collection")
-    except Exception as e:
-        logging.info(f"Collection creation skipped (may already exist): {e}")
-
-    md_files = []
-    for docs_path in docs_paths:
-        md_files.extend(Path(docs_path).rglob("*.md*"))
-    md_files = [f for f in md_files if f.name[0] != "_"]
-
-    base_path = Path(DOCS_BASE_PATH)
-    processed_files = []
-    for file in md_files:
-        with open(file, "r") as f:
-            relative_path = file.relative_to(base_path).as_posix()
-            logging.info(f"Importing {relative_path}")
-            text = f.read()
-            chunks = chunk_text(text)
-            chunk_texts = [
-                {"path": relative_path, "chunk": chunk.text} for chunk in chunks
-            ]
-            db.add_chunks(chunk_texts)
-            processed_files.append(relative_path)
-
-    logging.info(
-        f"Database preparation complete. Processed {len(processed_files)} files."
-    )
-    return {"files_processed": len(processed_files), "files": processed_files}
 
 
 async def search_documents(
@@ -109,41 +40,38 @@ async def search_documents(
     """
     Search for documents that may need editing for a given feature.
 
-    This operation uses the docs search agent to find relevant documents
-    that might require updates based on the feature description. It uses
-    both chunk-based content search and catalog metadata search.
+    This operation uses the weaviate-docs-mcp server to find relevant documents
+    that might require updates based on the feature description.
 
     Args:
         feature_description: Description of the feature to search for
         output_path: Path to save the search results (default: "outputs/doc_search_agent.log")
-        catalog_path: Path to catalog JSON (default: "outputs/catalog.json")
+        catalog_path: Path to catalog JSON (unused, kept for backward compatibility)
 
     Returns:
         Dict containing search results with keys:
         - documents: List of document search results
-        - token_usage: Token usage information from the agent
+        - token_usage: None (MCP doesn't expose token usage)
         - output_path: Path where results were saved
     """
     logging.info(f"Starting document search for feature: {feature_description}")
 
-    # Load catalog if available
-    catalog = None
-    if Path(catalog_path).exists():
-        try:
-            catalog = DocCatalog.load(Path(catalog_path))
-            logging.info(f"Loaded catalog with {len(catalog.docs)} documents")
-        except Exception as e:
-            logging.warning(f"Could not load catalog: {e}")
+    from .mcp_client import WeaviateDocsMCPClient
 
-    response = await docs_search_agent.run(
-        f"Find documents that may need editing, for this feature: {feature_description}",
-        deps=DocSearchDeps(client=db.connect(), catalog=catalog),
-    )
+    # Use MCP client to search documents
+    mcp_client = WeaviateDocsMCPClient()
+    search_query = f"Find documents that may need editing for this feature: {feature_description}"
+    documents = await mcp_client.search_docs(search_query)
 
-    logging.info(f"Token usage for docs_search_agent: {response.usage()}")
-
-    # Convert results to serializable format
-    results = [doc.model_dump() for doc in response.output]
+    # Convert MCP results to the format expected by downstream pipeline
+    # MCP returns full documents with {path, content, referenced_files}
+    # We need to convert to {path, reason} format for compatibility
+    results = []
+    for doc in documents:
+        path = doc.get("path", "")
+        # Use summary from doc metadata as reason if available
+        reason = doc.get("summary", "Relevant to the feature based on MCP search")
+        results.append({"path": path, "reason": reason})
 
     # Save output for pipeline continuity
     Path(output_path).parent.mkdir(parents=True, exist_ok=True)
@@ -151,12 +79,12 @@ async def search_documents(
         json.dump(results, f, indent=4)
 
     logging.info(
-        f"Document search complete. Found {len(results)} documents. Results saved to {output_path}"
+        f"Document search complete via MCP. Found {len(results)} documents. Results saved to {output_path}"
     )
 
     return {
         "documents": results,
-        "token_usage": response.usage(),
+        "token_usage": None,  # MCP doesn't expose token usage
         "output_path": output_path,
     }
 
@@ -891,120 +819,5 @@ async def create_pr(
             console.print(f"⚠️ Could not switch back to original branch: {e}")
 
 
-async def update_catalog(
-    docs_paths: list[str] | None = None,
-    catalog_path: str = "outputs/catalog.json",
-    limit: int | None = None,
-) -> Dict[str, Any]:
-    """
-    Update the document catalog with metadata for new or modified documents.
-    This operation generates metadata (topics, doctype, summary) for documents
-    and stores them both locally (JSON) and in Weaviate for vector search.
-    It also removes documents from the catalog that no longer exist.
-    Args:
-        docs_paths: List of documentation directories (default: from config.DOCS_PATHS)
-        catalog_path: Path to save catalog JSON (default: "outputs/catalog.json")
-        limit: Optional limit on number of documents to process
-    Returns:
-        Dict containing results with keys:
-        - total_docs: Total documents in catalog
-        - updated_docs: Number of documents updated
-        - removed_docs: Number of documents removed
-        - catalog_path: Path where catalog was saved
-    """
-    logging.info("Starting catalog update...")
-
-    if docs_paths is None:
-        docs_paths = DOCS_PATHS
-
-    catalog = DocCatalog.load(Path(catalog_path))
-    logging.info(f"Loaded catalog with {len(catalog.docs)} existing documents")
-
-    base_path = Path(DOCS_BASE_PATH)
-
-    # Get all documents on disk from all specified paths
-    all_docs_on_disk = set()
-    for docs_path in docs_paths:
-        doc_root = Path(docs_path)
-        all_docs_on_disk.update(
-            p.relative_to(base_path).as_posix()
-            for p in doc_root.rglob("*.md*")
-            if not p.name.startswith("_")
-        )
-
-    # Find documents to remove (in catalog but not on disk)
-    docs_in_catalog = set(catalog.docs.keys())
-    docs_to_remove = list(docs_in_catalog - all_docs_on_disk)
-
-    removed_count = 0
-    if docs_to_remove:
-        logging.info(f"Found {len(docs_to_remove)} documents to remove")
-        for path in docs_to_remove:
-            if path in catalog.docs:
-                del catalog.docs[path]
-        try:
-            db.remove_catalog_entries(docs_to_remove)
-            removed_count = len(docs_to_remove)
-            logging.info(f"Removed {removed_count} entries from Weaviate catalog")
-        except Exception as e:
-            logging.warning(f"Could not remove from Weaviate catalog: {e}")
-
-    # Find documents that need updating across all paths
-    # Use common base path for consistent relative paths
-    all_docs_to_update = []
-    for docs_path in docs_paths:
-        doc_root = Path(docs_path)
-        docs_to_update = get_docs_to_update(doc_root, catalog, base_path)
-        all_docs_to_update.extend(docs_to_update)
-
-    if limit:
-        all_docs_to_update = all_docs_to_update[:limit]
-        logging.info(f"Limited to {limit} documents")
-
-    if not all_docs_to_update:
-        logging.info("No documents to update")
-        return {
-            "total_docs": len(catalog.docs),
-            "updated_docs": 0,
-            "removed_docs": removed_count,
-            "catalog_path": catalog_path,
-        }
-
-    logging.info(f"Found {len(all_docs_to_update)} documents to update")
-
-    # Generate metadata for each document with incremental saving
-    updated_entries = []
-    for i, doc_path in enumerate(all_docs_to_update):
-        try:
-            metadata = await generate_metadata(doc_path, base_path)
-            catalog.docs[metadata.path] = metadata
-            updated_entries.append(metadata.model_dump())
-            logging.info(f"Updated metadata for {metadata.path} ({i+1}/{len(all_docs_to_update)})")
-
-            # Save catalog incrementally every 10 documents
-            if (i + 1) % 10 == 0:
-                catalog.save(Path(catalog_path))
-                logging.info(f"Incremental save: {i+1}/{len(all_docs_to_update)} documents processed")
-
-        except Exception as e:
-            logging.error(f"Failed to process {doc_path}: {e}")
-            # Continue processing remaining documents
-
-    # Final save to ensure all updates are persisted
-    catalog.save(Path(catalog_path))
-    logging.info(f"Final save: catalog saved to {catalog_path}")
-
-    # Store in Weaviate for vector search
-    if updated_entries:
-        try:
-            db.add_catalog_entries(updated_entries)
-            logging.info(f"Added {len(updated_entries)} entries to Weaviate catalog")
-        except Exception as e:
-            logging.warning(f"Could not update Weaviate catalog: {e}")
-
-    return {
-        "total_docs": len(catalog.docs),
-        "updated_docs": len(updated_entries),
-        "removed_docs": removed_count,
-        "catalog_path": catalog_path,
-    }
+# Catalog update functionality has been moved to weaviate-docs-mcp/update_catalog.py
+# Use that script directly to update the documentation catalog

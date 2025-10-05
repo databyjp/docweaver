@@ -2,53 +2,105 @@
 
 Agentic documentation editing tool that uses AI to search, coordinate, and apply changes to documentation.
 
+## Architecture
+
+DocWeaver uses the [weaviate-docs-mcp](https://github.com/yourusername/weaviate-docs-mcp) server for document search functionality. The MCP (Model Context Protocol) server provides semantic search over documentation using Weaviate.
+
 ## Setup
 
-1. Install dependencies:
+### 1. Set up weaviate-docs-mcp server
+
+First, set up the MCP server that provides document search:
+
 ```bash
+# Clone and set up weaviate-docs-mcp
+cd ~/code
+git clone https://github.com/yourusername/weaviate-docs-mcp.git
+cd weaviate-docs-mcp
+
+# Install dependencies
 uv sync
+
+# Create .env file
+cp .env.example .env
+# Edit .env with your Weaviate and Cohere credentials
+
+# Clone the docs repository
+git clone https://github.com/weaviate/docs.git
+
+# Update the catalog (generates metadata and populates Weaviate)
+uv run python update_catalog.py
 ```
 
-2. Create `.env` file:
+See the [weaviate-docs-mcp README](https://github.com/yourusername/weaviate-docs-mcp/blob/main/README.md) for detailed setup instructions.
+
+### 2. Set up DocWeaver
+
+```bash
+# Install dependencies
+uv sync
+
+# Create .env file
+cp .env.example .env
 ```
-WEAVIATE_URL=....gcp.weaviate.cloud
-WEAVIATE_API_KEY=b0llbXFYUEY...
-ANTHROPIC_API_KEY=your_key_here
+
+Edit `.env` with:
+```
+ANTHROPIC_API_KEY=your_anthropic_key_here
 GITHUB_TOKEN=your_github_token
 ```
 
-3. Clone the `docs` repo locally
-    - It should end up in `docs/docs`
+### 3. Clone the docs repo locally
 
-4. (Only if needed) Prepare the DB:
-    - Add chunks to the database
-    - Create a catalog of documents with metadata & summary
-    ```bash
-    python 1_prep_chunks.py
-    python 2_update_catalog.py
-    ```
-    - The catalog will also be saved locally to `catalog.json`
+The `docs` repository should be cloned to `./docs`:
+```bash
+git clone https://github.com/weaviate/docs.git
+```
+
+The documentation files should be in `docs/docs/`.
 
 ## Usage
 
-### Make Changes
-1. Create a task file in `tasks/` (see `tasks/resharding_feature.py`)
-2. Add it to `TASKS_TO_RUN` in `3_make_changes.py`
-e.g.:
-```python
-TASKS_TO_RUN = [
-    "training_schema_design",
-    "training_backup",
-    "training_monitoring",
-    "training_deployment"
-]
-```
-3. Run:
+### Making Documentation Changes
+
+1. **Create a task file** in `tasks/` directory:
+   - See `tasks/resharding_feature.py` for an example
+   - Define the feature description and any specific requirements
+
+2. **Add task to the run list** in `3_make_changes.py`:
+   ```python
+   TASKS_TO_RUN = [
+       "training_schema_design",
+       "training_backup",
+       "training_monitoring",
+       "training_deployment"
+   ]
+   ```
+
+3. **Run the pipeline**:
+   ```bash
+   uv run python 3_make_changes.py
+   ```
+
+   The pipeline will:
+   - Search documents via the MCP server
+   - Generate coordinated edit instructions
+   - Apply changes to documentation
+   - Create a branch and pull request
+
+### Cleaning Task Outputs
+
+To remove cached results and start fresh for a specific task:
 ```bash
-python 3_make_changes.py
+uv run python 3_make_changes.py --clean
 ```
 
-The pipeline will search documents, generate edit instructions, apply changes, create diffs, and create a PR.
+## How It Works
+
+1. **Document Search** (`search_documents`): Uses the weaviate-docs-mcp server to find relevant documents via semantic search
+2. **Change Coordination** (`coordinate_changes`): Analyzes documents and generates structured editing instructions
+3. **Apply Changes** (`make_changes`): Executes edits on documentation files
+4. **Create PR** (`create_pr`): Commits changes and creates a draft pull request
 
 ## Output
 
