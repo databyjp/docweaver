@@ -86,26 +86,10 @@ def get_docs_to_update(
     return docs_to_update
 
 
-def get_docs_to_remove(doc_root: Path, catalog: DocCatalog, base_path: Path) -> list[str]:
-    """Find documents in the catalog that no longer exist on disk."""
-    # Build a set of all current document paths relative to the base_path
-    all_docs_on_disk = {
-        p.relative_to(base_path).as_posix()
-        for p in doc_root.rglob("*.md*")
-        if not p.name.startswith("_")
-    }
-
-    # Find paths that are in the catalog but not on disk anymore
-    docs_in_catalog = set(catalog.docs.keys())
-    docs_to_remove = [
-        path for path in docs_in_catalog if path not in all_docs_on_disk
-    ]
-    return docs_to_remove
-
-
 async def generate_metadata(doc_path: Path, base_path: Path) -> DocMetadata:
     """Generate metadata for a single document using AI."""
-    content = doc_path.read_text()
+    content_bytes = doc_path.read_bytes()
+    content = content_bytes.decode("utf-8", errors="ignore")
     relative_path = doc_path.relative_to(base_path).as_posix()
 
     prompt = f"Generate metadata for this documentation file at '{relative_path}':\n\n{content}"
@@ -116,7 +100,7 @@ async def generate_metadata(doc_path: Path, base_path: Path) -> DocMetadata:
 
         # Add computed fields
         metadata.path = relative_path
-        metadata.hash = hashlib.sha256(content.encode()).hexdigest()
+        metadata.hash = hashlib.sha256(content_bytes).hexdigest()
 
         # Extract title from frontmatter if available
         if "title: " in content:
@@ -133,5 +117,5 @@ async def generate_metadata(doc_path: Path, base_path: Path) -> DocMetadata:
         return DocMetadata(
             path=relative_path,
             title=doc_path.stem,
-            hash=hashlib.sha256(content.encode()).hexdigest(),
+            hash=hashlib.sha256(content_bytes).hexdigest(),
         )

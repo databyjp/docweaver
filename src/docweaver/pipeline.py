@@ -26,7 +26,7 @@ from .agents import (
     pr_generator_agent,
     PRContent,
 )
-from .catalog import DocCatalog, get_docs_to_update, get_docs_to_remove, generate_metadata
+from .catalog import DocCatalog, get_docs_to_update, generate_metadata
 import time
 from collections import defaultdict
 from datetime import datetime
@@ -921,10 +921,20 @@ async def update_catalog(
     logging.info(f"Loaded catalog with {len(catalog.docs)} existing documents")
 
     base_path = Path(DOCS_BASE_PATH)
-    docs_to_remove = []
+
+    # Get all documents on disk from all specified paths
+    all_docs_on_disk = set()
     for docs_path in docs_paths:
         doc_root = Path(docs_path)
-        docs_to_remove.extend(get_docs_to_remove(doc_root, catalog, base_path))
+        all_docs_on_disk.update(
+            p.relative_to(base_path).as_posix()
+            for p in doc_root.rglob("*.md*")
+            if not p.name.startswith("_")
+        )
+
+    # Find documents to remove (in catalog but not on disk)
+    docs_in_catalog = set(catalog.docs.keys())
+    docs_to_remove = list(docs_in_catalog - all_docs_on_disk)
 
     removed_count = 0
     if docs_to_remove:
