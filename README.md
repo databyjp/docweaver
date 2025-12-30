@@ -4,7 +4,7 @@ Agentic documentation editing tool that uses AI to search, coordinate, and apply
 
 ## Architecture
 
-DocWeaver uses the [weaviate-docs-mcp](https://github.com/yourusername/weaviate-docs-mcp) server for document search functionality. The MCP (Model Context Protocol) server provides semantic search over documentation using Weaviate.
+DocWeaver uses the [weaviate-docs-mcp](https://github.com/databyjp/weaviate-docs-mcp) server for document search functionality. The MCP (Model Context Protocol) server provides semantic search over documentation using Weaviate.
 
 ## Setup
 
@@ -15,7 +15,7 @@ First, set up the MCP server that provides document search:
 ```bash
 # Clone and set up weaviate-docs-mcp
 cd ~/code
-git clone https://github.com/yourusername/weaviate-docs-mcp.git
+git clone https://github.com/databyjp/weaviate-docs-mcp.git
 cd weaviate-docs-mcp
 
 # Install dependencies
@@ -32,7 +32,7 @@ git clone https://github.com/weaviate/docs.git
 uv run python update_catalog.py
 ```
 
-See the [weaviate-docs-mcp README](https://github.com/yourusername/weaviate-docs-mcp/blob/main/README.md) for detailed setup instructions.
+See the [weaviate-docs-mcp README](https://github.com/databyjp/weaviate-docs-mcp/blob/main/README.md) for detailed setup instructions.
 
 ### 2. Set up DocWeaver
 
